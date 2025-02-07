@@ -40,7 +40,7 @@ First, make sure Ollama is running.
 Then run script as follows:
 
 ```commandline
-python main.py file_with_german_words.txt
+python main_de.py file_with_german_words.txt
 ```
 
 The file is a list of newline-separated **single** German words (without articles).
