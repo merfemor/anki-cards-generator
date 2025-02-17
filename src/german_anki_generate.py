@@ -12,8 +12,8 @@ from src.utils import check
 _GENERATED_DECK_ID: Final[int] = 2059400110
 _ANKI_MODEL_ID: Final[int] = 1607392319
 
-_GENERATED_DECK_NAME: Final[str] = '[IMPORT OF GENERATED DECK]'
-_ANKI_MODEL_NAME: Final[str] = '[TEST] genanki'
+_GENERATED_DECK_NAME: Final[str] = '[Anki Cards Generator] – GENERATED GERMAN'
+_ANKI_MODEL_NAME: Final[str] = '[Anki Cards Generator] German with Sentence and Article'
 
 
 def _get_anki_card_model(model_id: int = _ANKI_MODEL_ID, model_name: str = _ANKI_MODEL_NAME) -> genanki.Model:
@@ -97,9 +97,9 @@ def export_results_to_anki_deck(results: [dict], deck_filename: str, deck_name: 
             original_word = r["original_word"]
             word_translated = f"{r["translated_ru"]}, {r["translated_en"]}"
 
-            word_audio_name = f"__anki_generate_{original_word}_word.mp3"
+            word_audio_name = f"anki_card_generator_de_{original_word}_word.mp3"
             word_audio_path = f"{temp_dir}/{word_audio_name}"
-            sentence_audio_name = f"__anki_generate_{original_word}_sentence.mp3"
+            sentence_audio_name = f"anki_card_generator_de_{original_word}_sentence.mp3"
             sentence_audio_path = f"{temp_dir}/{sentence_audio_name}"
             german_text_to_speech(r["sentence_example_de"], save_to_path=sentence_audio_path)
 
