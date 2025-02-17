@@ -22,6 +22,7 @@ idna==3.10
 lxml==5.3.0
 mwparserfromhell==0.6.6
 mypy-extensions==1.0.0
+numpy==2.2.3
 ollama==0.4.7
 packaging==24.2
 pathspec==0.12.1
