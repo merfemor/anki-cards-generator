@@ -1,7 +1,7 @@
 # Anki German cards generator
 
-This is a script to generate Anki cards for learning German words using Google Translate and a pinch of AI.
-Each card contains not only translation to English and Russian, but also sentence example with translation to English.
+This is a script to generate Anki cards for learning German or English words using Google Translate and a pinch of AI.
+Each card contains not only translation to Russian (and English in case of German), but also a sentence example with a translation to English or Russian.
 Also, audios are generated using text-to-speech and embedded into the cards.
 
 ## Installation
@@ -35,6 +35,8 @@ This is how we fix stuff here.
 
 ## Usage
 
+## German words
+
 First, make sure Ollama is running.
 
 Then run script as follows:
@@ -53,6 +55,26 @@ Markt
 jedoch
 entweder
 groß
+```
+
+Finally, import resulting file in Anki.
+
+## English words
+
+First, make sure Ollama is running.
+
+Then run script as follows:
+
+```commandline
+python main_en.py file_with_english_words.txt
+```
+The file is a list of newline-separated English words.
+For example:
+
+```text
+resemblance
+to put up with
+condescending
 ```
 
 Finally, import resulting file in Anki.
