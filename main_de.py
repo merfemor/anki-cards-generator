@@ -3,7 +3,7 @@
 import logging
 import sys
 
-from src.anki_generate import export_results_to_anki_deck
+from src.german_anki_generate import export_results_to_anki_deck
 from src.german_data_extract import prepare_data_for_german_word
 from src.utils import read_words_file
 
