@@ -87,8 +87,8 @@ def prepare_data_for_german_word(word: str) -> dict:
         "original_word": word,
         "pos_tag": pos_tag,
         "part_of_speech": part_of_speech,
-        "translated_en": add_to_to_en_verb(translate_text(word).lower(), part_of_speech),
-        "translated_ru": translate_text(word, dest="ru").lower(),
+        "translated_en": add_to_to_en_verb(translate_text(word, src="de", dest="en").lower(), part_of_speech),
+        "translated_ru": translate_text(word, src="de", dest="ru").lower(),
     }
 
     if part_of_speech == "noun":
@@ -102,6 +102,6 @@ def prepare_data_for_german_word(word: str) -> dict:
 
     german_sentence_example = get_german_sentence_example(word)
     result["sentence_example_de"] = german_sentence_example
-    result["sentence_example_translated_en"] = translate_text(german_sentence_example)
+    result["sentence_example_translated_en"] = translate_text(german_sentence_example, src="de", dest="en")
 
     return result

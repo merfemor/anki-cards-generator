@@ -5,7 +5,7 @@ from typing import Final
 
 import genanki
 
-from src.tts import german_text_to_speech
+from src.tts import text_to_speech_into_file
 from src.utils import check
 
 # Magic constant. Just random number, because we have to assign something unique.
@@ -101,7 +101,7 @@ def export_results_to_anki_deck(results: [dict], deck_filename: str, deck_name: 
             word_audio_path = f"{temp_dir}/{word_audio_name}"
             sentence_audio_name = f"anki_card_generator_de_{original_word}_sentence.mp3"
             sentence_audio_path = f"{temp_dir}/{sentence_audio_name}"
-            german_text_to_speech(r["sentence_example_de"], save_to_path=sentence_audio_path)
+            text_to_speech_into_file(r["sentence_example_de"], sentence_audio_path, lang="de")
 
             if "noun_properties" in r:
                 noun_props = r["noun_properties"]
@@ -117,14 +117,14 @@ def export_results_to_anki_deck(results: [dict], deck_filename: str, deck_name: 
                     word_for_tts = word_de_for_card
 
                 article = noun_props["article"]
-                german_text_to_speech(f"{article} {word_for_tts}", word_audio_path)
+                text_to_speech_into_file(f"{article} {word_for_tts}", word_audio_path, lang="de")
                 note = _create_anki_note(my_model, word_de=word_de_for_card, word_de_article=article,
                                          word_translated=word_translated,
                                          sentence_de=r["sentence_example_de"],
                                          sentence_translated=r["sentence_example_translated_en"],
                                          word_audio=word_audio_name, sentence_audio=sentence_audio_name)
             else:  # not noun
-                german_text_to_speech(original_word, word_audio_path)
+                text_to_speech_into_file(original_word, word_audio_path, lang="de")
                 note = _create_anki_note(my_model, word_de=original_word, word_de_article="",
                                          word_translated=word_translated,
                                          sentence_de=r["sentence_example_de"],
