@@ -18,6 +18,7 @@ _ANKI_MODEL_NAME: Final[str] = '[Anki Cards Generator] German with Sentence and 
 
 
 def _get_anki_card_model(model_id: int = _ANKI_MODEL_ID, model_name: str = _ANKI_MODEL_NAME) -> genanki.Model:
+    # language=css
     CSS = textwrap.dedent("""
         .card {
             font-family: arial;
@@ -29,6 +30,7 @@ def _get_anki_card_model(model_id: int = _ANKI_MODEL_ID, model_name: str = _ANKI
         }
     """).strip()
 
+    # language=html
     CARD_1_ANSWER = textwrap.dedent("""
         {{FrontSide}} <br/>
         {{word_translated}}
@@ -36,6 +38,7 @@ def _get_anki_card_model(model_id: int = _ANKI_MODEL_ID, model_name: str = _ANKI
         <div class="sentence">{{sentence_de}} {{sentence_audio}}</div>
     """).strip()
 
+    # language=html
     CARD_2_ANSWER = textwrap.dedent("""
         {{FrontSide}} <br/>
         {{word_de_article}} {{word_de}} {{word_audio}}
