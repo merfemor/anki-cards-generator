@@ -1,4 +1,5 @@
-from typing import Final
+from dataclasses import dataclass
+from typing import Final, Optional
 
 import german_nouns.lookup
 from HanTa.HanoverTagger import HanoverTagger
@@ -79,29 +80,53 @@ def add_to_to_en_verb(translated_text: str, part_of_speech: str) -> str:
     return "to " + translated_text
 
 
-def prepare_data_for_german_word(word: str) -> dict:
+@dataclass
+class GermanNounProperties:
+    singular_form: str
+    plural_form: str
+    genus: str
+    article: str
+
+
+@dataclass
+class GermanWordData:
+    original_word: str
+    pos_tag: str
+    part_of_speech: str
+    translated_en: str
+    translated_ru: str
+    noun_properties: Optional[GermanNounProperties]
+    sentence_example: str
+    sentence_example_translated_en: str
+
+
+def prepare_data_for_german_word(word: str) -> GermanWordData:
     pos_tag = get_pos_tag_of_german_word(word)
     part_of_speech = pos_tag_to_part_of_speech(pos_tag)
 
-    result = {
-        "original_word": word,
-        "pos_tag": pos_tag,
-        "part_of_speech": part_of_speech,
-        "translated_en": add_to_to_en_verb(translate_text(word, src="de", dest="en").lower(), part_of_speech),
-        "translated_ru": translate_text(word, src="de", dest="ru").lower(),
-    }
+    translated_en = add_to_to_en_verb(translate_text(word, src="de", dest="en").lower(), part_of_speech)
+    translated_ru = translate_text(word, src="de", dest="ru").lower()
 
+    noun_properties = None
     if part_of_speech == "noun":
         singular, plural, genus = get_extra_noun_info(word)
-        result["noun_properties"] = {
-            "singular_form": singular,
-            "plural_form": plural,
-            "genus": genus,
-            "article": get_article_for_german_genus(genus),
-        }
+        noun_properties = GermanNounProperties(
+            singular_form=singular,
+            plural_form=plural,
+            genus=genus,
+            article=get_article_for_german_genus(genus),
+        )
 
     german_sentence_example = get_german_sentence_example(word)
-    result["sentence_example_de"] = german_sentence_example
-    result["sentence_example_translated_en"] = translate_text(german_sentence_example, src="de", dest="en")
+    sentence_example_translated_en = translate_text(german_sentence_example, src="de", dest="en")
 
-    return result
+    return GermanWordData(
+        original_word=word,
+        pos_tag=pos_tag,
+        part_of_speech=part_of_speech,
+        translated_en=translated_en,
+        translated_ru=translated_ru,
+        noun_properties=noun_properties,
+        sentence_example=german_sentence_example,
+        sentence_example_translated_en=sentence_example_translated_en
+    )

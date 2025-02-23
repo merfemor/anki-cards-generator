@@ -5,6 +5,7 @@ from typing import Final
 
 import genanki
 
+from src.german_data_extract import GermanWordData
 from src.tts import text_to_speech_into_file
 from src.utils import check
 
@@ -102,7 +103,8 @@ def _shorten_german_noun_plural_form_for_anki_card(word_singular: str, word_plur
         return "die " + word_plural
 
 
-def export_results_to_anki_deck(results: [dict], deck_filename: str, deck_name: str = _GENERATED_DECK_NAME):
+def export_results_to_anki_deck(results: list[GermanWordData], deck_filename: str,
+                                deck_name: str = _GENERATED_DECK_NAME):
     check(deck_filename.endswith(".apkg"), f"Expected deck filename to have .apkg extension, but got {deck_filename}")
 
     my_model = _get_anki_card_model()
@@ -113,44 +115,53 @@ def export_results_to_anki_deck(results: [dict], deck_filename: str, deck_name: 
     with tempfile.TemporaryDirectory(prefix="anki_cards_generator_media_") as temp_dir:
         logging.info("Created temporary directory " + temp_dir)
         for r in results:
-            original_word = r["original_word"]
-            word_translated = f"{r["translated_ru"]}, {r["translated_en"]}"
+            word_translated = f"{r.translated_ru}, {r.translated_en}"
 
-            word_audio_name = f"anki_card_generator_de_{original_word}_word.mp3"
+            word_audio_name = f"anki_card_generator_de_{r.original_word}_word.mp3"
             word_audio_path = f"{temp_dir}/{word_audio_name}"
-            sentence_audio_name = f"anki_card_generator_de_{original_word}_sentence.mp3"
+            sentence_audio_name = f"anki_card_generator_de_{r.original_word}_sentence.mp3"
             sentence_audio_path = f"{temp_dir}/{sentence_audio_name}"
-            text_to_speech_into_file(r["sentence_example_de"], sentence_audio_path, lang="de")
+            text_to_speech_into_file(r.sentence_example, sentence_audio_path, lang="de")
 
-            if "noun_properties" in r:
-                noun_props = r["noun_properties"]
+            if r.noun_properties:
+                noun_props = r.noun_properties
 
-                if not noun_props["plural_form"]:
-                    word_de_for_card = f"{original_word} (Sg.)"
-                    word_for_tts = original_word
-                elif not noun_props["singular_form"]:
-                    word_de_for_card = f"{original_word} (Pl.)"
-                    word_for_tts = original_word
+                if not noun_props.plural_form:
+                    word_de_for_card = f"{r.original_word} (Sg.)"
+                    word_for_tts = r.original_word
+                elif not noun_props.singular_form:
+                    word_de_for_card = f"{r.original_word} (Pl.)"
+                    word_for_tts = r.original_word
                 else:
-                    shortened_plural_form = _shorten_german_noun_plural_form_for_anki_card(noun_props["singular_form"],
-                                                                                           noun_props["plural_form"])
-                    word_de_for_card = f"{original_word}, {shortened_plural_form}"
+                    shortened_plural_form = _shorten_german_noun_plural_form_for_anki_card(noun_props.singular_form,
+                                                                                           noun_props.plural_form)
+                    word_de_for_card = f"{r.original_word}, {shortened_plural_form}"
                     word_for_tts = word_de_for_card
 
-                article = noun_props["article"]
+                article = noun_props.article
                 text_to_speech_into_file(f"{article} {word_for_tts}", word_audio_path, lang="de")
-                note = _create_anki_note(my_model, word_de=word_de_for_card, word_de_article=article,
-                                         word_translated=word_translated,
-                                         sentence_de=r["sentence_example_de"],
-                                         sentence_translated=r["sentence_example_translated_en"],
-                                         word_audio=word_audio_name, sentence_audio=sentence_audio_name)
-            else:  # not noun
-                text_to_speech_into_file(original_word, word_audio_path, lang="de")
-                note = _create_anki_note(my_model, word_de=original_word, word_de_article="",
-                                         word_translated=word_translated,
-                                         sentence_de=r["sentence_example_de"],
-                                         sentence_translated=r["sentence_example_translated_en"],
-                                         word_audio=word_audio_name, sentence_audio=sentence_audio_name)
+                note = _create_anki_note(
+                    my_model,
+                    word_de=word_de_for_card,
+                    word_de_article=article,
+                    word_translated=word_translated,
+                    sentence_de=r.sentence_example,
+                    sentence_translated=r.sentence_example_translated_en,
+                    word_audio=word_audio_name,
+                    sentence_audio=sentence_audio_name,
+                )
+            else:  # Not a noun
+                text_to_speech_into_file(r.original_word, word_audio_path, lang="de")
+                note = _create_anki_note(
+                    my_model,
+                    word_de=r.original_word,
+                    word_de_article="",
+                    word_translated=word_translated,
+                    sentence_de=r.sentence_example,
+                    sentence_translated=r.sentence_example_translated_en,
+                    word_audio=word_audio_name,
+                    sentence_audio=sentence_audio_name,
+                )
 
             all_media_files.append(word_audio_path)
             all_media_files.append(sentence_audio_path)
