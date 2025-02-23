@@ -83,6 +83,25 @@ def _create_anki_note(model: genanki.Model, word_de: str, word_de_article: str, 
                 sentence_audio])
 
 
+def _shorten_german_noun_plural_form_for_anki_card(word_singular: str, word_plural: str) -> str:
+    """
+    Shortens plural noun form if possible.
+    This is needed to not write the full form in simple cases, e.g.:
+    * "die Wohnung, -en" instead of "die Wohnung, die Wohnungen".
+    * "der Lehrer, =" instead of "der Lehrer, die Lehrer"
+
+    More complex cases with umlauts are not handled, e.g.:
+    * "die Stadt, die Städte", but could be "die Stadt, –ä, e"
+    * "die Mutter, die Mütter", but could be "die Mutter, -ü"
+    """
+    if word_singular == word_plural:
+        return "="
+    elif word_plural.startswith(word_singular):
+        return "-" + word_plural[len(word_singular):]
+    else:
+        return "die " + word_plural
+
+
 def export_results_to_anki_deck(results: [dict], deck_filename: str, deck_name: str = _GENERATED_DECK_NAME):
     check(deck_filename.endswith(".apkg"), f"Expected deck filename to have .apkg extension, but got {deck_filename}")
 
@@ -113,7 +132,9 @@ def export_results_to_anki_deck(results: [dict], deck_filename: str, deck_name: 
                     word_de_for_card = f"{original_word} (Pl.)"
                     word_for_tts = original_word
                 else:
-                    word_de_for_card = f"{original_word}, die {noun_props["plural_form"]}"
+                    shortened_plural_form = _shorten_german_noun_plural_form_for_anki_card(noun_props["singular_form"],
+                                                                                           noun_props["plural_form"])
+                    word_de_for_card = f"{original_word}, {shortened_plural_form}"
                     word_for_tts = word_de_for_card
 
                 article = noun_props["article"]
