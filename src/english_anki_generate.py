@@ -5,6 +5,7 @@ from typing import Final
 
 import genanki
 
+from src.english_data_extract import EnglishWordData
 from src.tts import text_to_speech_into_file
 from src.utils import check
 
@@ -68,8 +69,8 @@ def _get_anki_card_model(model_id: int = _ANKI_MODEL_ID, model_name: str = _ANKI
         css=CSS)
 
 
-def _create_anki_note(model: genanki.Model, word: str, word_translated: str, sentence: str,
-                      sentence_translated: str, word_audio: str, sentence_audio: str) -> genanki.Note:
+def _create_anki_note(model: genanki.Model, data: EnglishWordData, word_audio: str,
+                      sentence_audio: str) -> genanki.Note:
     check("/" not in word_audio, f"Audio must be a simple file name, not a path, but got word audio={word_audio}")
     check("/" not in sentence_audio,
           f"Audio must be a simple file name, not a path, but got sentence audio={word_audio}")
@@ -78,10 +79,12 @@ def _create_anki_note(model: genanki.Model, word: str, word_translated: str, sen
     sentence_audio = f"[sound:{sentence_audio}]"
     return genanki.Note(
         model=model,
-        fields=[word, word_translated, sentence, sentence_translated, word_audio, sentence_audio])
+        fields=[data.original_word, data.translated, data.sentence_example, data.sentence_example_translated,
+                word_audio, sentence_audio])
 
 
-def export_results_to_anki_deck(results: [dict[str, str]], deck_filename: str, deck_name: str = _GENERATED_DECK_NAME):
+def export_results_to_anki_deck(results: list[EnglishWordData], deck_filename: str,
+                                deck_name: str = _GENERATED_DECK_NAME):
     check(deck_filename.endswith(".apkg"), f"Expected deck filename to have .apkg extension, but got {deck_filename}")
 
     my_model = _get_anki_card_model()
@@ -92,23 +95,17 @@ def export_results_to_anki_deck(results: [dict[str, str]], deck_filename: str, d
     with tempfile.TemporaryDirectory(prefix="anki_cards_generator_media_") as temp_dir:
         logging.info("Created temporary directory " + temp_dir)
         for r in results:
-            original_word = r["original_word"]
-
-            word_audio_name = f"anki_cards_generator_en_{original_word}_word.mp3"
+            word_audio_name = f"anki_cards_generator_en_{r.original_word}_word.mp3"
             word_audio_path = f"{temp_dir}/{word_audio_name}"
-            text_to_speech_into_file(original_word, word_audio_path, lang="en")
+            text_to_speech_into_file(r.original_word, word_audio_path, lang="en")
             all_media_files.append(word_audio_path)
 
-            sentence_audio_name = f"anki_cards_generator_en_{original_word}_sentence.mp3"
+            sentence_audio_name = f"anki_cards_generator_en_{r.original_word}_sentence.mp3"
             sentence_audio_path = f"{temp_dir}/{sentence_audio_name}"
-            text_to_speech_into_file(r["sentence_example_en"], sentence_audio_path, lang="en")
+            text_to_speech_into_file(r.sentence_example, sentence_audio_path, lang="en")
             all_media_files.append(sentence_audio_path)
 
-            note = _create_anki_note(my_model, word=original_word,
-                                     word_translated=r["translated_ru"],
-                                     sentence=r["sentence_example_en"],
-                                     sentence_translated=r["sentence_example_translated_ru"],
-                                     word_audio=word_audio_name, sentence_audio=sentence_audio_name)
+            note = _create_anki_note(my_model, data=r, word_audio=word_audio_name, sentence_audio=sentence_audio_name)
             my_deck.add_note(note)
 
         pkg = genanki.Package(my_deck)

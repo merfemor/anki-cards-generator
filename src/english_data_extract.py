@@ -1,17 +1,26 @@
+from dataclasses import dataclass
+
 from src.ai_interact import ask_ai
 from src.translate import translate_text
 from src.utils import check
 
 
-def prepare_data_for_english_word(word: str) -> dict[str, str]:
-    result = {
-        "original_word": word,
-        "translated_ru": translate_text(word, src="en", dest="ru").lower(),
-    }
+@dataclass
+class EnglishWordData:
+    original_word: str
+    translated: str
+    sentence_example: str
+    sentence_example_translated: str
+
+
+def prepare_data_for_english_word(word: str) -> EnglishWordData:
     en_sentence_example = get_english_sentence_example(word)
-    result["sentence_example_en"] = en_sentence_example
-    result["sentence_example_translated_ru"] = translate_text(en_sentence_example, src="en", dest="ru")
-    return result
+    return EnglishWordData(
+        original_word=word,
+        translated=translate_text(word, src="en", dest="ru").lower(),
+        sentence_example=en_sentence_example,
+        sentence_example_translated=translate_text(en_sentence_example, src="en", dest="ru")
+    )
 
 
 def get_english_sentence_example(word: str) -> str:
