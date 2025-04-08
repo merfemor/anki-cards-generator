@@ -87,7 +87,7 @@ def _create_anki_note(model: genanki.Model, data: EnglishWordData, word_audio: s
 
 
 def export_results_to_anki_deck(results: list[EnglishWordData], deck_filename: str,
-                                deck_name: str = _GENERATED_DECK_NAME):
+                                deck_name: str = _GENERATED_DECK_NAME) -> None:
     check(deck_filename.endswith(".apkg"), f"Expected deck filename to have .apkg extension, but got {deck_filename}")
 
     my_model = _get_anki_card_model()
