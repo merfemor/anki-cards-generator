@@ -35,7 +35,7 @@ This is how we fix stuff here.
 
 ## Usage
 
-## German words
+### Script for German words
 
 First, make sure Ollama is running.
 
@@ -59,7 +59,7 @@ groß
 
 Finally, import resulting file in Anki.
 
-## English words
+### Script for English words
 
 First, make sure Ollama is running.
 
@@ -78,3 +78,22 @@ condescending
 ```
 
 Finally, import resulting file in Anki.
+
+### Server mode
+
+There is also an HTTP server mode.
+
+It can be run with the following command:
+
+```bash
+python server.py
+```
+
+Press `Ctrl+C` to stop the server.
+
+Currently available endpoints are:
+
+1. `GET /api/generateGermanCard?word=Sprache`
+2. `GET /api/generateEnglishCard?word=language`
+
+Beware that the response time is very long, far from instant.
