@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Anki Cards Generator</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <div class="container">
+    <h1>Anki Cards Generator</h1>
+
+    <label for="language">Select Language:</label>
+    <select id="language">
+      <option value="en">English</option>
+      <option value="de">German</option>
+    </select>
+
+    <label for="words">Enter words (one per line):</label>
+    <textarea id="words" placeholder="cat&#10;dog&#10;capybara"></textarea>
+
+    <button id="generateBtn">✨ Generate</button>
+
+    <div id="loader">⏳ Generating your Anki cards...</div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

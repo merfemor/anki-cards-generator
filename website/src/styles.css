@@ -1,0 +1,89 @@
+/* Reset & base styles */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: "Segoe UI", sans-serif;
+  background: #f5f6fa;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 20px;
+}
+
+/* Card layout */
+.container {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  padding: 30px;
+  width: 100%;
+  max-width: 500px;
+}
+
+/* Typography */
+h1 {
+  text-align: center;
+  margin-bottom: 25px;
+  color: #2f3640;
+}
+
+/* Form elements */
+label {
+  display: block;
+  margin: 10px 0 5px;
+  color: #444;
+  font-weight: 500;
+}
+
+select, textarea, button {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #dcdde1;
+  border-radius: 8px;
+  font-size: 16px;
+  margin-bottom: 15px;
+  transition: border 0.3s ease, box-shadow 0.3s ease;
+}
+
+select:focus, textarea:focus {
+  outline: none;
+  border-color: #4cd137;
+  box-shadow: 0 0 0 2px rgba(76, 209, 55, 0.2);
+}
+
+textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+
+button {
+  background-color: #44bd32;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #4cd137;
+}
+
+/* Loader */
+#loader {
+  display: none;
+  text-align: center;
+  color: #718093;
+  margin-top: 10px;
+  font-size: 15px;
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}

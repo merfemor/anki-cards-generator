@@ -1,6 +1,6 @@
-# Anki German cards generator
+# Anki Cards Generator
 
-This is a script to generate Anki cards for learning German or English words using Google Translate and a pinch of AI.
+Generator of Anki cards for learning German or English words using Google Translate and a pinch of AI.
 Each card contains not only translation to Russian (and English in case of German), but also a sentence example with a translation to English or Russian.
 Also, audios are generated using text-to-speech and embedded into the cards.
 
@@ -97,3 +97,7 @@ Currently available endpoints are:
 2. `GET /api/generateEnglishCard?word=language`
 
 Beware that the response time is very long, far from instant.
+
+### Web interface
+
+Also, there is a web interface. See more in separate [README](./website/README.md).
