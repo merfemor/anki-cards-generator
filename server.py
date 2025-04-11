@@ -1,4 +1,6 @@
+import logging
 import os
+import sys
 import tempfile
 from typing import Callable
 
@@ -14,32 +16,40 @@ app = Flask(__name__)
 CORS(app, origins=["http://127.0.0.1:8000", "http://localhost:8000"])
 
 
+def setup_logging():
+    logging.basicConfig(
+        level=logging.INFO,
+        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+        handlers=[logging.StreamHandler(sys.stdout)]
+    )
+    logging.getLogger("httpx").setLevel(logging.CRITICAL)
+
+
 def generate_cards_file_common[R](words: list[str], prepare_data_fn: Callable[[str], R],
                                   export_fn: Callable[[list[R], str], None], file_suffix: str):
     if not words:
         return jsonify({'error': 'The "words" list cannot be empty'}), 400
 
+    logging.info(f"Preparing card data for the words {words}")
     results = []
     for word in words:
-        result = prepare_data_fn(word)  # Use the language-specific data preparation function
+        result = prepare_data_fn(word)
         results.append(result)
 
-    # Generate a unique temporary file name for the deck
     with tempfile.NamedTemporaryFile(delete=False, suffix=file_suffix) as temp_file:
         deck_filename = temp_file.name
 
-    # Export the results to the temporary file
+    logging.info(f"Exporting the results into the temporary Anki deck file \"{deck_filename}\"")
     try:
-        export_fn(results, deck_filename)  # Use the language-specific export function
+        export_fn(results, deck_filename)
 
-        # Send the file to the client
         response = send_file(deck_filename, as_attachment=True, download_name=os.path.basename(deck_filename),
                              mimetype='application/octet-stream')
         return response
     finally:
-        # Ensure cleanup in case of an exception
         if os.path.exists(deck_filename):
             os.remove(deck_filename)
+            logging.info(f"Removed temporary Anki deck file \"{deck_filename}\"")
 
 
 @app.route('/api/generateGermanCardsFile', methods=['POST'])
@@ -65,4 +75,5 @@ def generate_english_cards_file():
 
 
 if __name__ == '__main__':
+    setup_logging()
     app.run(port=5000)
