@@ -35,22 +35,11 @@ def generate_cards_file_common[R](words: list[str], prepare_data_fn: Callable[[s
         # Send the file to the client
         response = send_file(deck_filename, as_attachment=True, download_name=os.path.basename(deck_filename),
                              mimetype='application/octet-stream')
-
-        # Cleanup: Ensures the file is deleted after being served
-        @response.call_on_close
-        def cleanup():
-            try:
-                os.remove(deck_filename)
-            except OSError:
-                pass
-
         return response
-
-    except Exception as e:
+    finally:
         # Ensure cleanup in case of an exception
         if os.path.exists(deck_filename):
             os.remove(deck_filename)
-        return jsonify({'error': str(e)}), 500
 
 
 @app.route('/api/generateGermanCardsFile', methods=['POST'])
