@@ -10,6 +10,8 @@ Then run:
 
 ```bash
 python -m http.server 8000 -d src
+# or simply
+./run.sh
 ```
 
 ## Notes
