@@ -1,16 +1,38 @@
 import logging
 
 import ollama
+from openai import OpenAI
+
+from src.configuration import get_global_ai_provider, AIProvider
 
 
 def ask_ai(prompt: str) -> str:
     # TODO: how to set a random seed?
-    logging.info(f"AI request={prompt}")
+    ai_provider = get_global_ai_provider()
+    logging.info(f"AI request={prompt} on {ai_provider.value}")
     try:
-        response = ollama.generate(model='cas/discolm-mfto-german:latest', prompt=prompt, options={"top_k": 20})
+        match ai_provider:
+            case AIProvider.OLLAMA:
+                response_text = ask_ai_ollama(prompt)
+            case AIProvider.OPENAI:
+                response_text = ask_ai_openai(prompt)
+            case _:
+                raise ValueError(f"Not handled branch for AI provider: {ai_provider}")
     except Exception as e:
-        logging.error("Exception during ollama request. Did you forgot to start the service?", exc_info=True)
-        raise Exception("Exception during ollama request") from e
-    response_text = response['response']
+        raise Exception("Exception during AI request") from e
     logging.info(f"AI response={response_text}")
     return response_text
+
+
+def ask_ai_ollama(prompt: str) -> str:
+    response = ollama.generate(model='cas/discolm-mfto-german:latest', prompt=prompt, options={"top_k": 20})
+    return response['response']
+
+
+def ask_ai_openai(prompt: str) -> str:
+    openai_client = OpenAI()
+    response = openai_client.responses.create(
+        model="gpt-4o-mini",
+        input=prompt,
+    )
+    return response.output_text

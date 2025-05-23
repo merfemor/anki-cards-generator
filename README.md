@@ -6,9 +6,22 @@ Also, audios are generated using text-to-speech and embedded into the cards.
 
 ## Installation
 
-### Ollama
+### LLM provider
+
+You have two options: OpenAI (default) and Ollama.
+
+#### OpenAI
+
+Set key into environment variable `OPENAI_API_KEY`:
+
+```bash
+export OPENAI_API_KEY=yourkey
+```
+
+#### Ollama
 
 Ollama with `cas/discolm-mfto-german` model should be installed.
+Then, when running server.py, specify additional argument `--ai-provider=ollama`.
 
 ### Python virtual environment
 
