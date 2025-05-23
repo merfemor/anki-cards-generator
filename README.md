@@ -48,55 +48,16 @@ This is how we fix stuff here.
 
 ## Usage
 
-### Script for German words
+### Server
 
-First, make sure Ollama is running.
+* In the case of Ollama provider, make sure it is up and running.
+* In the case of OpenAI, provide API key through environment variable:
 
-Then run script as follows:
-
-```commandline
-python main_de.py file_with_german_words.txt
+```bash
+export OPENAI_API_KEY=yourkey
 ```
 
-The file is a list of newline-separated **single** German words (without articles).
-For example:
-
-```text
-Schule
-laufen
-Markt
-jedoch
-entweder
-groß
-```
-
-Finally, import resulting file in Anki.
-
-### Script for English words
-
-First, make sure Ollama is running.
-
-Then run script as follows:
-
-```commandline
-python main_en.py file_with_english_words.txt
-```
-The file is a list of newline-separated English words.
-For example:
-
-```text
-resemblance
-to put up with
-condescending
-```
-
-Finally, import resulting file in Anki.
-
-### Server mode
-
-There is also an HTTP server mode.
-
-It can be run with the following command:
+Run the server with the following command:
 
 ```bash
 python server.py
@@ -104,13 +65,14 @@ python server.py
 
 Press `Ctrl+C` to stop the server.
 
-Currently available endpoints are:
-
-1. `GET /api/generateGermanCard?word=Sprache`
-2. `GET /api/generateEnglishCard?word=language`
-
 Beware that the response time is very long, far from instant.
 
 ### Web interface
 
-Also, there is a web interface. See more in separate [README](./website/README.md).
+Run web interface:
+
+```bash
+./website/run.sh
+```
+
+For now, it only works on localhost, because endpoint path is hardcoded in JS.
