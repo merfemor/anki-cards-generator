@@ -100,7 +100,7 @@ class GermanWordData:
     sentence_example_translated_en: str
 
 
-def prepare_data_for_german_word(word: str) -> GermanWordData:
+def prepare_data_for_german_word(word: str, stub_ai: bool = False) -> GermanWordData:
     pos_tag = get_pos_tag_of_german_word(word)
     part_of_speech = pos_tag_to_part_of_speech(pos_tag)
 
@@ -117,7 +117,10 @@ def prepare_data_for_german_word(word: str) -> GermanWordData:
             article=get_article_for_german_genus(genus),
         )
 
-    german_sentence_example = get_german_sentence_example(word)
+    if stub_ai:
+        german_sentence_example = "STUB"
+    else:
+        german_sentence_example = get_german_sentence_example(word)
     sentence_example_translated_en = translate_text(german_sentence_example, src="de", dest="en")
 
     return GermanWordData(
