@@ -32,7 +32,7 @@ def ask_ai_ollama(prompt: str) -> str:
 def ask_ai_openai(prompt: str) -> str:
     openai_client = OpenAI()
     response = openai_client.responses.create(
-        model="gpt-4o-mini",
+        model="gpt-4.1-nano",
         input=prompt,
     )
     return response.output_text
