@@ -20,7 +20,7 @@ export OPENAI_API_KEY=yourkey
 
 #### Ollama
 
-Ollama with `cas/discolm-mfto-german` model should be installed.
+Ollama with `llama3.1:8b` model should be installed.
 Then, when running server.py, specify additional argument `--ai-provider=ollama`.
 
 ### Python virtual environment

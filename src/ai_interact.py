@@ -25,7 +25,7 @@ def ask_ai(prompt: str) -> str:
 
 
 def ask_ai_ollama(prompt: str) -> str:
-    response = ollama.generate(model='cas/discolm-mfto-german:latest', prompt=prompt, options={"top_k": 20})
+    response = ollama.generate(model='llama3.1:8b', prompt=prompt, options={"top_k": 20})
     return response['response']
 
 
