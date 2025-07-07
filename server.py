@@ -4,6 +4,7 @@ import sys
 import tempfile
 from typing import Callable
 
+from dotenv import load_dotenv
 from flask import Flask, jsonify, request, send_file
 from flask_cors import CORS
 
@@ -76,6 +77,7 @@ def generate_english_cards_file():
 
 
 if __name__ == '__main__':
+    load_dotenv()
     setup_logging()
     args = parse_arguments()
     set_global_ai_provider(args.ai_provider)

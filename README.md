@@ -57,6 +57,9 @@ This is how we fix stuff here.
 export OPENAI_API_KEY=yourkey
 ```
 
+> [!TIP]
+> You can create `.env` file and specify environment variable there to not enter it each time.
+
 Run the server with the following command:
 
 ```bash
