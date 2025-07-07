@@ -38,17 +38,21 @@ python3 -m venv .venv
 # Activate venv
 source .venv/bin/activate
 
-# Install required packages
-pip install -r requirements.txt
+# Install dependency manager
+pip install poetry
+
+# Install dependencies
+poetry install
+
+# Hack to resolve dependency conflict (see below)
+pip install --no-deps german-nouns
 ```
 
 #### Note about `german-nouns` package
 
 I'm constantly getting errors during installation of `german-nouns==1.2.5` package.
 This is because of transitive dependency on old `lxml==4.9.4` via `wiktionary-de-parser`.
-
-In order to fix this, install the fresh version of `wiktionary-de-parser` using `pip install wiktionary-de-parser`.
-Then, ignore dependencies while installing `german-nouns` using `pip install --no-deps german-nouns`.
+That's why we have to install `german-nouns` separately with ignoring dependencies.
 This is how we fix stuff here.
 
 ## Usage
