@@ -1,4 +1,5 @@
 import logging
+import sys
 
 import ollama
 from openai import OpenAI
@@ -36,3 +37,28 @@ def ask_openai(prompt: str) -> str:
         input=prompt,
     )
     return response.output_text
+
+def early_check_llm_environment():
+    provider = get_global_llm_provider()
+    match provider:
+        case LLMProvider.OLLAMA:
+            early_check_ollama()
+        case LLMProvider.OPENAI:
+            early_check_openai()
+        case _:
+            raise ValueError(f"Not handled branch for LLM provider: {provider}")
+
+
+def early_check_ollama():
+    try:
+        ollama.list()
+    except ConnectionError:
+        print("Error: Ollama is not accessible. Did you forget to start it?")
+        sys.exit(1)
+
+
+def early_check_openai():
+    key = os.environ.get("OPENAI_API_KEY")
+    if not key:
+        print("Error: OPENAI_API_KEY environment variable is not set.")
+        sys.exit(1)

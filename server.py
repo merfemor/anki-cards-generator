@@ -12,6 +12,7 @@ import src.german_anki_generate
 from src.configuration import parse_arguments, set_global_llm_provider
 from src.english_data_extract import prepare_data_for_english_word
 from src.german_data_extract import prepare_data_for_german_word
+from src.llm_interact import early_check_llm_environment
 
 app = Flask(__name__)
 CORS(app, origins=["http://127.0.0.1:8000", "http://localhost:8000"])
@@ -72,4 +73,5 @@ if __name__ == '__main__':
     setup_logging()
     args = parse_arguments()
     set_global_llm_provider(args.llm_provider)
+    early_check_llm_environment()
     app.run(port=5000)
