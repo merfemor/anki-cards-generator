@@ -9,7 +9,7 @@ from src.configuration import get_global_llm_provider, LLMProvider
 def ask_llm(prompt: str) -> str:
     # TODO: how to set a random seed?
     llm_provider = get_global_llm_provider()
-    logging.info(f"LLM request={prompt} on {llm_provider.value}")
+    logging.info(f"LLM request, provider={llm_provider.value}, prompt='{prompt}'")
     try:
         match llm_provider:
             case LLMProvider.OLLAMA:
@@ -20,7 +20,7 @@ def ask_llm(prompt: str) -> str:
                 raise ValueError(f"Not handled branch for LLM provider: {llm_provider}")
     except Exception as e:
         raise Exception("Exception during LLM request") from e
-    logging.info(f"LLM response={response_text}")
+    logging.info(f"LLM response='{response_text}'")
     return response_text
 
 
