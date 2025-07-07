@@ -2,7 +2,6 @@ import logging
 import os
 import sys
 import tempfile
-from typing import Callable
 
 from dotenv import load_dotenv
 from flask import Flask, jsonify, request, send_file
@@ -27,12 +26,26 @@ def setup_logging():
     logging.getLogger("httpx").setLevel(logging.CRITICAL)
 
 
-def generate_cards_file_common[R](words: list[str], prepare_data_fn: Callable[[str], R],
-                                  export_fn: Callable[[list[R], str], None], file_suffix: str):
+@app.route('/api/generateCardsFile', methods=['POST'])
+def generate_german_cards_file():
+    words = request.get_json().get('words', [])
     if not words:
         return jsonify({'error': 'The "words" list cannot be empty'}), 400
 
-    logging.info(f"Preparing card data for the words {words}")
+    language = request.get_json().get('language')
+
+    if language == 'de':
+        prepare_data_fn = prepare_data_for_german_word
+        export_fn = src.german_anki_generate.export_results_to_anki_deck
+        file_suffix = "to_import_german_anki_generated.apkg"
+    elif language == 'en':
+        prepare_data_fn = prepare_data_for_english_word
+        export_fn = src.english_anki_generate.export_results_to_anki_deck
+        file_suffix = "to_import_english_anki_generated.apkg"
+    else:
+        return jsonify({'error': f"Expected language to be one of 'en', 'de', but got '{language}'"}), 400
+
+    logging.info(f"Preparing card data for language {language} for the words {words}")
     results = []
     for word in words:
         result = prepare_data_fn(word)
@@ -52,28 +65,6 @@ def generate_cards_file_common[R](words: list[str], prepare_data_fn: Callable[[s
         if os.path.exists(deck_filename):
             os.remove(deck_filename)
             logging.info(f"Removed temporary Anki deck file \"{deck_filename}\"")
-
-
-@app.route('/api/generateGermanCardsFile', methods=['POST'])
-def generate_german_cards_file():
-    words = request.get_json().get('words', [])
-    return generate_cards_file_common(
-        words,
-        prepare_data_fn=prepare_data_for_german_word,
-        export_fn=src.german_anki_generate.export_results_to_anki_deck,
-        file_suffix="to_import_german_anki_generated.apkg"
-    )
-
-
-@app.route('/api/generateEnglishCardsFile', methods=['POST'])
-def generate_english_cards_file():
-    words = request.get_json().get('words', [])
-    return generate_cards_file_common(
-        words,
-        prepare_data_fn=prepare_data_for_english_word,
-        export_fn=src.english_anki_generate.export_results_to_anki_deck,
-        file_suffix="to_import_english_anki_generated.apkg"
-    )
 
 
 if __name__ == '__main__':
