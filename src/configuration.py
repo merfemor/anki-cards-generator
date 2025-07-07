@@ -31,5 +31,5 @@ def parse_arguments() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description='Run the Anki cards generator server')
     parser.add_argument('--ai-provider', choices=[AIProvider.OPENAI.value, AIProvider.OLLAMA.value],
                         default=AIProvider.OPENAI.value,
-                        help='AI provider to use (default: ollama)')
+                        help='AI provider to use (default: openai)')
     return parser.parse_args()
