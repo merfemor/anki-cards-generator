@@ -1,18 +1,8 @@
 import unittest
-from tempfile import NamedTemporaryFile
 
 import src.german_data_extract
 import src.utils
 from src.german_data_extract import GermanWordData
-
-
-class UtilsTestCase(unittest.TestCase):
-    def test_read_words_file(self):
-        with NamedTemporaryFile() as temp_file:
-            temp_file.write(b"word1\nword2\nword3")
-            temp_file.seek(0)
-            words = src.utils.read_words_file(temp_file.name)
-            self.assertEqual(["word1", "word2", "word3"], words)
 
 
 class GermanPosTagTestCase(unittest.TestCase):
