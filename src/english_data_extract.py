@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from src.ai_interact import ask_ai
+from src.llm_interact import ask_llm
 from src.translate import translate_text
 from src.utils import check
 
@@ -26,7 +26,7 @@ def prepare_data_for_english_word(word: str) -> EnglishWordData:
 def get_english_sentence_example(word: str) -> str:
     prompt = f"Generate one simple sentence in English with the use of the word \"{word}\""
 
-    res = ask_ai(prompt).strip()
+    res = ask_llm(prompt).strip()
     check(len(res) > len(word), f"Too short response: {res}")
     check(len(res) < 1000, f"Too long response, len={len(res)}")
 

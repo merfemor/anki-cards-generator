@@ -10,7 +10,7 @@ from flask_cors import CORS
 
 import src.english_anki_generate
 import src.german_anki_generate
-from src.configuration import parse_arguments, set_global_ai_provider
+from src.configuration import parse_arguments, set_global_llm_provider
 from src.english_data_extract import prepare_data_for_english_word
 from src.german_data_extract import prepare_data_for_german_word
 
@@ -80,5 +80,5 @@ if __name__ == '__main__':
     load_dotenv()
     setup_logging()
     args = parse_arguments()
-    set_global_ai_provider(args.ai_provider)
+    set_global_llm_provider(args.llm_provider)
     app.run(port=5000)

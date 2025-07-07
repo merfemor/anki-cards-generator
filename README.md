@@ -21,7 +21,7 @@ export OPENAI_API_KEY=yourkey
 #### Ollama
 
 Ollama with `llama3.1:8b` model should be installed.
-Then, when running server.py, specify additional argument `--ai-provider=ollama`.
+Then, when running server.py, specify additional argument `--llm-provider=ollama`.
 
 ### Python virtual environment
 

@@ -4,7 +4,7 @@ from typing import Final, Optional
 import german_nouns.lookup
 from HanTa.HanoverTagger import HanoverTagger
 
-from src.ai_interact import ask_ai
+from src.llm_interact import ask_llm
 from src.translate import translate_text
 from src.utils import check
 
@@ -65,7 +65,7 @@ def get_article_for_german_genus(genus: str) -> str:
 def get_german_sentence_example(word_de: str) -> str:
     prompt = f"Erfinden Sie nur einen einfachen Satz mit dem Wort \"{word_de}\""
 
-    res = ask_ai(prompt).strip()
+    res = ask_llm(prompt).strip()
     check(len(res) > len(word_de), f"Too short response: {res}")
     check(len(res) < 1000, f"Too long response, len={len(res)}")
 
