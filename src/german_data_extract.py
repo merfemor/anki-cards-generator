@@ -1,7 +1,7 @@
 import logging
 from dataclasses import dataclass
 from enum import Enum
-from typing import Final, Optional
+from typing import Final, Optional, Literal, Tuple
 
 import german_nouns.lookup
 from HanTa.HanoverTagger import HanoverTagger
@@ -28,7 +28,7 @@ def pos_tag_to_part_of_speech(pos_tag: str) -> PartOfSpeech:
     return PartOfSpeech.Other
 
 
-def get_extra_noun_info(word: str) -> (str, str):
+def get_extra_noun_info(word: str) -> Tuple[str, str, str]:
     result = _german_nouns_obj[word]
 
     if len(result) == 0:
@@ -45,7 +45,7 @@ def get_extra_noun_info(word: str) -> (str, str):
     return flexion.get("nominativ singular", ""), plural, genus
 
 
-def get_article_for_german_genus(genus: str) -> str:
+def get_article_for_german_genus(genus: str) -> Literal['der', 'die', 'das']:
     match genus:
         case "m":
             return "der"
@@ -74,7 +74,10 @@ class GermanNounProperties:
     singular_form: str
     plural_form: str
     genus: str
-    article: str
+    article: Literal['der', 'die', 'das']
+
+    def __post_init__(self):
+        check(self.singular_form != "" or self.plural_form != "", "Either singular_form or plural_form must be not empty")
 
 
 @dataclass
