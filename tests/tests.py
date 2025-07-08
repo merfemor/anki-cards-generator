@@ -156,6 +156,14 @@ class GermanPrepareDataTestCase(unittest.TestCase):
                                   sentence_example_translated_en='Stub')
         self.assertEqual(expected, self.prepare_data("durch"))
 
+    def test_collocation(self):
+        with self.assertRaises(NotImplementedError):
+            self.prepare_data("eine Entscheidung treffen")
+
+    def test_rare_compound_word(self):
+        with self.assertRaises(NotImplementedError):
+            self.prepare_data("Kuddelmuddelkiste")
+
     def prepare_data(self, word: str) -> src.german_data_extract.GermanWordData:
         return src.german_data_extract.prepare_data_for_german_word(word, stub_ai=True)
 

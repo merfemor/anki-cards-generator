@@ -36,8 +36,7 @@ def get_extra_noun_info(word: str) -> (str, str):
     result = _german_nouns_obj[word]
 
     if len(result) == 0:
-        # TODO: compound words, e.g. Abstandsmessung
-        raise AssertionError(f"Not found noun \"{word}\" in dictionary")
+        raise NotImplementedError(f"No noun info for word \"{word}\"")
 
     flexion = result[0]["flexion"]
     genus = result[0].get('genus', "pl")
