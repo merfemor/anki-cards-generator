@@ -36,7 +36,7 @@ class GermanPrepareDataTestCase(unittest.TestCase):
                                   pos_tag='NN',
                                   part_of_speech=PartOfSpeech.Noun,
                                   translated_en='cat',
-                                  translated_ru='кот',
+                                  translated_ru='кошка',
                                   noun_properties=src.german_data_extract.GermanNounProperties(
                                       singular_form='Katze',
                                       plural_form='Katzen',
@@ -80,8 +80,8 @@ class GermanPrepareDataTestCase(unittest.TestCase):
         expected = GermanWordData(original_word='Schwimmen',
                                   pos_tag='NNI',
                                   part_of_speech=PartOfSpeech.Noun,
-                                  translated_en='to swim',
-                                  translated_ru='плавать',
+                                  translated_en='swimming',
+                                  translated_ru='плавание',
                                   noun_properties=src.german_data_extract.GermanNounProperties(
                                       singular_form='Schwimmen',
                                       plural_form='',
@@ -169,7 +169,7 @@ class GermanPrepareDataTestCase(unittest.TestCase):
         expected = GermanWordData(original_word='die Katze',
                                   pos_tag='VV(FIN)',
                                   part_of_speech=PartOfSpeech.Verb,
-                                  translated_en='the cat',
+                                  translated_en='to the cat',
                                   translated_ru='кошка',
                                   noun_properties=None,
                                   sentence_example='STUB',

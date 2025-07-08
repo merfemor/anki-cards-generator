@@ -63,12 +63,14 @@ def get_article_for_german_genus(genus: str) -> str:
             raise ValueError("Unexpected genus: " + genus)
 
 
-def add_to_to_en_verb(translated_text: str, part_of_speech: PartOfSpeech) -> str:
-    if part_of_speech != PartOfSpeech.Verb:
-        return translated_text
-    if " " in translated_text:
-        return translated_text
-    return "to " + translated_text
+def post_process_en_translation(translated_text: str, part_of_speech: PartOfSpeech) -> str:
+    if part_of_speech == PartOfSpeech.Verb:
+        if not translated_text.startswith("to "):
+            return "to " + translated_text
+    elif part_of_speech == PartOfSpeech.Noun:
+        if translated_text.startswith("the "):
+            return translated_text[4:]
+    return translated_text
 
 
 @dataclass
@@ -99,10 +101,9 @@ def prepare_data_for_german_word(word: str, stub_ai: bool = False) -> GermanWord
 
     part_of_speech = pos_tag_to_part_of_speech(pos_tag)
 
-    translated_en = add_to_to_en_verb(translate_text(word, src="de", dest="en").lower(), part_of_speech)
-    translated_ru = translate_text(word, src="de", dest="ru").lower()
-
     noun_properties = None
+    text_for_translation = word
+
     if part_of_speech == PartOfSpeech.Noun:
         singular, plural, genus = get_extra_noun_info(word)
         noun_properties = GermanNounProperties(
@@ -111,6 +112,11 @@ def prepare_data_for_german_word(word: str, stub_ai: bool = False) -> GermanWord
             genus=genus,
             article=get_article_for_german_genus(genus),
         )
+        text_for_translation = f"{noun_properties.article} {word}"
+
+    translated_en = post_process_en_translation(translate_text(text_for_translation, src="de", dest="en").lower(),
+                                                part_of_speech)
+    translated_ru = translate_text(text_for_translation, src="de", dest="ru").lower()
 
     if stub_ai:
         german_sentence_example = "STUB"
