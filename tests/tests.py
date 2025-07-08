@@ -5,6 +5,7 @@ import src.utils
 from src.english_data_extract import prepare_data_for_english_word, EnglishWordData
 from src.german_anki_generate import shorten_german_noun_plural_form_for_anki_card
 from src.german_data_extract import GermanWordData, PartOfSpeech
+from src.translate import translate_text
 
 
 class GermanPrepareDataTestCase(unittest.TestCase):
@@ -285,3 +286,13 @@ class EnglishPrepareDataTestCase(unittest.TestCase):
     def prepare_data(self, word: str) -> EnglishWordData:
         return prepare_data_for_english_word(word, stub_llm=True)
 
+
+class LocalTranslatorTestCase(unittest.TestCase):
+    def test_translate_en_to_ru_text(self):
+        actual = translate_text("The severe storm cut off power to a large section of the city.", src="en", dest="ru")
+        self.assertEqual("Сильный шторм перерезал власть до большой части города.", actual)
+
+    def test_translate_de_to_ru_text(self):
+        sentence_de = "Dass sie trotz der ihr von mehreren Seiten angebotenen Hilfe weiterhin darauf bestand, alles allein zu erledigen, hat nicht nur ihre Freunde überrascht, sondern auch zu Spannungen innerhalb der Gruppe geführt."
+        actual = translate_text(sentence_de, src="de", dest="ru")
+        self.assertEqual("Тот факт, что, несмотря на помощь, предлагаемую несколькими сторонами, она продолжала настаивать на том, чтобы делать все в одиночестве, не только удивлен ее друзьями, но и приводила к напряженности в группе.", actual)
