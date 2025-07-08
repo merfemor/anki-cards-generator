@@ -4,10 +4,8 @@ from typing import Final, Optional
 import german_nouns.lookup
 from HanTa.HanoverTagger import HanoverTagger
 
-from src.llm_interact import ask_llm
-from src.prompts import get_sentence_example_prompt
+from src.common_data_extract import generate_sentence_example_with_llm
 from src.translate import translate_text
-from src.utils import check
 
 _german_nouns_obj: Final[german_nouns.lookup.Nouns] = german_nouns.lookup.Nouns()
 
@@ -59,20 +57,6 @@ def get_article_for_german_genus(genus: str) -> str:
             raise ValueError("Unexpected genus: " + genus)
 
 
-# TODO: this method is slow, improve it.
-#  Some ideas:
-#  1) Batch processing,
-#  2) Instead of LLM do rule-based approach, e.g. take corpus of German text and find sentences there.
-def get_german_sentence_example(word_de: str) -> str:
-    prompt = get_sentence_example_prompt(word_de, language="German")
-
-    res = ask_llm(prompt).strip()
-    check(len(res) > len(word_de), f"Too short response: {res}")
-    check(len(res) < 1000, f"Too long response, len={len(res)}")
-
-    return res
-
-
 def add_to_to_en_verb(translated_text: str, part_of_speech: str) -> str:
     if part_of_speech != "verb":
         return translated_text
@@ -121,7 +105,7 @@ def prepare_data_for_german_word(word: str, stub_ai: bool = False) -> GermanWord
     if stub_ai:
         german_sentence_example = "STUB"
     else:
-        german_sentence_example = get_german_sentence_example(word)
+        german_sentence_example = generate_sentence_example_with_llm(word, language="German")
     sentence_example_translated_en = translate_text(german_sentence_example, src="de", dest="en")
 
     return GermanWordData(
