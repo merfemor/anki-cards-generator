@@ -324,3 +324,20 @@ class LocalTranslatorTestCase(unittest.TestCase):
         sentence_de = "Dass sie trotz der ihr von mehreren Seiten angebotenen Hilfe weiterhin darauf bestand, alles allein zu erledigen, hat nicht nur ihre Freunde überrascht, sondern auch zu Spannungen innerhalb der Gruppe geführt."
         actual = translate_text(sentence_de, src="de", dest="ru")
         self.assertEqual("Тот факт, что, несмотря на помощь, предлагаемую несколькими сторонами, она продолжала настаивать на том, чтобы делать все в одиночестве, не только удивлен ее друзьями, но и приводила к напряженности в группе.", actual)
+
+    def test_translate_single_word_de_to_ru(self):
+        actual = translate_text("das Schwimmen", src="de", dest="ru")
+        self.assertEqual("плавание", actual)
+
+    def test_translate_single_word_de_to_en(self):
+        actual = translate_text("das Schwimmen", src="de", dest="en")
+        self.assertEqual("swimming", actual)
+
+    def test_translate_single_word_de_to_ru_2(self):
+        actual = translate_text("die Katze", src="de", dest="ru")
+        self.assertEqual("Кошка", actual)
+
+    def test_translate_single_word_de_to_en_2(self):
+        actual = translate_text("der Markt", src="de", dest="en")
+        self.assertEqual("The market", actual)
+
