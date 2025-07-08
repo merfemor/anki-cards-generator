@@ -3,6 +3,7 @@ from dataclasses import dataclass
 from src.common_data_extract import generate_sentence_example_with_llm
 from src.translate import translate_text
 from src.utils import check
+from src.word_hints import WordHints
 
 
 @dataclass
@@ -13,7 +14,7 @@ class EnglishWordData:
     sentence_example_translated: str
 
 
-def prepare_data_for_english_word(word: str, stub_llm: bool = False) -> EnglishWordData:
+def prepare_data_for_english_word(word: str, hints: WordHints, stub_llm: bool = False) -> EnglishWordData:
     check(len(word.strip()) > 0, f"Expected non empty word")
 
     if stub_llm:

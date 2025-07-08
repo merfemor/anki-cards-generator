@@ -9,6 +9,7 @@ from HanTa.HanoverTagger import HanoverTagger
 from src.common_data_extract import generate_sentence_example_with_llm
 from src.translate import translate_text
 from src.utils import check
+from src.word_hints import WordHints
 
 _pos_tagger_de = HanoverTagger('morphmodel_ger.pgz')
 _german_nouns_obj: Final[german_nouns.lookup.Nouns] = german_nouns.lookup.Nouns()
@@ -99,7 +100,7 @@ def strip_noun_article(word: str) -> str:
     return word
 
 
-def prepare_data_for_german_word(original_word: str, stub_ai: bool = False) -> GermanWordData:
+def prepare_data_for_german_word(original_word: str, hints: WordHints, stub_ai: bool = False) -> GermanWordData:
     word = strip_noun_article(original_word)
     check(len(word.strip()) > 0, f"Expected non empty word")
 

@@ -13,6 +13,7 @@ from src.configuration import parse_arguments, set_global_llm_provider
 from src.english_data_extract import prepare_data_for_english_word
 from src.german_data_extract import prepare_data_for_german_word
 from src.llm_interact import early_check_llm_environment
+from src.word_hints import WordHints
 
 app = Flask(__name__)
 CORS(app, origins=["http://127.0.0.1:8000", "http://localhost:8000"])
@@ -27,10 +28,16 @@ def setup_logging():
     logging.getLogger("httpx").setLevel(logging.CRITICAL)
 
 
+def parse_hints_from_dict(word_with_context: dict) -> WordHints:
+    hints: dict = word_with_context.get('hints', {})
+    translated_ru: str = hints.get('translated_ru', "")
+    return WordHints(translated_ru)
+
+
 @app.route('/api/generateCardsFile', methods=['POST'])
 def generate_cards_file():
-    words = request.get_json().get('words', [])
-    if not words:
+    words_with_hints = request.get_json().get('words', [])
+    if not words_with_hints:
         return jsonify({'error': 'The "words" list cannot be empty'}), 400
 
     language = request.get_json().get('language')
@@ -46,10 +53,15 @@ def generate_cards_file():
     else:
         return jsonify({'error': f"Expected language to be one of 'en', 'de', but got '{language}'"}), 400
 
-    logging.info(f"Preparing card data for language {language} for the words {words}")
+    logging.info(f"Preparing card data for language {language} for the words {words_with_hints}")
     results = []
-    for word in words:
-        result = prepare_data_fn(word)
+    for word_with_hints in words_with_hints:
+        word: str = word_with_hints.get('word')
+        if not word:
+            return jsonify({'error': f"The word is not specified for the word {word}"}), 400
+
+        hints = parse_hints_from_dict(word_with_hints)
+        result = prepare_data_fn(word, hints)
         results.append(result)
 
     with tempfile.NamedTemporaryFile(delete=False, suffix=file_suffix) as temp_file:

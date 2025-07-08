@@ -1,11 +1,21 @@
 async function sendCardsRequest(language, wordsArray) {
   try {
+    const wordsWithHints = [];
+    for (let i = 0; i < wordsArray.length; i++) {
+      wordsWithHints.push({
+        word: wordsArray[i],
+      })
+    }
+    const requestBody = {
+      words: wordsWithHints,
+      language: language,
+    };
     const response = await fetch('http://127.0.0.1:5000/api/generateCardsFile', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ words: wordsArray, language: language })
+      body: JSON.stringify(requestBody)
     });
 
     if (!response.ok) throw new Error("Request failed");

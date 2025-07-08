@@ -6,6 +6,7 @@ from src.english_data_extract import prepare_data_for_english_word, EnglishWordD
 from src.german_anki_generate import shorten_german_noun_plural_form_for_anki_card
 from src.german_data_extract import GermanWordData, PartOfSpeech
 from src.translate import translate_text
+from src.word_hints import WordHints
 
 
 class GermanPrepareDataTestCase(unittest.TestCase):
@@ -241,7 +242,7 @@ class GermanPrepareDataTestCase(unittest.TestCase):
         self.assertEqual(expected, self.prepare_data("empfelen"))
 
     def prepare_data(self, word: str) -> src.german_data_extract.GermanWordData:
-        return src.german_data_extract.prepare_data_for_german_word(word, stub_ai=True)
+        return src.german_data_extract.prepare_data_for_german_word(word, hints=WordHints(""), stub_ai=True)
 
 
 class GermanShortenPluralForm(unittest.TestCase):
@@ -327,7 +328,7 @@ class EnglishPrepareDataTestCase(unittest.TestCase):
         self.assertEqual(expected, self.prepare_data("miscellaneous"))
 
     def prepare_data(self, word: str) -> EnglishWordData:
-        return prepare_data_for_english_word(word, stub_llm=True)
+        return prepare_data_for_english_word(word, hints=WordHints(""), stub_llm=True)
 
 
 class LocalTranslatorTestCase(unittest.TestCase):
