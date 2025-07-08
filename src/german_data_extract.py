@@ -5,6 +5,7 @@ import german_nouns.lookup
 from HanTa.HanoverTagger import HanoverTagger
 
 from src.llm_interact import ask_llm
+from src.prompts import get_sentence_example_prompt
 from src.translate import translate_text
 from src.utils import check
 
@@ -63,7 +64,7 @@ def get_article_for_german_genus(genus: str) -> str:
 #  1) Batch processing,
 #  2) Instead of LLM do rule-based approach, e.g. take corpus of German text and find sentences there.
 def get_german_sentence_example(word_de: str) -> str:
-    prompt = f"Erfinden Sie nur einen einfachen Satz mit dem Wort \"{word_de}\""
+    prompt = get_sentence_example_prompt(word_de, language="German")
 
     res = ask_llm(prompt).strip()
     check(len(res) > len(word_de), f"Too short response: {res}")
