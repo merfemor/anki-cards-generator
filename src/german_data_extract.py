@@ -111,7 +111,7 @@ def prepare_data_for_german_word(original_word: str, stub_ai: bool = False) -> G
     part_of_speech = pos_tag_to_part_of_speech(pos_tag)
 
     noun_properties = None
-    text_for_translation = word_infinitive
+    word_infinitive_with_article = word_infinitive
 
     if part_of_speech == PartOfSpeech.Noun:
         singular, plural, genus = get_extra_noun_info(word_infinitive)
@@ -121,16 +121,16 @@ def prepare_data_for_german_word(original_word: str, stub_ai: bool = False) -> G
             genus=genus,
             article=get_article_for_german_genus(genus),
         )
-        text_for_translation = f"{noun_properties.article} {word_infinitive}"
+        word_infinitive_with_article = f"{noun_properties.article} {word_infinitive}"
 
-    translated_en = post_process_en_translation(translate_text(text_for_translation, src="de", dest="en").lower(),
+    translated_en = post_process_en_translation(translate_text(word_infinitive_with_article, src="de", dest="en").lower(),
                                                 part_of_speech)
-    translated_ru = translate_text(text_for_translation, src="de", dest="ru").lower()
+    translated_ru = translate_text(word_infinitive_with_article, src="de", dest="ru").lower()
 
     if stub_ai:
         german_sentence_example = "STUB"
     else:
-        german_sentence_example = generate_sentence_example_with_llm(word_infinitive, language="German")
+        german_sentence_example = generate_sentence_example_with_llm(word_infinitive_with_article, language="German")
     sentence_example_translated_en = translate_text(german_sentence_example, src="de", dest="en")
 
     return GermanWordData(
