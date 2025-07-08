@@ -182,6 +182,34 @@ class GermanPrepareDataTestCase(unittest.TestCase):
                                   sentence_example_translated_en='Stub')
         self.assertEqual(expected, self.prepare_data("die Katze"))
 
+
+    def test_noun_in_plural_given(self):
+        expected = GermanWordData(original_word='Märkte',
+                                  pos_tag='NN',
+                                  part_of_speech=PartOfSpeech.Noun,
+                                  translated_en='markets',
+                                  translated_ru='рынки',
+                                  noun_properties=src.german_data_extract.GermanNounProperties(
+                                      singular_form='Markt',
+                                      plural_form='Märkte',
+                                      genus='m',
+                                      article='der'),
+                                  sentence_example='STUB',
+                                  sentence_example_translated_en='Stub')
+        self.assertEqual(expected, self.prepare_data("Märkte"))
+
+
+    def test_adjective_conjugated_given(self):
+        expected = GermanWordData(original_word='schnelle',
+                                  pos_tag='ADJ(A)',
+                                  part_of_speech=PartOfSpeech.Other,
+                                  translated_en='rapid',
+                                  translated_ru='стремительный',
+                                  noun_properties=None,
+                                  sentence_example='STUB',
+                                  sentence_example_translated_en='Stub')
+        self.assertEqual(expected, self.prepare_data("schnelle"))
+
     def test_noun_with_mistake_given(self):
         with self.assertRaises(NotImplementedError):
             self.prepare_data("Erfarung")
