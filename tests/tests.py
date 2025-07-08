@@ -2,7 +2,7 @@ import unittest
 
 import src.german_data_extract
 import src.utils
-from src.german_data_extract import GermanWordData
+from src.german_data_extract import GermanWordData, PartOfSpeech
 
 
 class GermanPosTagTestCase(unittest.TestCase):
@@ -39,7 +39,7 @@ class GermanPrepareDataTestCase(unittest.TestCase):
     def test_noun(self):
         expected = GermanWordData(original_word='Katze',
                                   pos_tag='NN',
-                                  part_of_speech='noun',
+                                  part_of_speech=PartOfSpeech.Noun,
                                   translated_en='cat',
                                   translated_ru='кот',
                                   noun_properties=src.german_data_extract.GermanNounProperties(
@@ -54,7 +54,7 @@ class GermanPrepareDataTestCase(unittest.TestCase):
     def test_verb(self):
         expected = GermanWordData(original_word='schlafen',
                                   pos_tag='VV(INF)',
-                                  part_of_speech='verb',
+                                  part_of_speech=PartOfSpeech.Verb,
                                   translated_en='to sleep',
                                   translated_ru='спать',
                                   noun_properties=None,
@@ -65,7 +65,7 @@ class GermanPrepareDataTestCase(unittest.TestCase):
     def test_adjective(self):
         expected = GermanWordData(original_word='lustig',
                                   pos_tag='ADJ(D)',
-                                  part_of_speech='other',
+                                  part_of_speech=PartOfSpeech.Other,
                                   translated_en='funny',
                                   translated_ru='забавный',
                                   noun_properties=None,

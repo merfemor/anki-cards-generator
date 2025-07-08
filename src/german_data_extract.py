@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from enum import Enum
 from typing import Final, Optional
 
 import german_nouns.lookup
@@ -11,6 +12,12 @@ from src.utils import check
 _german_nouns_obj: Final[german_nouns.lookup.Nouns] = german_nouns.lookup.Nouns()
 
 
+class PartOfSpeech(Enum):
+    Noun = "noun"
+    Verb = "verb"
+    Other = "other"
+
+
 def get_pos_tag_of_german_word(de_word: str) -> str:
     check(len(de_word.strip()) > 0, f"Expected non empty word")
     tagger_de = HanoverTagger('morphmodel_ger.pgz')
@@ -18,12 +25,12 @@ def get_pos_tag_of_german_word(de_word: str) -> str:
     return res[0][0]
 
 
-def pos_tag_to_part_of_speech(pos_tag: str) -> str:
+def pos_tag_to_part_of_speech(pos_tag: str) -> PartOfSpeech:
     if pos_tag == "NN" or pos_tag == "NNI":
-        return "noun"
+        return PartOfSpeech.Noun
     if pos_tag.startswith("VV"):
-        return "verb"
-    return "other"
+        return PartOfSpeech.Verb
+    return PartOfSpeech.Other
 
 
 def get_extra_noun_info(word: str) -> (str, str):
@@ -58,8 +65,8 @@ def get_article_for_german_genus(genus: str) -> str:
             raise ValueError("Unexpected genus: " + genus)
 
 
-def add_to_to_en_verb(translated_text: str, part_of_speech: str) -> str:
-    if part_of_speech != "verb":
+def add_to_to_en_verb(translated_text: str, part_of_speech: PartOfSpeech) -> str:
+    if part_of_speech != PartOfSpeech.Verb:
         return translated_text
     if " " in translated_text:
         return translated_text
@@ -78,7 +85,7 @@ class GermanNounProperties:
 class GermanWordData:
     original_word: str
     pos_tag: str
-    part_of_speech: str
+    part_of_speech: PartOfSpeech
     translated_en: str
     translated_ru: str
     noun_properties: Optional[GermanNounProperties]
@@ -94,7 +101,7 @@ def prepare_data_for_german_word(word: str, stub_ai: bool = False) -> GermanWord
     translated_ru = translate_text(word, src="de", dest="ru").lower()
 
     noun_properties = None
-    if part_of_speech == "noun":
+    if part_of_speech == PartOfSpeech.Noun:
         singular, plural, genus = get_extra_noun_info(word)
         noun_properties = GermanNounProperties(
             singular_form=singular,
