@@ -21,9 +21,15 @@ def prepare_data_for_english_word(word: str, hints: WordHints, stub_llm: bool = 
         en_sentence_example = ""
     else:
         en_sentence_example = generate_sentence_example_with_llm(word, language="English")
+
+    if hints.translated_ru:
+        translated = hints.translated_ru
+    else:
+        translated = translate_text(word, src="en", dest="ru").lower()
+
     return EnglishWordData(
         original_word=word,
-        translated=translate_text(word, src="en", dest="ru").lower(),
+        translated=translated,
         sentence_example=en_sentence_example,
         sentence_example_translated=translate_text(en_sentence_example, src="en", dest="ru")
     )

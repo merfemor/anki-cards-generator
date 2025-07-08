@@ -127,7 +127,10 @@ def prepare_data_for_german_word(original_word: str, hints: WordHints, stub_ai: 
 
     translated_en = post_process_en_translation(translate_text(word_infinitive_with_article, src="de", dest="en").lower(),
                                                 part_of_speech)
-    translated_ru = translate_text(word_infinitive_with_article, src="de", dest="ru").lower()
+    if hints.translated_ru:
+        translated_ru = hints.translated_ru
+    else:
+        translated_ru = translate_text(word_infinitive_with_article, src="de", dest="ru").lower()
 
     if stub_ai:
         german_sentence_example = "STUB"

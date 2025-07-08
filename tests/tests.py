@@ -164,6 +164,17 @@ class GermanPrepareDataTestCase(unittest.TestCase):
                                   sentence_example_translated_en='Stub')
         self.assertEqual(expected, self.prepare_data("gerade"))
 
+    def test_with_hint(self):
+        expected = GermanWordData(word_infinitive='lustig',
+                                  pos_tag='ADJ(D)',
+                                  part_of_speech=PartOfSpeech.Other,
+                                  translated_en='funny',
+                                  translated_ru='смешной, весёлый',
+                                  noun_properties=None,
+                                  sentence_example='STUB',
+                                  sentence_example_translated_en='Stub')
+        self.assertEqual(expected, src.german_data_extract.prepare_data_for_german_word("lustig", hints=WordHints("смешной, весёлый"), stub_ai=True))
+
     def test_preposition(self):
         expected = GermanWordData(word_infinitive='durch',
                                   pos_tag='APPR',
@@ -326,6 +337,15 @@ class EnglishPrepareDataTestCase(unittest.TestCase):
             sentence_example_translated='',
         )
         self.assertEqual(expected, self.prepare_data("miscellaneous"))
+
+    def test_with_hint(self):
+        expected = EnglishWordData(
+            original_word='miscellaneous',
+            translated='смешанный, разнообразный',
+            sentence_example='',
+            sentence_example_translated='',
+        )
+        self.assertEqual(expected, prepare_data_for_english_word("miscellaneous", WordHints("смешанный, разнообразный"), stub_llm=True))
 
     def prepare_data(self, word: str) -> EnglishWordData:
         return prepare_data_for_english_word(word, hints=WordHints(""), stub_llm=True)
