@@ -34,7 +34,7 @@ class GermanPrepareDataTestCase(unittest.TestCase):
             self.prepare_data("-")
 
     def test_noun_feminine(self):
-        expected = GermanWordData(original_word='Katze',
+        expected = GermanWordData(word_infinitive='Katze',
                                   pos_tag='NN',
                                   part_of_speech=PartOfSpeech.Noun,
                                   translated_en='cat',
@@ -49,7 +49,7 @@ class GermanPrepareDataTestCase(unittest.TestCase):
         self.assertEqual(expected, self.prepare_data("Katze"))
 
     def test_noun_no_plural(self):
-        expected = GermanWordData(original_word='Schnee',
+        expected = GermanWordData(word_infinitive='Schnee',
                                   pos_tag='NN',
                                   part_of_speech=PartOfSpeech.Noun,
                                   translated_en='snow',
@@ -64,7 +64,7 @@ class GermanPrepareDataTestCase(unittest.TestCase):
         self.assertEqual(expected, self.prepare_data("Schnee"))
 
     def test_noun_no_singular(self):
-        expected = GermanWordData(original_word='Ferien',
+        expected = GermanWordData(word_infinitive='Ferien',
                                   pos_tag='NN',
                                   part_of_speech=PartOfSpeech.Noun,
                                   translated_en='holidays',
@@ -79,7 +79,7 @@ class GermanPrepareDataTestCase(unittest.TestCase):
         self.assertEqual(expected, self.prepare_data("Ferien"))
 
     def test_noun_ambiguity_with_verb(self):
-        expected = GermanWordData(original_word='Schwimmen',
+        expected = GermanWordData(word_infinitive='Schwimmen',
                                   pos_tag='NNI',
                                   part_of_speech=PartOfSpeech.Noun,
                                   translated_en='swimming',
@@ -94,7 +94,7 @@ class GermanPrepareDataTestCase(unittest.TestCase):
         self.assertEqual(expected, self.prepare_data("Schwimmen"))
 
     def test_verb(self):
-        expected = GermanWordData(original_word='schlafen',
+        expected = GermanWordData(word_infinitive='schlafen',
                                   pos_tag='VV(INF)',
                                   part_of_speech=PartOfSpeech.Verb,
                                   translated_en='to sleep',
@@ -105,7 +105,7 @@ class GermanPrepareDataTestCase(unittest.TestCase):
         self.assertEqual(expected, self.prepare_data("schlafen"))
 
     def test_adjective(self):
-        expected = GermanWordData(original_word='lustig',
+        expected = GermanWordData(word_infinitive='lustig',
                                   pos_tag='ADJ(D)',
                                   part_of_speech=PartOfSpeech.Other,
                                   translated_en='funny',
@@ -116,7 +116,7 @@ class GermanPrepareDataTestCase(unittest.TestCase):
         self.assertEqual(expected, self.prepare_data("lustig"))
 
     def test_subordinating_conjunction(self):
-        expected = GermanWordData(original_word='obgleich',
+        expected = GermanWordData(word_infinitive='obgleich',
                                   pos_tag='KOUS',
                                   part_of_speech=PartOfSpeech.Other,
                                   translated_en='although',
@@ -127,7 +127,7 @@ class GermanPrepareDataTestCase(unittest.TestCase):
         self.assertEqual(expected, self.prepare_data("obgleich"))
 
     def test_coordinating_conjunction(self):
-        expected = GermanWordData(original_word='und',
+        expected = GermanWordData(word_infinitive='und',
                                   pos_tag='KON',
                                   part_of_speech=PartOfSpeech.Other,
                                   translated_en='and',
@@ -138,7 +138,7 @@ class GermanPrepareDataTestCase(unittest.TestCase):
         self.assertEqual(expected, self.prepare_data("und"))
 
     def test_adverb(self):
-        expected = GermanWordData(original_word='gerade',
+        expected = GermanWordData(word_infinitive='gerade',
                                   pos_tag='ADV',
                                   part_of_speech=PartOfSpeech.Other,
                                   translated_en='straight',
@@ -149,7 +149,7 @@ class GermanPrepareDataTestCase(unittest.TestCase):
         self.assertEqual(expected, self.prepare_data("gerade"))
 
     def test_preposition(self):
-        expected = GermanWordData(original_word='durch',
+        expected = GermanWordData(word_infinitive='durch',
                                   pos_tag='APPR',
                                   part_of_speech=PartOfSpeech.Other,
                                   translated_en='through',
@@ -168,7 +168,7 @@ class GermanPrepareDataTestCase(unittest.TestCase):
             self.prepare_data("Kuddelmuddelkiste")
 
     def test_noun_with_article_given(self):
-        expected = GermanWordData(original_word='Katze',
+        expected = GermanWordData(word_infinitive='Katze',
                                   pos_tag='NN',
                                   part_of_speech=PartOfSpeech.Noun,
                                   translated_en='cat',
@@ -184,11 +184,11 @@ class GermanPrepareDataTestCase(unittest.TestCase):
 
 
     def test_noun_in_plural_given(self):
-        expected = GermanWordData(original_word='Märkte',
+        expected = GermanWordData(word_infinitive='Markt',
                                   pos_tag='NN',
                                   part_of_speech=PartOfSpeech.Noun,
-                                  translated_en='markets',
-                                  translated_ru='рынки',
+                                  translated_en='market',
+                                  translated_ru='рынок',
                                   noun_properties=src.german_data_extract.GermanNounProperties(
                                       singular_form='Markt',
                                       plural_form='Märkte',
@@ -200,11 +200,11 @@ class GermanPrepareDataTestCase(unittest.TestCase):
 
 
     def test_adjective_conjugated_given(self):
-        expected = GermanWordData(original_word='schnelle',
+        expected = GermanWordData(word_infinitive='schnell',
                                   pos_tag='ADJ(A)',
                                   part_of_speech=PartOfSpeech.Other,
-                                  translated_en='rapid',
-                                  translated_ru='стремительный',
+                                  translated_en='fast',
+                                  translated_ru='быстрый',
                                   noun_properties=None,
                                   sentence_example='STUB',
                                   sentence_example_translated_en='Stub')
@@ -215,11 +215,11 @@ class GermanPrepareDataTestCase(unittest.TestCase):
             self.prepare_data("Erfarung")
 
     def test_verb_with_mistake_given(self):
-        expected = GermanWordData(original_word='empfelen',
+        expected = GermanWordData(word_infinitive='empfeln',
                                   pos_tag='VV(INF)',
                                   part_of_speech=PartOfSpeech.Verb,
-                                  translated_en='to recommend',
-                                  translated_ru='рекомендую',
+                                  translated_en='to reclaim',
+                                  translated_ru='вернуть',
                                   noun_properties=None,
                                   sentence_example='STUB',
                                   sentence_example_translated_en='Stub')

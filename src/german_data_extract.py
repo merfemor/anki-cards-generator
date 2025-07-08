@@ -1,3 +1,4 @@
+import logging
 from dataclasses import dataclass
 from enum import Enum
 from typing import Final, Optional
@@ -9,6 +10,7 @@ from src.common_data_extract import generate_sentence_example_with_llm
 from src.translate import translate_text
 from src.utils import check
 
+_pos_tagger_de = HanoverTagger('morphmodel_ger.pgz')
 _german_nouns_obj: Final[german_nouns.lookup.Nouns] = german_nouns.lookup.Nouns()
 
 
@@ -16,12 +18,6 @@ class PartOfSpeech(Enum):
     Noun = "noun"
     Verb = "verb"
     Other = "other"
-
-
-def get_pos_tag_of_german_word(de_word: str) -> str:
-    tagger_de = HanoverTagger('morphmodel_ger.pgz')
-    res = tagger_de.tag_word(de_word)
-    return res[0][0]
 
 
 def pos_tag_to_part_of_speech(pos_tag: str) -> PartOfSpeech:
@@ -83,7 +79,7 @@ class GermanNounProperties:
 
 @dataclass
 class GermanWordData:
-    original_word: str
+    word_infinitive: str
     pos_tag: str
     part_of_speech: PartOfSpeech
     translated_en: str
@@ -99,27 +95,30 @@ def strip_noun_article(word: str) -> str:
     return word
 
 
-def prepare_data_for_german_word(word: str, stub_ai: bool = False) -> GermanWordData:
-    word = strip_noun_article(word)
+def prepare_data_for_german_word(original_word: str, stub_ai: bool = False) -> GermanWordData:
+    word = strip_noun_article(original_word)
     check(len(word.strip()) > 0, f"Expected non empty word")
 
-    pos_tag = get_pos_tag_of_german_word(word)
+    word_infinitive, pos_tag = _pos_tagger_de.analyze(word)
     check(pos_tag not in ["XY", "$,", "$.", "$("], f"Non word: {word}, pos_tag={pos_tag}")
+
+    if original_word != word_infinitive:
+        logging.info(f"Auto corrected word: original={original_word}, infinitive={word_infinitive}")
 
     part_of_speech = pos_tag_to_part_of_speech(pos_tag)
 
     noun_properties = None
-    text_for_translation = word
+    text_for_translation = word_infinitive
 
     if part_of_speech == PartOfSpeech.Noun:
-        singular, plural, genus = get_extra_noun_info(word)
+        singular, plural, genus = get_extra_noun_info(word_infinitive)
         noun_properties = GermanNounProperties(
             singular_form=singular,
             plural_form=plural,
             genus=genus,
             article=get_article_for_german_genus(genus),
         )
-        text_for_translation = f"{noun_properties.article} {word}"
+        text_for_translation = f"{noun_properties.article} {word_infinitive}"
 
     translated_en = post_process_en_translation(translate_text(text_for_translation, src="de", dest="en").lower(),
                                                 part_of_speech)
@@ -128,11 +127,11 @@ def prepare_data_for_german_word(word: str, stub_ai: bool = False) -> GermanWord
     if stub_ai:
         german_sentence_example = "STUB"
     else:
-        german_sentence_example = generate_sentence_example_with_llm(word, language="German")
+        german_sentence_example = generate_sentence_example_with_llm(word_infinitive, language="German")
     sentence_example_translated_en = translate_text(german_sentence_example, src="de", dest="en")
 
     return GermanWordData(
-        original_word=word,
+        word_infinitive=word_infinitive,
         pos_tag=pos_tag,
         part_of_speech=part_of_speech,
         translated_en=translated_en,

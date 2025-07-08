@@ -118,28 +118,28 @@ def export_results_to_anki_deck(results: list[GermanWordData], deck_filename: st
 def _create_anki_note_for_german_word_data(r: GermanWordData, model: genanki.Model, all_media_files: list[str],
                                            temp_dir: str):
     word_translated = f"{r.translated_ru}, {r.translated_en}"
-    word_de_for_card = r.original_word
-    word_audio_text = r.original_word
+    word_de_for_card = r.word_infinitive
+    word_audio_text = r.word_infinitive
     word_article = ""
-    word_audio_name = f"anki_card_generator_de_{r.original_word}_word.mp3"
+    word_audio_name = f"anki_card_generator_de_{r.word_infinitive}_word.mp3"
     word_audio_path = f"{temp_dir}/{word_audio_name}"
-    sentence_audio_name = f"anki_card_generator_de_{r.original_word}_sentence.mp3"
+    sentence_audio_name = f"anki_card_generator_de_{r.word_infinitive}_sentence.mp3"
     sentence_audio_path = f"{temp_dir}/{sentence_audio_name}"
     text_to_speech_into_file(r.sentence_example, sentence_audio_path, lang="de")
     if r.noun_properties:
         noun_props = r.noun_properties
 
         if not noun_props.plural_form:
-            word_de_for_card = f"{r.original_word} (Sg.)"
+            word_de_for_card = f"{r.word_infinitive} (Sg.)"
         elif not noun_props.singular_form:
-            word_de_for_card = f"{r.original_word} (Pl.)"
+            word_de_for_card = f"{r.word_infinitive} (Pl.)"
         else:
             shortened_plural_form = shorten_german_noun_plural_form_for_anki_card(noun_props.singular_form,
                                                                                   noun_props.plural_form)
-            word_de_for_card = f"{r.original_word}, {shortened_plural_form}"
+            word_de_for_card = f"{r.word_infinitive}, {shortened_plural_form}"
 
         word_article = noun_props.article
-        word_audio_text = f"{noun_props.article} {r.original_word}"
+        word_audio_text = f"{noun_props.article} {r.word_infinitive}"
     text_to_speech_into_file(word_audio_text, word_audio_path, lang="de")
     note = _create_anki_note(
         model,
