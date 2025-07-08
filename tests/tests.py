@@ -63,6 +63,21 @@ class GermanPrepareDataTestCase(unittest.TestCase):
                                   sentence_example_translated_en='Stub')
         self.assertEqual(expected, self.prepare_data("Schnee"))
 
+    def test_noun_two_plural(self):
+        expected = GermanWordData(word_infinitive='Band',
+                                  pos_tag='NN',
+                                  part_of_speech=PartOfSpeech.Noun,
+                                  translated_en='tape',
+                                  translated_ru='лента',
+                                  noun_properties=src.german_data_extract.GermanNounProperties(
+                                      singular_form='Band',
+                                      plural_form='Bänder',
+                                      genus='n',
+                                      article='das'),
+                                  sentence_example='STUB',
+                                  sentence_example_translated_en='Stub')
+        self.assertEqual(expected, self.prepare_data("Band"))
+
     def test_noun_no_singular(self):
         expected = GermanWordData(word_infinitive='Ferien',
                                   pos_tag='NN',

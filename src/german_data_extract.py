@@ -40,6 +40,7 @@ def get_extra_noun_info(word: str) -> Tuple[str, str, str]:
     if "nominativ plural" in flexion:
         plural = flexion["nominativ plural"]
     else:
+        # The case when a word can have two possible plural forms, e.g., das Band
         plural = flexion.get("nominativ plural 1", "")
 
     return flexion.get("nominativ singular", ""), plural, genus
