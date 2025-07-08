@@ -2,6 +2,7 @@ import unittest
 
 import src.german_data_extract
 import src.utils
+from src.english_data_extract import prepare_data_for_english_word, EnglishWordData
 from src.german_anki_generate import shorten_german_noun_plural_form_for_anki_card
 from src.german_data_extract import GermanWordData, PartOfSpeech
 
@@ -215,6 +216,74 @@ class GermanShortenPluralForm(unittest.TestCase):
     def test_umlaut(self):
         res = shorten_german_noun_plural_form_for_anki_card("Apfel", "Äpfel")
         self.assertEqual("die Äpfel", res)
+
+
+class EnglishPrepareDataTestCase(unittest.TestCase):
+    def test_empty_word(self):
+        with self.assertRaises(ValueError):
+            self.prepare_data("")
+
+    def test_spaces(self):
+        with self.assertRaises(ValueError):
+            self.prepare_data("     ")
+
+    def test_noun(self):
+        expected = EnglishWordData(
+            original_word='cat',
+            translated='кот',
+            sentence_example='',
+            sentence_example_translated='',
+        )
+        self.assertEqual(expected, self.prepare_data("cat"))
+
+    def test_verb(self):
+        expected = EnglishWordData(
+            original_word='swim',
+            translated='плавать',
+            sentence_example='',
+            sentence_example_translated='',
+        )
+        self.assertEqual(expected, self.prepare_data("swim"))
+
+    def test_verb_with_to(self):
+        expected = EnglishWordData(
+            original_word='to swim',
+            translated='плавать',
+            sentence_example='',
+            sentence_example_translated='',
+        )
+        self.assertEqual(expected, self.prepare_data("to swim"))
+
+    def test_phrasal_verb(self):
+        expected = EnglishWordData(
+            original_word='cut off',
+            translated='отрезать',
+            sentence_example='',
+            sentence_example_translated='',
+        )
+        self.assertEqual(expected, self.prepare_data("cut off"))
+
+
+    def test_phrasal_verb_with_to(self):
+        expected = EnglishWordData(
+            original_word='to cut off',
+            translated='чтобы отрезать',
+            sentence_example='',
+            sentence_example_translated='',
+        )
+        self.assertEqual(expected, self.prepare_data("to cut off"))
+
+    def test_adjective(self):
+        expected = EnglishWordData(
+            original_word='miscellaneous',
+            translated='разнообразный',
+            sentence_example='',
+            sentence_example_translated='',
+        )
+        self.assertEqual(expected, self.prepare_data("miscellaneous"))
+
+    def prepare_data(self, word: str) -> EnglishWordData:
+        return prepare_data_for_english_word(word, stub_llm=True)
 
 
 if __name__ == '__main__':
