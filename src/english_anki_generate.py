@@ -5,6 +5,7 @@ from typing import Final
 
 import genanki
 
+from src.anki_card_style import ANKI_CARD_CSS
 from src.english_data_extract import EnglishWordData
 from src.tts import text_to_speech_into_file
 from src.utils import check
@@ -18,18 +19,6 @@ _ANKI_MODEL_NAME: Final[str] = '[Anki Cards Generator] Basic With Sentence'
 
 
 def _get_anki_card_model(model_id: int = _ANKI_MODEL_ID, model_name: str = _ANKI_MODEL_NAME) -> genanki.Model:
-    # language=css
-    CSS = textwrap.dedent("""
-        .card {
-            font-family: arial;
-            font-size: 20px;
-            text-align: center;
-        }
-        .sentence {
-	       font-size: 15px;
-        }
-    """).strip()
-
     # language=html
     CARD_1_ANSWER = textwrap.dedent("""
         {{FrontSide}} <br/>
@@ -69,7 +58,7 @@ def _get_anki_card_model(model_id: int = _ANKI_MODEL_ID, model_name: str = _ANKI
                 'afmt': CARD_2_ANSWER,
             }
         ],
-        css=CSS)
+        css=ANKI_CARD_CSS)
 
 
 def _create_anki_note(model: genanki.Model, data: EnglishWordData, word_audio: str,

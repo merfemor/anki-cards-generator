@@ -5,6 +5,7 @@ from typing import Final
 
 import genanki
 
+from src.anki_card_style import ANKI_CARD_CSS
 from src.german_data_extract import GermanWordData
 from src.tts import text_to_speech_into_file
 from src.utils import check
@@ -18,18 +19,6 @@ _ANKI_MODEL_NAME: Final[str] = '[Anki Cards Generator] German with Sentence and 
 
 
 def _get_anki_card_model(model_id: int = _ANKI_MODEL_ID, model_name: str = _ANKI_MODEL_NAME) -> genanki.Model:
-    # language=css
-    CSS = textwrap.dedent("""
-        .card {
-            font-family: arial;
-            font-size: 20px;
-            text-align: center;
-        }
-        .sentence {
-	       font-size: 15px;
-        }
-    """).strip()
-
     # language=html
     CARD_1_ANSWER = textwrap.dedent("""
         {{FrontSide}} <br/>
@@ -70,7 +59,7 @@ def _get_anki_card_model(model_id: int = _ANKI_MODEL_ID, model_name: str = _ANKI
                 'afmt': CARD_2_ANSWER,
             }
         ],
-        css=CSS)
+        css=ANKI_CARD_CSS)
 
 
 def _create_anki_note(model: genanki.Model, word_de: str, word_de_article: str, word_translated: str, sentence_de: str,
