@@ -28,7 +28,7 @@ def setup_logging():
 
 
 @app.route('/api/generateCardsFile', methods=['POST'])
-def generate_german_cards_file():
+def generate_cards_file():
     words = request.get_json().get('words', [])
     if not words:
         return jsonify({'error': 'The "words" list cannot be empty'}), 400
