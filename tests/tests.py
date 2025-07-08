@@ -285,6 +285,3 @@ class EnglishPrepareDataTestCase(unittest.TestCase):
     def prepare_data(self, word: str) -> EnglishWordData:
         return prepare_data_for_english_word(word, stub_llm=True)
 
-
-if __name__ == '__main__':
-    unittest.main()

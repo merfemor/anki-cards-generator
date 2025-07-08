@@ -88,3 +88,11 @@ Run web interface:
 ```
 
 For now, it only works on localhost, because endpoint path is hardcoded in JS.
+
+## Tests
+
+To run unit tests, execute:
+
+```bash
+python -m unittest tests/*.py
+```
