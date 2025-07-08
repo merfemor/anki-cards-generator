@@ -164,6 +164,32 @@ class GermanPrepareDataTestCase(unittest.TestCase):
         with self.assertRaises(NotImplementedError):
             self.prepare_data("Kuddelmuddelkiste")
 
+    def test_noun_with_article_given(self):
+        expected = GermanWordData(original_word='die Katze',
+                                  pos_tag='VV(FIN)',
+                                  part_of_speech=PartOfSpeech.Verb,
+                                  translated_en='the cat',
+                                  translated_ru='кошка',
+                                  noun_properties=None,
+                                  sentence_example='STUB',
+                                  sentence_example_translated_en='Stub')
+        self.assertEqual(expected, self.prepare_data("die Katze"))
+
+    def test_noun_with_mistake_given(self):
+        with self.assertRaises(NotImplementedError):
+            self.prepare_data("Erfarung")
+
+    def test_verb_with_mistake_given(self):
+        expected = GermanWordData(original_word='empfelen',
+                                  pos_tag='VV(INF)',
+                                  part_of_speech=PartOfSpeech.Verb,
+                                  translated_en='to recommend',
+                                  translated_ru='рекомендую',
+                                  noun_properties=None,
+                                  sentence_example='STUB',
+                                  sentence_example_translated_en='Stub')
+        self.assertEqual(expected, self.prepare_data("empfelen"))
+
     def prepare_data(self, word: str) -> src.german_data_extract.GermanWordData:
         return src.german_data_extract.prepare_data_for_german_word(word, stub_ai=True)
 
