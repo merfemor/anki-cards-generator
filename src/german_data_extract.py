@@ -6,12 +6,13 @@ from HanTa.HanoverTagger import HanoverTagger
 
 from src.common_data_extract import generate_sentence_example_with_llm
 from src.translate import translate_text
+from src.utils import check
 
 _german_nouns_obj: Final[german_nouns.lookup.Nouns] = german_nouns.lookup.Nouns()
 
 
 def get_pos_tag_of_german_word(de_word: str) -> str:
-    assert len(de_word) > 0
+    check(len(de_word.strip()) > 0, f"Expected non empty word")
     tagger_de = HanoverTagger('morphmodel_ger.pgz')
     res = tagger_de.tag_word(de_word)
     return res[0][0]

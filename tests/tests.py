@@ -7,7 +7,7 @@ from src.german_data_extract import GermanWordData
 
 class GermanPosTagTestCase(unittest.TestCase):
     def test_empty_string(self):
-        with self.assertRaises(AssertionError):
+        with self.assertRaises(ValueError):
             src.german_data_extract.get_pos_tag_of_german_word("")
 
     def test_noun(self):
@@ -31,8 +31,8 @@ class GermanPosTagTestCase(unittest.TestCase):
         self.assertEqual("NNI", tag)
 
     def test_spaces(self):
-        tag: str = src.german_data_extract.get_pos_tag_of_german_word("    ")
-        self.assertEqual("XY", tag)
+        with self.assertRaises(ValueError):
+            src.german_data_extract.get_pos_tag_of_german_word("    ")
 
 
 class GermanPrepareDataTestCase(unittest.TestCase):
