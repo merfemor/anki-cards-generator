@@ -19,7 +19,6 @@ class PartOfSpeech(Enum):
 
 
 def get_pos_tag_of_german_word(de_word: str) -> str:
-    check(len(de_word.strip()) > 0, f"Expected non empty word")
     tagger_de = HanoverTagger('morphmodel_ger.pgz')
     res = tagger_de.tag_word(de_word)
     return res[0][0]
@@ -94,7 +93,11 @@ class GermanWordData:
 
 
 def prepare_data_for_german_word(word: str, stub_ai: bool = False) -> GermanWordData:
+    check(len(word.strip()) > 0, f"Expected non empty word")
+
     pos_tag = get_pos_tag_of_german_word(word)
+    check(pos_tag not in ["XY", "$,", "$.", "$("], f"Non word: {word}, pos_tag={pos_tag}")
+
     part_of_speech = pos_tag_to_part_of_speech(pos_tag)
 
     translated_en = add_to_to_en_verb(translate_text(word, src="de", dest="en").lower(), part_of_speech)

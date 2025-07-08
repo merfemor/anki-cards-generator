@@ -14,6 +14,22 @@ class GermanPrepareDataTestCase(unittest.TestCase):
         with self.assertRaises(ValueError):
             self.prepare_data("   ")
 
+    def test_non_words_symbol(self):
+        with self.assertRaises(ValueError):
+            self.prepare_data("$")
+
+    def test_non_words_dot(self):
+        with self.assertRaises(ValueError):
+            self.prepare_data(".")
+
+    def test_non_words_comma(self):
+        with self.assertRaises(ValueError):
+            self.prepare_data(",")
+
+    def test_non_words_dash(self):
+        with self.assertRaises(ValueError):
+            self.prepare_data("-")
+
     def test_noun_feminine(self):
         expected = GermanWordData(original_word='Katze',
                                   pos_tag='NN',
