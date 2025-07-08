@@ -166,12 +166,16 @@ class GermanPrepareDataTestCase(unittest.TestCase):
             self.prepare_data("Kuddelmuddelkiste")
 
     def test_noun_with_article_given(self):
-        expected = GermanWordData(original_word='die Katze',
-                                  pos_tag='VV(FIN)',
-                                  part_of_speech=PartOfSpeech.Verb,
-                                  translated_en='to the cat',
+        expected = GermanWordData(original_word='Katze',
+                                  pos_tag='NN',
+                                  part_of_speech=PartOfSpeech.Noun,
+                                  translated_en='cat',
                                   translated_ru='кошка',
-                                  noun_properties=None,
+                                  noun_properties=src.german_data_extract.GermanNounProperties(
+                                      singular_form='Katze',
+                                      plural_form='Katzen',
+                                      genus='f',
+                                      article='die'),
                                   sentence_example='STUB',
                                   sentence_example_translated_en='Stub')
         self.assertEqual(expected, self.prepare_data("die Katze"))

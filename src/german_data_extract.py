@@ -93,7 +93,14 @@ class GermanWordData:
     sentence_example_translated_en: str
 
 
+def strip_noun_article(word: str) -> str:
+    if word.startswith("der ") or word.startswith("die ") or word.startswith("das "):
+        return word[4:]
+    return word
+
+
 def prepare_data_for_german_word(word: str, stub_ai: bool = False) -> GermanWordData:
+    word = strip_noun_article(word)
     check(len(word.strip()) > 0, f"Expected non empty word")
 
     pos_tag = get_pos_tag_of_german_word(word)
