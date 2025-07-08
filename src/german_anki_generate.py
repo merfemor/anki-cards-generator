@@ -87,7 +87,7 @@ def _create_anki_note(model: genanki.Model, word_de: str, word_de_article: str, 
                 sentence_audio])
 
 
-def _shorten_german_noun_plural_form_for_anki_card(word_singular: str, word_plural: str) -> str:
+def shorten_german_noun_plural_form_for_anki_card(word_singular: str, word_plural: str) -> str:
     """
     Shortens plural noun form if possible.
     This is needed to not write the full form in simple cases, e.g.:
@@ -145,8 +145,8 @@ def _create_anki_note_for_german_word_data(r: GermanWordData, model: genanki.Mod
         elif not noun_props.singular_form:
             word_de_for_card = f"{r.original_word} (Pl.)"
         else:
-            shortened_plural_form = _shorten_german_noun_plural_form_for_anki_card(noun_props.singular_form,
-                                                                                   noun_props.plural_form)
+            shortened_plural_form = shorten_german_noun_plural_form_for_anki_card(noun_props.singular_form,
+                                                                                  noun_props.plural_form)
             word_de_for_card = f"{r.original_word}, {shortened_plural_form}"
 
         word_article = noun_props.article

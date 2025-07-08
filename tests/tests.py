@@ -2,6 +2,7 @@ import unittest
 
 import src.german_data_extract
 import src.utils
+from src.german_anki_generate import shorten_german_noun_plural_form_for_anki_card
 from src.german_data_extract import GermanWordData, PartOfSpeech
 
 
@@ -192,6 +193,24 @@ class GermanPrepareDataTestCase(unittest.TestCase):
 
     def prepare_data(self, word: str) -> src.german_data_extract.GermanWordData:
         return src.german_data_extract.prepare_data_for_german_word(word, stub_ai=True)
+
+
+class GermanShortenPluralForm(unittest.TestCase):
+    def test_simple_ung(self):
+        res = shorten_german_noun_plural_form_for_anki_card("Wohnung", "Wohnungen")
+        self.assertEqual("-en", res)
+
+    def test_common_prefix(self):
+        res = shorten_german_noun_plural_form_for_anki_card("Zeugnis", "Zeugnisse")
+        self.assertEqual("-se", res)
+
+    def test_same(self):
+        res = shorten_german_noun_plural_form_for_anki_card("Lehrer", "Lehrer")
+        self.assertEqual("=", res)
+
+    def test_umlaut(self):
+        res = shorten_german_noun_plural_form_for_anki_card("Apfel", "Äpfel")
+        self.assertEqual("die Äpfel", res)
 
 
 if __name__ == '__main__':
