@@ -1564,5 +1564,5 @@ wikitextparser = ">=0.56.2,<0.57.0"
 
 [metadata]
 lock-version = "2.1"
-python-versions = ">=3.13,<4.0"
-content-hash = "92e620eaa6596990577e9df0f06447cfb757c1e7614d174872e6cd7e32d70233"
+python-versions = "==3.13.5"
+content-hash = "f5d96da2b396318c57f251a28219ad1029cd47e911c740ced2495f8502d92465"
