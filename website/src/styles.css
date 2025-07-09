@@ -87,3 +87,29 @@ button:hover {
   from { opacity: 0; }
   to   { opacity: 1; }
 }
+
+/* Tip Box */
+.tip-box {
+  background-color: #f1f9ee;
+  border-left: 4px solid #44bd32;
+  border-radius: 8px;
+  padding: 12px 15px;
+  margin-bottom: 15px;
+  font-size: 14px;
+  color: #2f3640;
+}
+
+.tip-box p {
+  margin-bottom: 5px;
+}
+
+.tip-box p:last-child {
+  margin-bottom: 0;
+}
+
+.tip-box code {
+  background-color: rgba(76, 209, 55, 0.1);
+  padding: 2px 5px;
+  border-radius: 4px;
+  font-family: monospace;
+}
