@@ -30,19 +30,23 @@ Then, when running server.py, specify additional argument `--llm-provider=ollama
 
 ### Python virtual environment
 
-Create Python virtual environment and install dependencies as follows:
+Install [Poetry](https://python-poetry.org/docs/#installation).
+
+Make sure that `virtualenvs.in-project` is set to `true`:
 
 ```bash
-python3 -m venv .venv
+poetry config virtualenvs.in-project
 
-# Activate venv
-source .venv/bin/activate
+# If not, set it to true
+poetry config virtualenvs.in-project true --local
+```
 
-# Install dependency manager
-pip install poetry
-
+```bash
 # Install dependencies
 poetry install
+
+# Activate env
+eval $(poetry env activate)
 
 # Hack to resolve dependency conflict (see below)
 pip install --no-deps german-nouns
