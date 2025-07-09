@@ -15,7 +15,7 @@ class EnglishWordData:
 
 
 def prepare_data_for_english_word(word: str, hints: WordHints, stub_llm: bool = False) -> EnglishWordData:
-    check(len(word.strip()) > 0, f"Expected non empty word")
+    check(len(word.strip()) > 0, "Expected non empty word")
 
     if stub_llm:
         en_sentence_example = ""

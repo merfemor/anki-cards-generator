@@ -102,7 +102,7 @@ def strip_noun_article(word: str) -> str:
 
 def prepare_data_for_german_word(original_word: str, hints: WordHints, stub_ai: bool = False) -> GermanWordData:
     word = strip_noun_article(original_word)
-    check(len(word.strip()) > 0, f"Expected non empty word")
+    check(len(word.strip()) > 0, "Expected non empty word")
 
     word_infinitive, pos_tag = _pos_tagger_de.analyze(word)
     check(pos_tag not in ["XY", "$,", "$.", "$("], f"Non word: {word}, pos_tag={pos_tag}")

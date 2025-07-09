@@ -93,6 +93,14 @@ Run web interface:
 
 For now, it only works on localhost, because endpoint path is hardcoded in JS.
 
+## Development
+
+Install pre-commit hooks:
+
+```bash
+pre-commit install
+```
+
 ## Tests
 
 To run unit tests, execute:
