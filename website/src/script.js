@@ -1,11 +1,5 @@
-async function sendCardsRequest(language, wordsArray) {
+async function sendCardsRequest(language, wordsWithHints) {
   try {
-    const wordsWithHints = [];
-    for (let i = 0; i < wordsArray.length; i++) {
-      wordsWithHints.push({
-        word: wordsArray[i],
-      })
-    }
     const requestBody = {
       words: wordsWithHints,
       language: language,
@@ -39,29 +33,67 @@ async function sendCardsRequest(language, wordsArray) {
   }
 }
 
-// Event listener
-document.getElementById('generateBtn').addEventListener('click', async () => {
-  const language = document.getElementById('language').value;
+function parseWordWithHint(word) {
+  const parts = word.split('=').map(part => part.trim());
+  const response = {
+    word: parts[0],
+  }
+  if (parts.length === 2) {
+    const translated_ru = parts[1];
+    if (translated_ru === "") {
+      alert("Invalid word format: " + word);
+      return null;
+    }
+    response.hints = {translated_ru: translated_ru}
+  }
+  if (parts.length > 2) {
+    alert("Invalid word format: " + word);
+    return null;
+  }
+  return response;
+}
+
+function setLoaderVisible(visible) {
+  const loader = document.getElementById('loader');
+  loader.style.display = visible ? 'block' : 'none';
+}
+
+function getConvertedValueOfWordsInputField() {
   const wordsInputFiled = document.getElementById('words');
   const wordsInput = wordsInputFiled.value.trim();
 
   if (!wordsInput) {
     alert("Enter at least one word.");
+    return null;
+  }
+  const words = wordsInput.split('\n').map(word => word.trim()).map(parseWordWithHint);
+  if (words.includes(null)) {
+    return null;
+  }
+  return words;
+}
+
+function cleanWordsInputField() {
+  const wordsInputFiled = document.getElementById('words');
+  wordsInputFiled.value = '';
+}
+
+async function onGenerateButtonClick() {
+  const language = document.getElementById('language').value;
+  const wordsWithHints = getConvertedValueOfWordsInputField();
+  if (wordsWithHints === null) {
     return;
   }
-
-  // Convert the newline-separated words into a JSON array
-  const wordsArray = wordsInput.split('\n').map(word => word.trim());
-
-  const loader = document.getElementById('loader');
-  loader.style.display = 'block';
+  setLoaderVisible(true);
 
   try {
-    await sendCardsRequest(language, wordsArray);
-    wordsInputFiled.value = '';
+    await sendCardsRequest(language, wordsWithHints);
+    cleanWordsInputField();
   } catch {
     alert("Something went wrong.");
   } finally {
-    loader.style.display = 'none';
+    setLoaderVisible(false);
   }
-});
+}
+
+document.getElementById('generateBtn').addEventListener('click', onGenerateButtonClick);
