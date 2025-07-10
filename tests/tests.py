@@ -259,6 +259,17 @@ class GermanPrepareDataTestCase(unittest.TestCase):
                                   sentence_example_translated_en='Stub')
         self.assertEqual(expected, self.prepare_data("empfelen"))
 
+    def test_reflexive_verb(self):
+        expected = GermanWordData(word_infinitive='sich interessieren',
+                                  pos_tag='VV(INF)',
+                                  part_of_speech=PartOfSpeech.Verb,
+                                  translated_en='to interested in',
+                                  translated_ru='увлекающийся',
+                                  noun_properties=None,
+                                  sentence_example='STUB',
+                                  sentence_example_translated_en='Stub')
+        self.assertEqual(expected, self.prepare_data('sich interessieren'))
+
     def prepare_data(self, word: str) -> src.german_data_extract.GermanWordData:
         return src.german_data_extract.prepare_data_for_german_word(word, hints=WordHints(""), stub_ai=True)
 

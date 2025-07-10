@@ -105,7 +105,7 @@ def prepare_data_for_german_word(original_word_or_phrase: str, hints: WordHints,
     word_or_phrase = strip_noun_article(original_word_or_phrase)
     check(len(word_or_phrase.strip()) > 0, "Expected non empty word_or_phrase")
 
-    if ' ' in word_or_phrase:
+    if not is_single_word(word_or_phrase):
         return prepare_data_for_german_phrase(word_or_phrase, hints, stub_ai=stub_ai)
 
     word = word_or_phrase
@@ -179,3 +179,9 @@ def translate_de_to_en(text: str, part_of_speech: PartOfSpeech) -> str:
     return post_process_en_translation(
         translation,
         part_of_speech)
+
+
+def is_single_word(word_or_phrase: str) -> bool:
+    if word_or_phrase.startswith("sich "):
+        word_or_phrase = word_or_phrase[5:].strip()
+    return ' ' not in word_or_phrase
