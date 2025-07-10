@@ -113,10 +113,14 @@ def prepare_data_for_german_word(original_word_or_phrase: str, hints: WordHints,
     word_infinitive, pos_tag = _pos_tagger_de.analyze(word)
     check(pos_tag not in ["XY", "$,", "$.", "$("], f"Non word: {word}, pos_tag={pos_tag}")
 
+    part_of_speech = pos_tag_to_part_of_speech(pos_tag)
+
+    if part_of_speech != PartOfSpeech.Noun:
+        # For some words infinitives start with capital letter despite they are not nouns, e.g. "perplex"
+        word_infinitive = word_infinitive.lower()
+
     if original_word_or_phrase != word_infinitive:
         logging.info(f"Auto corrected word: original={original_word_or_phrase}, infinitive={word_infinitive}")
-
-    part_of_speech = pos_tag_to_part_of_speech(pos_tag)
 
     noun_properties = None
     word_infinitive_with_article = word_infinitive

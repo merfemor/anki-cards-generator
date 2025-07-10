@@ -270,6 +270,19 @@ class GermanPrepareDataTestCase(unittest.TestCase):
                                   sentence_example_translated_en='Stub')
         self.assertEqual(expected, self.prepare_data('sich interessieren'))
 
+    def test_rare_adjective(self):
+        # Identified as FM = Fremdsprachliches Material
+        expected = GermanWordData(word_infinitive='perplex',
+                                  pos_tag='FM',
+                                  part_of_speech=PartOfSpeech.Other,
+                                  translated_en='perplexed',
+                                  translated_ru='озадачен',
+                                  noun_properties=None,
+                                  sentence_example='STUB',
+                                  sentence_example_translated_en='Stub')
+        self.assertEqual(expected, self.prepare_data("perplex"))
+
+
     def prepare_data(self, word: str) -> src.german_data_extract.GermanWordData:
         return src.german_data_extract.prepare_data_for_german_word(word, hints=WordHints(""), stub_ai=True)
 
