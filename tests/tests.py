@@ -187,8 +187,15 @@ class GermanPrepareDataTestCase(unittest.TestCase):
         self.assertEqual(expected, self.prepare_data("durch"))
 
     def test_collocation(self):
-        with self.assertRaises(NotImplementedError):
-            self.prepare_data("eine Entscheidung treffen")
+        expected = GermanWordData(word_infinitive='eine Entscheidung treffen',
+                                  pos_tag='',
+                                  part_of_speech=PartOfSpeech.Other,
+                                  translated_en='make a decision',
+                                  translated_ru='принять решение',
+                                  noun_properties=None,
+                                  sentence_example='STUB',
+                                  sentence_example_translated_en='Stub')
+        self.assertEqual(expected, self.prepare_data("eine Entscheidung treffen"))
 
     def test_rare_compound_word(self):
         with self.assertRaises(NotImplementedError):

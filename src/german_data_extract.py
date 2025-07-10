@@ -100,15 +100,21 @@ def strip_noun_article(word: str) -> str:
     return word
 
 
-def prepare_data_for_german_word(original_word: str, hints: WordHints, stub_ai: bool = False) -> GermanWordData:
-    word = strip_noun_article(original_word)
-    check(len(word.strip()) > 0, "Expected non empty word")
+def prepare_data_for_german_word(original_word_or_phrase: str, hints: WordHints,
+                                 stub_ai: bool = False) -> GermanWordData:
+    word_or_phrase = strip_noun_article(original_word_or_phrase)
+    check(len(word_or_phrase.strip()) > 0, "Expected non empty word_or_phrase")
+
+    if ' ' in word_or_phrase:
+        return prepare_data_for_german_phrase(word_or_phrase, hints, stub_ai=stub_ai)
+
+    word = word_or_phrase
 
     word_infinitive, pos_tag = _pos_tagger_de.analyze(word)
     check(pos_tag not in ["XY", "$,", "$.", "$("], f"Non word: {word}, pos_tag={pos_tag}")
 
-    if original_word != word_infinitive:
-        logging.info(f"Auto corrected word: original={original_word}, infinitive={word_infinitive}")
+    if original_word_or_phrase != word_infinitive:
+        logging.info(f"Auto corrected word: original={original_word_or_phrase}, infinitive={word_infinitive}")
 
     part_of_speech = pos_tag_to_part_of_speech(pos_tag)
 
@@ -125,13 +131,6 @@ def prepare_data_for_german_word(original_word: str, hints: WordHints, stub_ai: 
         )
         word_infinitive_with_article = f"{noun_properties.article} {word_infinitive}"
 
-    translated_en = post_process_en_translation(translate_text(word_infinitive_with_article, src="de", dest="en").lower(),
-                                                part_of_speech)
-    if hints.translated_ru:
-        translated_ru = hints.translated_ru
-    else:
-        translated_ru = translate_text(word_infinitive_with_article, src="de", dest="ru").lower()
-
     if stub_ai:
         german_sentence_example = "STUB"
     else:
@@ -142,9 +141,41 @@ def prepare_data_for_german_word(original_word: str, hints: WordHints, stub_ai: 
         word_infinitive=word_infinitive,
         pos_tag=pos_tag,
         part_of_speech=part_of_speech,
-        translated_en=translated_en,
-        translated_ru=translated_ru,
+        translated_en=translate_de_to_en(word_infinitive_with_article, part_of_speech),
+        translated_ru=translate_de_to_ru(word_infinitive_with_article, hints),
         noun_properties=noun_properties,
         sentence_example=german_sentence_example,
         sentence_example_translated_en=sentence_example_translated_en
     )
+
+
+def prepare_data_for_german_phrase(phrase: str, hints: WordHints, stub_ai: bool = False) -> GermanWordData:
+    if stub_ai:
+        german_sentence_example = "STUB"
+    else:
+        german_sentence_example = generate_sentence_example_with_llm(phrase, language="German")
+
+    return GermanWordData(
+        word_infinitive=phrase,
+        pos_tag="",
+        part_of_speech=PartOfSpeech.Other,
+        translated_en=translate_de_to_en(phrase, PartOfSpeech.Other),
+        translated_ru=translate_de_to_ru(phrase, hints),
+        noun_properties=None,
+        sentence_example=german_sentence_example,
+        sentence_example_translated_en=translate_text(german_sentence_example, src="de", dest="en"),
+    )
+
+
+def translate_de_to_ru(text: str, hints: WordHints) -> str:
+    if hints.translated_ru:
+        return hints.translated_ru
+    else:
+        return translate_text(text, src="de", dest="ru").lower()
+
+
+def translate_de_to_en(text: str, part_of_speech: PartOfSpeech) -> str:
+    translation = translate_text(text, src="de", dest="en").lower()
+    return post_process_en_translation(
+        translation,
+        part_of_speech)
