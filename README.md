@@ -32,15 +32,6 @@ Then, when running server.py, specify additional argument `--llm-provider=ollama
 
 Install [Poetry](https://python-poetry.org/docs/#installation).
 
-Make sure that `virtualenvs.in-project` is set to `true`:
-
-```bash
-poetry config virtualenvs.in-project
-
-# If not, set it to true
-poetry config virtualenvs.in-project true --local
-```
-
 ```bash
 # Install dependencies
 poetry install
