@@ -6,6 +6,7 @@ from typing import Final
 import genanki
 
 from src.anki_card_style import ANKI_CARD_CSS
+from src.anki_common import get_audio_file_name_for_phrase, get_audio_file_name_for_sentence
 from src.english_data_extract import EnglishWordData
 from src.tts import text_to_speech_into_file
 from src.utils import check
@@ -87,12 +88,12 @@ def export_results_to_anki_deck(results: list[EnglishWordData], deck_filename: s
     with tempfile.TemporaryDirectory(prefix="anki_cards_generator_media_") as temp_dir:
         logging.info("Created temporary directory " + temp_dir)
         for r in results:
-            word_audio_name = f"anki_cards_generator_en_{r.original_word}_word.mp3"
+            word_audio_name = get_audio_file_name_for_phrase(r.original_word, lang="en")
             word_audio_path = f"{temp_dir}/{word_audio_name}"
             text_to_speech_into_file(r.original_word, word_audio_path, lang="en")
             all_media_files.append(word_audio_path)
 
-            sentence_audio_name = f"anki_cards_generator_en_{r.original_word}_sentence.mp3"
+            sentence_audio_name = get_audio_file_name_for_sentence(r.original_word, lang="en")
             sentence_audio_path = f"{temp_dir}/{sentence_audio_name}"
             text_to_speech_into_file(r.sentence_example, sentence_audio_path, lang="en")
             all_media_files.append(sentence_audio_path)

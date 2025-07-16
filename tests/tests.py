@@ -1,7 +1,9 @@
+import random
 import unittest
 
 import src.german_data_extract
 import src.utils
+from src.anki_common import get_audio_file_name_for_phrase, get_audio_file_name_for_sentence
 from src.english_data_extract import prepare_data_for_english_word, EnglishWordData
 from src.german_anki_generate import shorten_german_noun_plural_form_for_anki_card
 from src.german_data_extract import GermanWordData, PartOfSpeech
@@ -408,3 +410,19 @@ class LocalTranslatorTestCase(unittest.TestCase):
         actual = translate_text("der Markt", src="de", dest="en")
         self.assertEqual("The market", actual)
 
+
+class GetAudioFileNameForPhraseTestCase(unittest.TestCase):
+    def setUp(self):
+        random.seed(42)
+
+    def test_de_word(self):
+        res = get_audio_file_name_for_phrase("Katze", lang="de")
+        self.assertEqual("anki_card_generator_de_Katze_phrase_NbrnTP.mp3", res)
+
+    def test_de_phrase(self):
+        res = get_audio_file_name_for_phrase("sich in Träumerei vertiefen", lang="de")
+        self.assertEqual("anki_card_generator_de_sich_in_Träumerei_vertiefen_phrase_NbrnTP.mp3", res)
+
+    def test_de_sentence(self):
+        res = get_audio_file_name_for_sentence("Katze", lang="de")
+        self.assertEqual("anki_card_generator_de_Katze_sentence_NbrnTP.mp3", res)

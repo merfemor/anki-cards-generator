@@ -6,6 +6,7 @@ from typing import Final
 import genanki
 
 from src.anki_card_style import ANKI_CARD_CSS
+from src.anki_common import get_audio_file_name_for_phrase, get_audio_file_name_for_sentence
 from src.german_data_extract import GermanWordData
 from src.tts import text_to_speech_into_file
 from src.utils import check
@@ -121,9 +122,9 @@ def _create_anki_note_for_german_word_data(r: GermanWordData, model: genanki.Mod
     word_de_for_card = r.word_infinitive
     word_audio_text = r.word_infinitive
     word_article = ""
-    word_audio_name = f"anki_card_generator_de_{r.word_infinitive}_word.mp3"
+    word_audio_name = get_audio_file_name_for_phrase(r.word_infinitive, lang="de")
     word_audio_path = f"{temp_dir}/{word_audio_name}"
-    sentence_audio_name = f"anki_card_generator_de_{r.word_infinitive}_sentence.mp3"
+    sentence_audio_name = get_audio_file_name_for_sentence(r.word_infinitive, lang="de")
     sentence_audio_path = f"{temp_dir}/{sentence_audio_name}"
     text_to_speech_into_file(r.sentence_example, sentence_audio_path, lang="de")
     if r.noun_properties:
