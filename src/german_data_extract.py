@@ -100,13 +100,13 @@ def strip_noun_article(word: str) -> str:
     return word
 
 
-def prepare_data_for_german_word(original_word_or_phrase: str, hints: WordHints,
+async def prepare_data_for_german_word(original_word_or_phrase: str, hints: WordHints,
                                  stub_ai: bool = False) -> GermanWordData:
     word_or_phrase = strip_noun_article(original_word_or_phrase)
     check(len(word_or_phrase.strip()) > 0, "Expected non empty word_or_phrase")
 
     if not is_single_word(word_or_phrase):
-        return prepare_data_for_german_phrase(word_or_phrase, hints, stub_ai=stub_ai)
+        return await prepare_data_for_german_phrase(word_or_phrase, hints, stub_ai=stub_ai)
 
     word = word_or_phrase
 
@@ -138,48 +138,48 @@ def prepare_data_for_german_word(original_word_or_phrase: str, hints: WordHints,
     if stub_ai:
         german_sentence_example = "STUB"
     else:
-        german_sentence_example = generate_sentence_example_with_llm(word_infinitive_with_article, language="German")
-    sentence_example_translated_en = translate_text(german_sentence_example, src="de", dest="en")
+        german_sentence_example = await generate_sentence_example_with_llm(word_infinitive_with_article, language="German")
+    sentence_example_translated_en = await translate_text(german_sentence_example, src="de", dest="en")
 
     return GermanWordData(
         word_infinitive=word_infinitive,
         pos_tag=pos_tag,
         part_of_speech=part_of_speech,
-        translated_en=translate_de_to_en(word_infinitive_with_article, part_of_speech),
-        translated_ru=translate_de_to_ru(word_infinitive_with_article, hints),
+        translated_en=await translate_de_to_en(word_infinitive_with_article, part_of_speech),
+        translated_ru=await translate_de_to_ru(word_infinitive_with_article, hints),
         noun_properties=noun_properties,
         sentence_example=german_sentence_example,
         sentence_example_translated_en=sentence_example_translated_en
     )
 
 
-def prepare_data_for_german_phrase(phrase: str, hints: WordHints, stub_ai: bool = False) -> GermanWordData:
+async def prepare_data_for_german_phrase(phrase: str, hints: WordHints, stub_ai: bool = False) -> GermanWordData:
     if stub_ai:
         german_sentence_example = "STUB"
     else:
-        german_sentence_example = generate_sentence_example_with_llm(phrase, language="German")
+        german_sentence_example = await generate_sentence_example_with_llm(phrase, language="German")
 
     return GermanWordData(
         word_infinitive=phrase,
         pos_tag="",
         part_of_speech=PartOfSpeech.Other,
-        translated_en=translate_de_to_en(phrase, PartOfSpeech.Other),
-        translated_ru=translate_de_to_ru(phrase, hints),
+        translated_en=await translate_de_to_en(phrase, PartOfSpeech.Other),
+        translated_ru=await translate_de_to_ru(phrase, hints),
         noun_properties=None,
         sentence_example=german_sentence_example,
-        sentence_example_translated_en=translate_text(german_sentence_example, src="de", dest="en"),
+        sentence_example_translated_en=await translate_text(german_sentence_example, src="de", dest="en"),
     )
 
 
-def translate_de_to_ru(text: str, hints: WordHints) -> str:
+async def translate_de_to_ru(text: str, hints: WordHints) -> str:
     if hints.translated_ru:
         return hints.translated_ru
     else:
-        return translate_text(text, src="de", dest="ru").lower()
+        return (await translate_text(text, src="de", dest="ru")).lower()
 
 
-def translate_de_to_en(text: str, part_of_speech: PartOfSpeech) -> str:
-    translation = translate_text(text, src="de", dest="en").lower()
+async def translate_de_to_en(text: str, part_of_speech: PartOfSpeech) -> str:
+    translation = (await translate_text(text, src="de", dest="en")).lower()
     return post_process_en_translation(
         translation,
         part_of_speech)

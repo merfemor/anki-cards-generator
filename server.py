@@ -1,3 +1,4 @@
+import asyncio
 import logging
 import os
 import sys
@@ -35,7 +36,7 @@ def parse_hints_from_dict(word_with_context: dict) -> WordHints:
 
 
 @app.route('/api/generateCardsFile', methods=['POST'])
-def generate_cards_file():
+async def generate_cards_file():
     words_with_hints = request.get_json().get('words', [])
     if not words_with_hints:
         return jsonify({'error': 'The "words" list cannot be empty'}), 400
@@ -54,15 +55,17 @@ def generate_cards_file():
         return jsonify({'error': f"Expected language to be one of 'en', 'de', but got '{language}'"}), 400
 
     logging.info(f"Preparing card data for language {language} for the words {words_with_hints}")
-    results = []
+    tasks = []
     for word_with_hints in words_with_hints:
         word: str = word_with_hints.get('word')
         if not word:
             return jsonify({'error': f"The word is not specified for the word {word}"}), 400
 
         hints = parse_hints_from_dict(word_with_hints)
-        result = prepare_data_fn(word, hints)
-        results.append(result)
+        task = asyncio.create_task(prepare_data_fn(word, hints))
+        tasks.append(task)
+
+    results = await asyncio.gather(*tasks)
 
     with tempfile.NamedTemporaryFile(delete=False, suffix=file_suffix) as temp_file:
         deck_filename = temp_file.name

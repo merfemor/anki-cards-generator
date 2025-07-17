@@ -1,6 +1,8 @@
+import asyncio
 import logging
 import os
 import sys
+from typing import Callable
 
 import ollama
 from openai import OpenAI
@@ -8,14 +10,14 @@ from openai import OpenAI
 from src.configuration import get_global_llm_provider, LLMProvider
 
 
-def ask_llm(prompt: str) -> str:
+async def ask_llm(prompt: str) -> str:
     # TODO: how to set a random seed?
     llm_provider = get_global_llm_provider()
     logging.info(f"LLM request, provider={llm_provider.value}, prompt='{prompt}'")
     try:
         match llm_provider:
             case LLMProvider.OLLAMA:
-                response_text = ask_ollama(prompt)
+                response_text = await ask_ollama(prompt)
             case LLMProvider.OPENAI:
                 response_text = ask_openai(prompt)
             case _:
@@ -26,9 +28,17 @@ def ask_llm(prompt: str) -> str:
     return response_text
 
 
-def ask_ollama(prompt: str) -> str:
-    response = ollama.generate(model='llama3.1:8b', prompt=prompt, options={"top_k": 20})
-    return response['response']
+async def ask_ollama(prompt: str) -> str:
+    def blocking() -> str:
+        return ollama.generate(model='llama3.1:8b', prompt=prompt, options={"top_k": 20})['response']
+
+    return await wrap_blocking_into_async(blocking)
+
+
+# Trick to run existing blocking code from a coroutine
+async def wrap_blocking_into_async[R](fn: Callable[[], R]) -> R:
+    loop = asyncio.get_event_loop()
+    return await loop.run_in_executor(None, fn)
 
 
 def ask_openai(prompt: str) -> str:
