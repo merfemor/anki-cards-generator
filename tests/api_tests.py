@@ -1,7 +1,7 @@
 import json
 import unittest
 
-from server import app
+from main import app
 
 
 class ApiEndpointGenerateCardsFileTestCase(unittest.TestCase):

@@ -350,22 +350,6 @@ async = ["asgiref (>=3.2)"]
 dotenv = ["python-dotenv"]
 
 [[package]]
-name = "flask-cors"
-version = "6.0.1"
-description = "A Flask extension simplifying CORS support"
-optional = false
-python-versions = "<4.0,>=3.9"
-groups = ["main"]
-files = [
-    {file = "flask_cors-6.0.1-py3-none-any.whl", hash = "sha256:c7b2cbfb1a31aa0d2e5341eea03a6805349f7a61647daee1a15c46bbe981494c"},
-    {file = "flask_cors-6.0.1.tar.gz", hash = "sha256:d81bcb31f07b0985be7f48406247e9243aced229b7747219160a0559edd678db"},
-]
-
-[package.dependencies]
-flask = ">=0.9"
-Werkzeug = ">=0.7"
-
-[[package]]
 name = "frozendict"
 version = "2.4.6"
 description = "A simple immutable dictionary"
@@ -1689,4 +1673,4 @@ wikitextparser = ">=0.56.2,<0.57.0"
 [metadata]
 lock-version = "2.1"
 python-versions = "==3.13.5"
-content-hash = "616aa6fb1ffa2dc96ba7e2db62dc99854f981f498dfc9c9d667c90ebb2874a0c"
+content-hash = "1b3be3a42e174dde2736cbc9a2f5982bcb0db4f54c9b3fff0d6b6779f1ddae96"

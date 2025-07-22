@@ -5,8 +5,7 @@ import sys
 import tempfile
 
 from dotenv import load_dotenv
-from flask import Flask, jsonify, request, send_file
-from flask_cors import CORS
+from flask import Flask, jsonify, request, send_file, render_template
 
 import src.english_anki_generate
 import src.german_anki_generate
@@ -17,7 +16,6 @@ from src.llm_interact import early_check_llm_environment
 from src.word_hints import WordHints
 
 app = Flask(__name__)
-CORS(app, origins=["http://127.0.0.1:8000", "http://localhost:8000"])
 
 
 def setup_logging():
@@ -81,6 +79,10 @@ async def generate_cards_file():
         if os.path.exists(deck_filename):
             os.remove(deck_filename)
             logging.info(f"Removed temporary Anki deck file \"{deck_filename}\"")
+
+@app.route("/", methods=['GET'])
+def home():
+    return render_template("index.html")
 
 
 if __name__ == '__main__':

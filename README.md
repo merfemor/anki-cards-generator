@@ -26,7 +26,7 @@ Ollama with `llama3.1:8b` model should be installed.
 ollama pull llama3.1:8b
 ```
 
-Then, when running server.py, specify additional argument `--llm-provider=ollama`.
+Then, when running app, specify additional argument `--llm-provider=ollama`.
 
 ### Python virtual environment
 
@@ -52,8 +52,6 @@ This is how we fix stuff here.
 
 ## Usage
 
-### Server
-
 * In the case of Ollama provider, make sure it is up and running.
 * In the case of OpenAI, provide API key through environment variable:
 
@@ -64,25 +62,17 @@ export OPENAI_API_KEY=yourkey
 > [!TIP]
 > You can create `.env` file and specify environment variable there to not enter it each time.
 
-Run the server with the following command:
+Run the app with the following command:
 
 ```bash
-python server.py
+python main.py
 ```
 
-Press `Ctrl+C` to stop the server.
+The web interface will be available http://127.0.0.1:5000/.
+
+Press `Ctrl+C` to stop the app.
 
 Beware that the response time is very long, far from instant.
-
-### Web interface
-
-Run web interface:
-
-```bash
-./website/run.sh
-```
-
-For now, it only works on localhost, because endpoint path is hardcoded in JS.
 
 ## Development
 

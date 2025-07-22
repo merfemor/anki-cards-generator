@@ -4,7 +4,7 @@ async function sendCardsRequest(language, wordsWithHints) {
       words: wordsWithHints,
       language: language,
     };
-    const response = await fetch('http://127.0.0.1:5000/api/generateCardsFile', {
+    const response = await fetch('/api/generateCardsFile', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
