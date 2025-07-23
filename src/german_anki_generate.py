@@ -4,6 +4,7 @@ import textwrap
 from typing import Final
 
 import genanki
+from genanki import Note
 
 from src.anki_card_style import ANKI_CARD_CSS
 from src.anki_common import get_audio_file_name_for_phrase, get_audio_file_name_for_sentence
@@ -103,7 +104,7 @@ def export_results_to_anki_deck(results: list[GermanWordData], deck_filename: st
     my_model = _get_anki_card_model()
     my_deck = genanki.Deck(_GENERATED_DECK_ID, deck_name)
 
-    all_media_files = []
+    all_media_files: list[str] = []
 
     with tempfile.TemporaryDirectory(prefix="anki_cards_generator_media_") as temp_dir:
         logging.info("Created temporary directory " + temp_dir)
@@ -117,7 +118,7 @@ def export_results_to_anki_deck(results: list[GermanWordData], deck_filename: st
 
 
 def _create_anki_note_for_german_word_data(r: GermanWordData, model: genanki.Model, all_media_files: list[str],
-                                           temp_dir: str):
+                                           temp_dir: str) -> Note:
     word_translated = f"{r.translated_ru}, {r.translated_en}"
     word_de_for_card = r.word_infinitive
     word_audio_text = r.word_infinitive

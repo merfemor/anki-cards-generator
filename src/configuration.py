@@ -14,7 +14,7 @@ def get_global_llm_provider() -> LLMProvider:
     return __LLM_PROVIDER
 
 
-def set_global_llm_provider(provider: str):
+def set_global_llm_provider(provider: str) -> None:
     global __LLM_PROVIDER
     logging.info(f"Using LLM provider {provider}")
     match provider:

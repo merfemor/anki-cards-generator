@@ -5,3 +5,12 @@ repos:
   hooks:
     # Run the linter.
     - id: ruff-check
+- repo: local
+  hooks:
+    - id: mypy-on-entry
+      name: Run mypy on main.py file
+      entry: mypy
+      language: system
+      types: [python]
+      args: [--ignore-missing-imports, main.py]
+      pass_filenames: false

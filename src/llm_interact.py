@@ -30,7 +30,8 @@ async def ask_llm(prompt: str) -> str:
 
 async def ask_ollama(prompt: str) -> str:
     def blocking() -> str:
-        return ollama.generate(model='llama3.1:8b', prompt=prompt, options={"top_k": 20})['response']
+        response_text: str = ollama.generate(model='llama3.1:8b', prompt=prompt, options={"top_k": 20})['response']
+        return response_text
 
     return await wrap_blocking_into_async(blocking)
 
@@ -49,7 +50,7 @@ def ask_openai(prompt: str) -> str:
     )
     return response.output_text
 
-def early_check_llm_environment():
+def early_check_llm_environment() -> None:
     provider = get_global_llm_provider()
     match provider:
         case LLMProvider.OLLAMA:
@@ -60,7 +61,7 @@ def early_check_llm_environment():
             raise ValueError(f"Not handled branch for LLM provider: {provider}")
 
 
-def early_check_ollama():
+def early_check_ollama() -> None:
     try:
         ollama.list()
     except ConnectionError:
@@ -68,7 +69,7 @@ def early_check_ollama():
         sys.exit(1)
 
 
-def early_check_openai():
+def early_check_openai() -> None:
     key = os.environ.get("OPENAI_API_KEY")
     if not key:
         print("Error: OPENAI_API_KEY environment variable is not set.")

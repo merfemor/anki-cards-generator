@@ -78,7 +78,7 @@ class GermanNounProperties:
     genus: str
     article: Literal['der', 'die', 'das']
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         check(self.singular_form != "" or self.plural_form != "", "Either singular_form or plural_form must be not empty")
 
 

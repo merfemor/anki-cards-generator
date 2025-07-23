@@ -3,22 +3,24 @@ import logging
 import os
 import sys
 import tempfile
+from collections.abc import Callable
+from typing import Any, Tuple, Coroutine
 
 from dotenv import load_dotenv
-from flask import Flask, jsonify, request, send_file, render_template
+from flask import Flask, jsonify, request, send_file, render_template, Response
 
 import src.english_anki_generate
 import src.german_anki_generate
 from src.configuration import parse_arguments, set_global_llm_provider
-from src.english_data_extract import prepare_data_for_english_word
-from src.german_data_extract import prepare_data_for_german_word
+from src.english_data_extract import prepare_data_for_english_word, EnglishWordData
+from src.german_data_extract import prepare_data_for_german_word, GermanWordData
 from src.llm_interact import early_check_llm_environment
 from src.word_hints import WordHints
 
 app = Flask(__name__)
 
 
-def setup_logging():
+def setup_logging() -> None:
     logging.basicConfig(
         level=logging.INFO,
         format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -27,14 +29,14 @@ def setup_logging():
     logging.getLogger("httpx").setLevel(logging.CRITICAL)
 
 
-def parse_hints_from_dict(word_with_context: dict) -> WordHints:
-    hints: dict = word_with_context.get('hints', {})
+def parse_hints_from_dict(word_with_context: dict[str, dict[str, str]]) -> WordHints:
+    hints: dict[str, str] = word_with_context.get('hints', {})
     translated_ru: str = hints.get('translated_ru', "")
     return WordHints(translated_ru)
 
 
 @app.route('/api/generateCardsFile', methods=['POST'])
-async def generate_cards_file():
+async def generate_cards_file() -> Tuple[Response, int] | Response:
     words_with_hints = request.get_json().get('words', [])
     if not words_with_hints:
         return jsonify({'error': 'The "words" list cannot be empty'}), 400
@@ -42,20 +44,34 @@ async def generate_cards_file():
     language = request.get_json().get('language')
 
     if language == 'de':
-        prepare_data_fn = prepare_data_for_german_word
-        export_fn = src.german_anki_generate.export_results_to_anki_deck
-        file_suffix = "to_import_german_anki_generated.apkg"
+        logging.info(f"Preparing German card data for the words {words_with_hints}")
+        return await common_generate_cards_file(
+            words_with_hints,
+            prepare_data_fn=prepare_data_for_german_word,
+            export_fn=src.german_anki_generate.export_results_to_anki_deck,
+            file_suffix="to_import_german_anki_generated.apkg",
+        )
     elif language == 'en':
-        prepare_data_fn = prepare_data_for_english_word
-        export_fn = src.english_anki_generate.export_results_to_anki_deck
-        file_suffix = "to_import_english_anki_generated.apkg"
+        logging.info(f"Preparing English card data for the words {words_with_hints}")
+        return await common_generate_cards_file(
+            words_with_hints,
+            prepare_data_fn=prepare_data_for_english_word,
+            export_fn=src.english_anki_generate.export_results_to_anki_deck,
+            file_suffix="to_import_english_anki_generated.apkg"
+        )
     else:
         return jsonify({'error': f"Expected language to be one of 'en', 'de', but got '{language}'"}), 400
 
-    logging.info(f"Preparing card data for language {language} for the words {words_with_hints}")
+
+async def common_generate_cards_file[WD: GermanWordData | EnglishWordData](
+        words_with_hints: list[dict[str, Any]],
+        prepare_data_fn: Callable[[str, WordHints], Coroutine[None, None, WD]],
+        export_fn: Callable[[list[WD], str], None],
+        file_suffix: str,
+) -> Tuple[Response, int] | Response:
     tasks = []
     for word_with_hints in words_with_hints:
-        word: str = word_with_hints.get('word')
+        word: str = word_with_hints.get('word', "")
         if not word:
             return jsonify({'error': f"The word is not specified for the word {word}"}), 400
 
@@ -81,7 +97,7 @@ async def generate_cards_file():
             logging.info(f"Removed temporary Anki deck file \"{deck_filename}\"")
 
 @app.route("/", methods=['GET'])
-def home():
+def home() -> str:
     return render_template("index.html")
 
 
