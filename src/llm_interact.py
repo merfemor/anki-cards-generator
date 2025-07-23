@@ -9,7 +9,6 @@ from src.configuration import get_global_llm_provider, LLMProvider
 
 
 async def ask_llm(prompt: str) -> str:
-    # TODO: how to set a random seed?
     llm_provider = get_global_llm_provider()
     logging.info(f"LLM request, provider={llm_provider.value}, prompt='{prompt}'")
     try:
@@ -28,6 +27,7 @@ async def ask_llm(prompt: str) -> str:
 
 async def ask_ollama(prompt: str) -> str:
     client = ollama.AsyncClient()
+    # Set top_k to have more conservative answers
     res = await client.generate(model='llama3.1:8b', prompt=prompt, options={"top_k": 20})
     response_text: str = res['response']
     return response_text
