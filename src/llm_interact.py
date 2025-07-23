@@ -1,11 +1,9 @@
-import asyncio
 import logging
 import os
 import sys
-from typing import Callable
 
 import ollama
-from openai import OpenAI
+import openai
 
 from src.configuration import get_global_llm_provider, LLMProvider
 
@@ -19,7 +17,7 @@ async def ask_llm(prompt: str) -> str:
             case LLMProvider.OLLAMA:
                 response_text = await ask_ollama(prompt)
             case LLMProvider.OPENAI:
-                response_text = ask_openai(prompt)
+                response_text = await ask_openai(prompt)
             case _:
                 raise ValueError(f"Not handled branch for LLM provider: {llm_provider}")
     except Exception as e:
@@ -29,26 +27,20 @@ async def ask_llm(prompt: str) -> str:
 
 
 async def ask_ollama(prompt: str) -> str:
-    def blocking() -> str:
-        response_text: str = ollama.generate(model='llama3.1:8b', prompt=prompt, options={"top_k": 20})['response']
-        return response_text
-
-    return await wrap_blocking_into_async(blocking)
-
-
-# Trick to run existing blocking code from a coroutine
-async def wrap_blocking_into_async[R](fn: Callable[[], R]) -> R:
-    loop = asyncio.get_event_loop()
-    return await loop.run_in_executor(None, fn)
+    client = ollama.AsyncClient()
+    res = await client.generate(model='llama3.1:8b', prompt=prompt, options={"top_k": 20})
+    response_text: str = res['response']
+    return response_text
 
 
-def ask_openai(prompt: str) -> str:
-    openai_client = OpenAI()
-    response = openai_client.responses.create(
+async def ask_openai(prompt: str) -> str:
+    openai_client = openai.AsyncOpenAI()
+    response = await openai_client.responses.create(
         model="gpt-4.1-nano",
         input=prompt,
     )
     return response.output_text
+
 
 def early_check_llm_environment() -> None:
     provider = get_global_llm_provider()
