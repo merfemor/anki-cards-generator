@@ -11,10 +11,10 @@ from flask import Flask, jsonify, request, send_file, render_template, Response
 
 import src.english_anki_generate
 import src.german_anki_generate
-from src.configuration import parse_arguments, set_global_llm_provider
+from src.configuration import parse_arguments
 from src.english_data_extract import prepare_data_for_english_word, EnglishWordData
 from src.german_data_extract import prepare_data_for_german_word, GermanWordData
-from src.llm_interact import early_check_llm_environment
+from src.llm_interact import set_global_llm_provider
 from src.word_hints import WordHints
 
 app = Flask(__name__)
@@ -106,5 +106,4 @@ if __name__ == '__main__':
     setup_logging()
     args = parse_arguments()
     set_global_llm_provider(args.llm_provider)
-    early_check_llm_environment()
     app.run(port=5000)
