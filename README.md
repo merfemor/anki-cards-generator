@@ -87,5 +87,5 @@ pre-commit install
 To run unit tests, execute:
 
 ```bash
-python -m unittest tests/*.py
+PYTHONPATH=. poetry run pytest
 ```
