@@ -136,7 +136,7 @@ async def prepare_data_for_german_word(original_word_or_phrase: str, hints: Word
         word_infinitive_with_article = f"{noun_properties.article} {word_infinitive}"
 
     if stub_ai:
-        german_sentence_example = "STUB"
+        german_sentence_example = ""
     else:
         german_sentence_example = await generate_sentence_example_with_llm(word_infinitive_with_article, language="German")
     sentence_example_translated_en = await translate_text(german_sentence_example, src="de", dest="en")
@@ -155,7 +155,7 @@ async def prepare_data_for_german_word(original_word_or_phrase: str, hints: Word
 
 async def prepare_data_for_german_phrase(phrase: str, hints: WordHints, stub_ai: bool = False) -> GermanWordData:
     if stub_ai:
-        german_sentence_example = "STUB"
+        german_sentence_example = ""
     else:
         german_sentence_example = await generate_sentence_example_with_llm(phrase, language="German")
 

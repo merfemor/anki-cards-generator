@@ -1,4 +1,5 @@
 import random
+from typing import Final
 import unittest
 
 import src.german_data_extract
@@ -9,6 +10,10 @@ from src.german_anki_generate import shorten_german_noun_plural_form_for_anki_ca
 from src.german_data_extract import GermanWordData, PartOfSpeech
 from src.translate import translate_text
 from src.word_hints import WordHints
+
+sentence_example_stub_text: Final[str] = ''
+sentence_example_translated_en_stub_text: Final[str] = ''
+sentence_example_translated_ru_stub_text: Final[str] = ''
 
 
 class GermanPrepareDataTestCase(unittest.IsolatedAsyncioTestCase):
@@ -47,8 +52,8 @@ class GermanPrepareDataTestCase(unittest.IsolatedAsyncioTestCase):
                                       plural_form='Katzen',
                                       genus='f',
                                       article='die'),
-                                  sentence_example='STUB',
-                                  sentence_example_translated_en='Stub')
+                                  sentence_example=sentence_example_stub_text,
+                                  sentence_example_translated_en=sentence_example_translated_en_stub_text)
         self.assertEqual(expected, await self.prepare_data("Katze"))
 
     async def test_noun_no_plural(self):
@@ -62,8 +67,8 @@ class GermanPrepareDataTestCase(unittest.IsolatedAsyncioTestCase):
                                       plural_form='',
                                       genus='m',
                                       article='der'),
-                                  sentence_example='STUB',
-                                  sentence_example_translated_en='Stub')
+                                  sentence_example=sentence_example_stub_text,
+                                  sentence_example_translated_en=sentence_example_translated_en_stub_text)
         self.assertEqual(expected, await self.prepare_data("Schnee"))
 
     async def test_noun_two_plural(self):
@@ -77,8 +82,8 @@ class GermanPrepareDataTestCase(unittest.IsolatedAsyncioTestCase):
                                       plural_form='Bänder',
                                       genus='n',
                                       article='das'),
-                                  sentence_example='STUB',
-                                  sentence_example_translated_en='Stub')
+                                  sentence_example=sentence_example_stub_text,
+                                  sentence_example_translated_en=sentence_example_translated_en_stub_text)
         self.assertEqual(expected, await self.prepare_data("Band"))
 
     async def test_noun_no_singular(self):
@@ -92,8 +97,8 @@ class GermanPrepareDataTestCase(unittest.IsolatedAsyncioTestCase):
                                       plural_form='Ferien',
                                       genus='pl',
                                       article='die'),
-                                  sentence_example='STUB',
-                                  sentence_example_translated_en='Stub')
+                                  sentence_example=sentence_example_stub_text,
+                                  sentence_example_translated_en=sentence_example_translated_en_stub_text)
         self.assertEqual(expected, await self.prepare_data("Ferien"))
 
     async def test_noun_ambiguity_with_verb(self):
@@ -107,8 +112,8 @@ class GermanPrepareDataTestCase(unittest.IsolatedAsyncioTestCase):
                                       plural_form='',
                                       genus='n',
                                       article='das'),
-                                  sentence_example='STUB',
-                                  sentence_example_translated_en='Stub')
+                                  sentence_example=sentence_example_stub_text,
+                                  sentence_example_translated_en=sentence_example_translated_en_stub_text)
         self.assertEqual(expected, await self.prepare_data("Schwimmen"))
 
     async def test_verb(self):
@@ -118,8 +123,8 @@ class GermanPrepareDataTestCase(unittest.IsolatedAsyncioTestCase):
                                   translated_en='to sleep',
                                   translated_ru='спать',
                                   noun_properties=None,
-                                  sentence_example='STUB',
-                                  sentence_example_translated_en='Stub')
+                                  sentence_example=sentence_example_stub_text,
+                                  sentence_example_translated_en=sentence_example_translated_en_stub_text)
         self.assertEqual(expected, await self.prepare_data("schlafen"))
 
     async def test_adjective(self):
@@ -129,8 +134,8 @@ class GermanPrepareDataTestCase(unittest.IsolatedAsyncioTestCase):
                                   translated_en='funny',
                                   translated_ru='забавный',
                                   noun_properties=None,
-                                  sentence_example='STUB',
-                                  sentence_example_translated_en='Stub')
+                                  sentence_example=sentence_example_stub_text,
+                                  sentence_example_translated_en=sentence_example_translated_en_stub_text)
         self.assertEqual(expected, await self.prepare_data("lustig"))
 
     async def test_subordinating_conjunction(self):
@@ -140,8 +145,8 @@ class GermanPrepareDataTestCase(unittest.IsolatedAsyncioTestCase):
                                   translated_en='although',
                                   translated_ru='хотя',
                                   noun_properties=None,
-                                  sentence_example='STUB',
-                                  sentence_example_translated_en='Stub')
+                                  sentence_example=sentence_example_stub_text,
+                                  sentence_example_translated_en=sentence_example_translated_en_stub_text)
         self.assertEqual(expected, await self.prepare_data("obgleich"))
 
     async def test_coordinating_conjunction(self):
@@ -151,8 +156,8 @@ class GermanPrepareDataTestCase(unittest.IsolatedAsyncioTestCase):
                                   translated_en='and',
                                   translated_ru='и',
                                   noun_properties=None,
-                                  sentence_example='STUB',
-                                  sentence_example_translated_en='Stub')
+                                  sentence_example=sentence_example_stub_text,
+                                  sentence_example_translated_en=sentence_example_translated_en_stub_text)
         self.assertEqual(expected, await self.prepare_data("und"))
 
     async def test_adverb(self):
@@ -162,8 +167,8 @@ class GermanPrepareDataTestCase(unittest.IsolatedAsyncioTestCase):
                                   translated_en='straight',
                                   translated_ru='прямой',
                                   noun_properties=None,
-                                  sentence_example='STUB',
-                                  sentence_example_translated_en='Stub')
+                                  sentence_example=sentence_example_stub_text,
+                                  sentence_example_translated_en=sentence_example_translated_en_stub_text)
         self.assertEqual(expected, await self.prepare_data("gerade"))
 
     async def test_with_hint(self):
@@ -173,8 +178,8 @@ class GermanPrepareDataTestCase(unittest.IsolatedAsyncioTestCase):
                                   translated_en='funny',
                                   translated_ru='смешной, весёлый',
                                   noun_properties=None,
-                                  sentence_example='STUB',
-                                  sentence_example_translated_en='Stub')
+                                  sentence_example=sentence_example_stub_text,
+                                  sentence_example_translated_en=sentence_example_translated_en_stub_text)
         self.assertEqual(expected, await src.german_data_extract.prepare_data_for_german_word("lustig", hints=WordHints("смешной, весёлый"), stub_ai=True))
 
     async def test_preposition(self):
@@ -184,8 +189,8 @@ class GermanPrepareDataTestCase(unittest.IsolatedAsyncioTestCase):
                                   translated_en='through',
                                   translated_ru='через',
                                   noun_properties=None,
-                                  sentence_example='STUB',
-                                  sentence_example_translated_en='Stub')
+                                  sentence_example=sentence_example_stub_text,
+                                  sentence_example_translated_en=sentence_example_translated_en_stub_text)
         self.assertEqual(expected, await self.prepare_data("durch"))
 
     async def test_collocation(self):
@@ -195,8 +200,8 @@ class GermanPrepareDataTestCase(unittest.IsolatedAsyncioTestCase):
                                   translated_en='make a decision',
                                   translated_ru='принять решение',
                                   noun_properties=None,
-                                  sentence_example='STUB',
-                                  sentence_example_translated_en='Stub')
+                                  sentence_example=sentence_example_stub_text,
+                                  sentence_example_translated_en=sentence_example_translated_en_stub_text)
         self.assertEqual(expected, await self.prepare_data("eine Entscheidung treffen"))
 
     async def test_rare_compound_word(self):
@@ -214,8 +219,8 @@ class GermanPrepareDataTestCase(unittest.IsolatedAsyncioTestCase):
                                       plural_form='Katzen',
                                       genus='f',
                                       article='die'),
-                                  sentence_example='STUB',
-                                  sentence_example_translated_en='Stub')
+                                  sentence_example=sentence_example_stub_text,
+                                  sentence_example_translated_en=sentence_example_translated_en_stub_text)
         self.assertEqual(expected, await self.prepare_data("die Katze"))
 
 
@@ -230,8 +235,8 @@ class GermanPrepareDataTestCase(unittest.IsolatedAsyncioTestCase):
                                       plural_form='Märkte',
                                       genus='m',
                                       article='der'),
-                                  sentence_example='STUB',
-                                  sentence_example_translated_en='Stub')
+                                  sentence_example=sentence_example_stub_text,
+                                  sentence_example_translated_en=sentence_example_translated_en_stub_text)
         self.assertEqual(expected, await self.prepare_data("Märkte"))
 
 
@@ -242,8 +247,8 @@ class GermanPrepareDataTestCase(unittest.IsolatedAsyncioTestCase):
                                   translated_en='fast',
                                   translated_ru='быстрый',
                                   noun_properties=None,
-                                  sentence_example='STUB',
-                                  sentence_example_translated_en='Stub')
+                                  sentence_example=sentence_example_stub_text,
+                                  sentence_example_translated_en=sentence_example_translated_en_stub_text)
         self.assertEqual(expected, await self.prepare_data("schnelle"))
 
     async def test_noun_with_mistake_given(self):
@@ -257,8 +262,8 @@ class GermanPrepareDataTestCase(unittest.IsolatedAsyncioTestCase):
                                   translated_en='to reclaim',
                                   translated_ru='вернуть',
                                   noun_properties=None,
-                                  sentence_example='STUB',
-                                  sentence_example_translated_en='Stub')
+                                  sentence_example=sentence_example_stub_text,
+                                  sentence_example_translated_en=sentence_example_translated_en_stub_text)
         self.assertEqual(expected, await self.prepare_data("empfelen"))
 
     async def test_reflexive_verb(self):
@@ -268,8 +273,8 @@ class GermanPrepareDataTestCase(unittest.IsolatedAsyncioTestCase):
                                   translated_en='to interested in',
                                   translated_ru='увлекающийся',
                                   noun_properties=None,
-                                  sentence_example='STUB',
-                                  sentence_example_translated_en='Stub')
+                                  sentence_example=sentence_example_stub_text,
+                                  sentence_example_translated_en=sentence_example_translated_en_stub_text)
         self.assertEqual(expected, await self.prepare_data('sich interessieren'))
 
     async def test_rare_adjective(self):
@@ -280,8 +285,8 @@ class GermanPrepareDataTestCase(unittest.IsolatedAsyncioTestCase):
                                   translated_en='perplexed',
                                   translated_ru='озадачен',
                                   noun_properties=None,
-                                  sentence_example='STUB',
-                                  sentence_example_translated_en='Stub')
+                                  sentence_example=sentence_example_stub_text,
+                                  sentence_example_translated_en=sentence_example_translated_en_stub_text)
         self.assertEqual(expected, await self.prepare_data("perplex"))
 
 
@@ -320,8 +325,8 @@ class EnglishPrepareDataTestCase(unittest.IsolatedAsyncioTestCase):
         expected = EnglishWordData(
             original_word='cat',
             translated='кот',
-            sentence_example='',
-            sentence_example_translated='',
+            sentence_example=sentence_example_stub_text,
+            sentence_example_translated=sentence_example_translated_ru_stub_text,
         )
         self.assertEqual(expected, await self.prepare_data("cat"))
 
@@ -329,8 +334,8 @@ class EnglishPrepareDataTestCase(unittest.IsolatedAsyncioTestCase):
         expected = EnglishWordData(
             original_word='swim',
             translated='плавать',
-            sentence_example='',
-            sentence_example_translated='',
+            sentence_example=sentence_example_stub_text,
+            sentence_example_translated=sentence_example_translated_ru_stub_text,
         )
         self.assertEqual(expected, await self.prepare_data("swim"))
 
@@ -338,8 +343,8 @@ class EnglishPrepareDataTestCase(unittest.IsolatedAsyncioTestCase):
         expected = EnglishWordData(
             original_word='to swim',
             translated='плавать',
-            sentence_example='',
-            sentence_example_translated='',
+            sentence_example=sentence_example_stub_text,
+            sentence_example_translated=sentence_example_translated_ru_stub_text,
         )
         self.assertEqual(expected, await self.prepare_data("to swim"))
 
@@ -347,8 +352,8 @@ class EnglishPrepareDataTestCase(unittest.IsolatedAsyncioTestCase):
         expected = EnglishWordData(
             original_word='cut off',
             translated='отрезать',
-            sentence_example='',
-            sentence_example_translated='',
+            sentence_example=sentence_example_stub_text,
+            sentence_example_translated=sentence_example_translated_ru_stub_text,
         )
         self.assertEqual(expected, await self.prepare_data("cut off"))
 
@@ -357,8 +362,8 @@ class EnglishPrepareDataTestCase(unittest.IsolatedAsyncioTestCase):
         expected = EnglishWordData(
             original_word='to cut off',
             translated='чтобы отрезать',
-            sentence_example='',
-            sentence_example_translated='',
+            sentence_example=sentence_example_stub_text,
+            sentence_example_translated=sentence_example_translated_ru_stub_text,
         )
         self.assertEqual(expected, await self.prepare_data("to cut off"))
 
@@ -366,8 +371,8 @@ class EnglishPrepareDataTestCase(unittest.IsolatedAsyncioTestCase):
         expected = EnglishWordData(
             original_word='miscellaneous',
             translated='разнообразный',
-            sentence_example='',
-            sentence_example_translated='',
+            sentence_example=sentence_example_stub_text,
+            sentence_example_translated=sentence_example_translated_ru_stub_text,
         )
         self.assertEqual(expected, await self.prepare_data("miscellaneous"))
 
@@ -375,8 +380,8 @@ class EnglishPrepareDataTestCase(unittest.IsolatedAsyncioTestCase):
         expected = EnglishWordData(
             original_word='miscellaneous',
             translated='смешанный, разнообразный',
-            sentence_example='',
-            sentence_example_translated='',
+            sentence_example=sentence_example_stub_text,
+            sentence_example_translated=sentence_example_translated_ru_stub_text,
         )
         self.assertEqual(expected, await prepare_data_for_english_word("miscellaneous", WordHints("смешанный, разнообразный"), stub_llm=True))
 
