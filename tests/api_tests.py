@@ -4,7 +4,7 @@ import unittest
 from main import app
 
 
-class ApiEndpointGenerateCardsFileTestCase(unittest.TestCase):
+class ApiEndpointsTestCase(unittest.TestCase):
     def setUp(self):
         self.app = app.test_client()
         self.app.testing = True
@@ -31,3 +31,7 @@ class ApiEndpointGenerateCardsFileTestCase(unittest.TestCase):
     def test_not_supported_language(self):
         response = self.do_request({'words': ['katt'], 'language': 'sv'})
         self.assertEqual(response.status_code, 400)
+
+    def test_home_page_ok_response(self):
+        res = self.app.get('/')
+        self.assertEqual(200, res.status_code)
