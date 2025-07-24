@@ -9,16 +9,21 @@ from src.anki_common import get_audio_file_name_for_phrase, get_audio_file_name_
 from src.english_data_extract import prepare_data_for_english_word, EnglishWordData
 from src.german_anki_generate import shorten_german_noun_plural_form_for_anki_card
 from src.german_data_extract import GermanWordData, PartOfSpeech
+from src.llm_interact import override_global_llm_provider_for_test
 from src.translate import translate_text
 from src.word_hints import WordHints
+from stub_llm_provider import StubLlmProvider
 
-sentence_example_stub_text: Final[str] = ""
-sentence_example_translated_en_stub_text: Final[str] = ""
-sentence_example_translated_ru_stub_text: Final[str] = ""
+sentence_example_stub_text: Final[str] = "." * 50
+sentence_example_translated_en_stub_text: Final[str] = sentence_example_stub_text
+sentence_example_translated_ru_stub_text: Final[str] = sentence_example_stub_text
 
 
 @pytest.mark.asyncio(loop_scope="class")
 class TestGermanPrepareData:
+    def setup_method(self) -> None:
+        override_global_llm_provider_for_test(StubLlmProvider(sentence_example_stub_text))
+
     async def test_empty_string(self):
         with pytest.raises(ValueError):
             await self.prepare_data("")
@@ -195,7 +200,8 @@ class TestGermanPrepareData:
             sentence_example_translated_en=sentence_example_translated_en_stub_text,
         )
         assert expected == await src.german_data_extract.prepare_data_for_german_word(
-            "lustig", hints=WordHints("смешной, весёлый"), stub_ai=True
+            "lustig",
+            hints=WordHints("смешной, весёлый"),
         )
 
     async def test_preposition(self):
@@ -316,7 +322,7 @@ class TestGermanPrepareData:
         assert expected == await self.prepare_data("perplex")
 
     async def prepare_data(self, word: str) -> src.german_data_extract.GermanWordData:
-        return await src.german_data_extract.prepare_data_for_german_word(word, hints=WordHints(""), stub_ai=True)
+        return await src.german_data_extract.prepare_data_for_german_word(word, hints=WordHints(""))
 
 
 class TestGermanShortenPluralForm:
@@ -339,6 +345,9 @@ class TestGermanShortenPluralForm:
 
 @pytest.mark.asyncio(loop_scope="class")
 class TestEnglishPrepareData:
+    def setup_method(self) -> None:
+        override_global_llm_provider_for_test(StubLlmProvider(sentence_example_stub_text))
+
     async def test_empty_word(self):
         with pytest.raises(ValueError):
             await self.prepare_data("")
@@ -408,12 +417,10 @@ class TestEnglishPrepareData:
             sentence_example=sentence_example_stub_text,
             sentence_example_translated=sentence_example_translated_ru_stub_text,
         )
-        assert expected == await prepare_data_for_english_word(
-            "miscellaneous", WordHints("смешанный, разнообразный"), stub_llm=True
-        )
+        assert expected == await prepare_data_for_english_word("miscellaneous", WordHints("смешанный, разнообразный"))
 
     async def prepare_data(self, word: str) -> EnglishWordData:
-        return await prepare_data_for_english_word(word, hints=WordHints(""), stub_llm=True)
+        return await prepare_data_for_english_word(word, hints=WordHints(""))
 
 
 @pytest.mark.asyncio(loop_scope="class")

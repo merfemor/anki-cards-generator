@@ -102,14 +102,12 @@ def strip_noun_article(word: str) -> str:
     return word
 
 
-async def prepare_data_for_german_word(
-    original_word_or_phrase: str, hints: WordHints, stub_ai: bool = False
-) -> GermanWordData:
+async def prepare_data_for_german_word(original_word_or_phrase: str, hints: WordHints) -> GermanWordData:
     word_or_phrase = strip_noun_article(original_word_or_phrase)
     check(len(word_or_phrase.strip()) > 0, "Expected non empty word_or_phrase")
 
     if not is_single_word(word_or_phrase):
-        return await prepare_data_for_german_phrase(word_or_phrase, hints, stub_ai=stub_ai)
+        return await prepare_data_for_german_phrase(word_or_phrase, hints)
 
     word = word_or_phrase
 
@@ -138,12 +136,7 @@ async def prepare_data_for_german_word(
         )
         word_infinitive_with_article = f"{noun_properties.article} {word_infinitive}"
 
-    if stub_ai:
-        german_sentence_example = ""
-    else:
-        german_sentence_example = await generate_sentence_example_with_llm(
-            word_infinitive_with_article, language="German"
-        )
+    german_sentence_example = await generate_sentence_example_with_llm(word_infinitive_with_article, language="German")
     sentence_example_translated_en = await translate_text(german_sentence_example, src="de", dest="en")
 
     return GermanWordData(
@@ -158,11 +151,8 @@ async def prepare_data_for_german_word(
     )
 
 
-async def prepare_data_for_german_phrase(phrase: str, hints: WordHints, stub_ai: bool = False) -> GermanWordData:
-    if stub_ai:
-        german_sentence_example = ""
-    else:
-        german_sentence_example = await generate_sentence_example_with_llm(phrase, language="German")
+async def prepare_data_for_german_phrase(phrase: str, hints: WordHints) -> GermanWordData:
+    german_sentence_example = await generate_sentence_example_with_llm(phrase, language="German")
 
     return GermanWordData(
         word_infinitive=phrase,

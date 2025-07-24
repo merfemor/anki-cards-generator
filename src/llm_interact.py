@@ -74,3 +74,8 @@ def set_global_llm_provider(provider: str) -> None:
     logging.info(f"Using LLM provider {provider}")
     factory = __LLM_PROVIDER_FACTORIES[provider]
     __LLM_PROVIDER = factory()
+
+
+def override_global_llm_provider_for_test(llm_provider: LlmProvider) -> None:
+    global __LLM_PROVIDER
+    __LLM_PROVIDER = llm_provider

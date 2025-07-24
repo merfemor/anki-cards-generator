@@ -14,13 +14,10 @@ class EnglishWordData:
     sentence_example_translated: str
 
 
-async def prepare_data_for_english_word(word: str, hints: WordHints, stub_llm: bool = False) -> EnglishWordData:
+async def prepare_data_for_english_word(word: str, hints: WordHints) -> EnglishWordData:
     check(len(word.strip()) > 0, "Expected non empty word")
 
-    if stub_llm:
-        en_sentence_example = ""
-    else:
-        en_sentence_example = await generate_sentence_example_with_llm(word, language="English")
+    en_sentence_example = await generate_sentence_example_with_llm(word, language="English")
 
     if hints.translated_ru:
         translated = hints.translated_ru
