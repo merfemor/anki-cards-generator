@@ -23,27 +23,27 @@ app = Flask(__name__)
 def setup_logging() -> None:
     logging.basicConfig(
         level=logging.INFO,
-        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-        handlers=[logging.StreamHandler(sys.stdout)]
+        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+        handlers=[logging.StreamHandler(sys.stdout)],
     )
     logging.getLogger("httpx").setLevel(logging.CRITICAL)
 
 
 def parse_hints_from_dict(word_with_context: dict[str, dict[str, str]]) -> WordHints:
-    hints: dict[str, str] = word_with_context.get('hints', {})
-    translated_ru: str = hints.get('translated_ru', "")
+    hints: dict[str, str] = word_with_context.get("hints", {})
+    translated_ru: str = hints.get("translated_ru", "")
     return WordHints(translated_ru)
 
 
-@app.route('/api/generateCardsFile', methods=['POST'])
+@app.route("/api/generateCardsFile", methods=["POST"])
 async def generate_cards_file() -> Tuple[Response, int] | Response:
-    words_with_hints = request.get_json().get('words', [])
+    words_with_hints = request.get_json().get("words", [])
     if not words_with_hints:
-        return jsonify({'error': 'The "words" list cannot be empty'}), 400
+        return jsonify({"error": 'The "words" list cannot be empty'}), 400
 
-    language = request.get_json().get('language')
+    language = request.get_json().get("language")
 
-    if language == 'de':
+    if language == "de":
         logging.info(f"Preparing German card data for the words {words_with_hints}")
         return await common_generate_cards_file(
             words_with_hints,
@@ -51,29 +51,29 @@ async def generate_cards_file() -> Tuple[Response, int] | Response:
             export_fn=src.german_anki_generate.export_results_to_anki_deck,
             file_suffix="to_import_german_anki_generated.apkg",
         )
-    elif language == 'en':
+    elif language == "en":
         logging.info(f"Preparing English card data for the words {words_with_hints}")
         return await common_generate_cards_file(
             words_with_hints,
             prepare_data_fn=prepare_data_for_english_word,
             export_fn=src.english_anki_generate.export_results_to_anki_deck,
-            file_suffix="to_import_english_anki_generated.apkg"
+            file_suffix="to_import_english_anki_generated.apkg",
         )
     else:
-        return jsonify({'error': f"Expected language to be one of 'en', 'de', but got '{language}'"}), 400
+        return jsonify({"error": f"Expected language to be one of 'en', 'de', but got '{language}'"}), 400
 
 
 async def common_generate_cards_file[WD: GermanWordData | EnglishWordData](
-        words_with_hints: list[dict[str, Any]],
-        prepare_data_fn: Callable[[str, WordHints], Coroutine[None, None, WD]],
-        export_fn: Callable[[list[WD], str], None],
-        file_suffix: str,
+    words_with_hints: list[dict[str, Any]],
+    prepare_data_fn: Callable[[str, WordHints], Coroutine[None, None, WD]],
+    export_fn: Callable[[list[WD], str], None],
+    file_suffix: str,
 ) -> Tuple[Response, int] | Response:
     tasks = []
     for word_with_hints in words_with_hints:
-        word: str = word_with_hints.get('word', "")
+        word: str = word_with_hints.get("word", "")
         if not word:
-            return jsonify({'error': f"The word is not specified for the word {word}"}), 400
+            return jsonify({"error": f"The word is not specified for the word {word}"}), 400
 
         hints = parse_hints_from_dict(word_with_hints)
         task = asyncio.create_task(prepare_data_fn(word, hints))
@@ -84,24 +84,29 @@ async def common_generate_cards_file[WD: GermanWordData | EnglishWordData](
     with tempfile.NamedTemporaryFile(delete=False, suffix=file_suffix) as temp_file:
         deck_filename = temp_file.name
 
-    logging.info(f"Exporting the results into the temporary Anki deck file \"{deck_filename}\"")
+    logging.info(f'Exporting the results into the temporary Anki deck file "{deck_filename}"')
     try:
         export_fn(results, deck_filename)
 
-        response = send_file(deck_filename, as_attachment=True, download_name=os.path.basename(deck_filename),
-                             mimetype='application/octet-stream')
+        response = send_file(
+            deck_filename,
+            as_attachment=True,
+            download_name=os.path.basename(deck_filename),
+            mimetype="application/octet-stream",
+        )
         return response
     finally:
         if os.path.exists(deck_filename):
             os.remove(deck_filename)
-            logging.info(f"Removed temporary Anki deck file \"{deck_filename}\"")
+            logging.info(f'Removed temporary Anki deck file "{deck_filename}"')
 
-@app.route("/", methods=['GET'])
+
+@app.route("/", methods=["GET"])
 def home() -> str:
     return render_template("index.html")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     load_dotenv()
     setup_logging()
     args = parse_arguments()

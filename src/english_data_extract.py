@@ -31,5 +31,5 @@ async def prepare_data_for_english_word(word: str, hints: WordHints, stub_llm: b
         original_word=word,
         translated=translated,
         sentence_example=en_sentence_example,
-        sentence_example_translated=await translate_text(en_sentence_example, src="en", dest="ru")
+        sentence_example_translated=await translate_text(en_sentence_example, src="en", dest="ru"),
     )

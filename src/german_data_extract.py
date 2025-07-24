@@ -11,7 +11,7 @@ from src.translate import translate_text
 from src.utils import check
 from src.word_hints import WordHints
 
-_pos_tagger_de = HanoverTagger('morphmodel_ger.pgz')
+_pos_tagger_de = HanoverTagger("morphmodel_ger.pgz")
 _german_nouns_obj: Final[german_nouns.lookup.Nouns] = german_nouns.lookup.Nouns()
 
 
@@ -33,10 +33,10 @@ def get_extra_noun_info(word: str) -> Tuple[str, str, str]:
     result = _german_nouns_obj[word]
 
     if len(result) == 0:
-        raise NotImplementedError(f"No noun info for word \"{word}\"")
+        raise NotImplementedError(f'No noun info for word "{word}"')
 
     flexion = result[0]["flexion"]
-    genus = result[0].get('genus', "pl")
+    genus = result[0].get("genus", "pl")
 
     if "nominativ plural" in flexion:
         plural = flexion["nominativ plural"]
@@ -47,7 +47,7 @@ def get_extra_noun_info(word: str) -> Tuple[str, str, str]:
     return flexion.get("nominativ singular", ""), plural, genus
 
 
-def get_article_for_german_genus(genus: str) -> Literal['der', 'die', 'das']:
+def get_article_for_german_genus(genus: str) -> Literal["der", "die", "das"]:
     match genus:
         case "m":
             return "der"
@@ -76,10 +76,12 @@ class GermanNounProperties:
     singular_form: str
     plural_form: str
     genus: str
-    article: Literal['der', 'die', 'das']
+    article: Literal["der", "die", "das"]
 
     def __post_init__(self) -> None:
-        check(self.singular_form != "" or self.plural_form != "", "Either singular_form or plural_form must be not empty")
+        check(
+            self.singular_form != "" or self.plural_form != "", "Either singular_form or plural_form must be not empty"
+        )
 
 
 @dataclass
@@ -100,8 +102,9 @@ def strip_noun_article(word: str) -> str:
     return word
 
 
-async def prepare_data_for_german_word(original_word_or_phrase: str, hints: WordHints,
-                                 stub_ai: bool = False) -> GermanWordData:
+async def prepare_data_for_german_word(
+    original_word_or_phrase: str, hints: WordHints, stub_ai: bool = False
+) -> GermanWordData:
     word_or_phrase = strip_noun_article(original_word_or_phrase)
     check(len(word_or_phrase.strip()) > 0, "Expected non empty word_or_phrase")
 
@@ -138,7 +141,9 @@ async def prepare_data_for_german_word(original_word_or_phrase: str, hints: Word
     if stub_ai:
         german_sentence_example = ""
     else:
-        german_sentence_example = await generate_sentence_example_with_llm(word_infinitive_with_article, language="German")
+        german_sentence_example = await generate_sentence_example_with_llm(
+            word_infinitive_with_article, language="German"
+        )
     sentence_example_translated_en = await translate_text(german_sentence_example, src="de", dest="en")
 
     return GermanWordData(
@@ -149,7 +154,7 @@ async def prepare_data_for_german_word(original_word_or_phrase: str, hints: Word
         translated_ru=await translate_de_to_ru(word_infinitive_with_article, hints),
         noun_properties=noun_properties,
         sentence_example=german_sentence_example,
-        sentence_example_translated_en=sentence_example_translated_en
+        sentence_example_translated_en=sentence_example_translated_en,
     )
 
 
@@ -180,12 +185,10 @@ async def translate_de_to_ru(text: str, hints: WordHints) -> str:
 
 async def translate_de_to_en(text: str, part_of_speech: PartOfSpeech) -> str:
     translation = (await translate_text(text, src="de", dest="en")).lower()
-    return post_process_en_translation(
-        translation,
-        part_of_speech)
+    return post_process_en_translation(translation, part_of_speech)
 
 
 def is_single_word(word_or_phrase: str) -> bool:
     if word_or_phrase.startswith("sich "):
         word_or_phrase = word_or_phrase[5:].strip()
-    return ' ' not in word_or_phrase
+    return " " not in word_or_phrase

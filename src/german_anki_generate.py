@@ -16,8 +16,8 @@ from src.utils import check
 _GENERATED_DECK_ID: Final[int] = 2059400110
 _ANKI_MODEL_ID: Final[int] = 1607392319
 
-_GENERATED_DECK_NAME: Final[str] = '[Anki Cards Generator] – GENERATED GERMAN'
-_ANKI_MODEL_NAME: Final[str] = '[Anki Cards Generator] German with Sentence and Article'
+_GENERATED_DECK_NAME: Final[str] = "[Anki Cards Generator] – GENERATED GERMAN"
+_ANKI_MODEL_NAME: Final[str] = "[Anki Cards Generator] German with Sentence and Article"
 
 
 def _get_anki_card_model(model_id: int = _ANKI_MODEL_ID, model_name: str = _ANKI_MODEL_NAME) -> genanki.Model:
@@ -41,41 +41,59 @@ def _get_anki_card_model(model_id: int = _ANKI_MODEL_ID, model_name: str = _ANKI
         model_id,
         model_name,
         fields=[
-            {'name': 'word_de'},
-            {'name': 'word_de_article'},
-            {'name': 'word_translated'},
-            {'name': 'sentence_de'},
-            {'name': 'sentence_translated'},
-            {'name': 'word_audio'},
-            {'name': 'sentence_audio'},
+            {"name": "word_de"},
+            {"name": "word_de_article"},
+            {"name": "word_translated"},
+            {"name": "sentence_de"},
+            {"name": "sentence_translated"},
+            {"name": "word_audio"},
+            {"name": "sentence_audio"},
         ],
         templates=[
             {
-                'name': 'Card 1',
-                'qfmt': '{{word_de_article}} {{word_de}} {{word_audio}}',
-                'afmt': CARD_1_ANSWER,
+                "name": "Card 1",
+                "qfmt": "{{word_de_article}} {{word_de}} {{word_audio}}",
+                "afmt": CARD_1_ANSWER,
             },
             {
-                'name': 'Card 2',
-                'qfmt': '{{word_translated}}',
-                'afmt': CARD_2_ANSWER,
-            }
+                "name": "Card 2",
+                "qfmt": "{{word_translated}}",
+                "afmt": CARD_2_ANSWER,
+            },
         ],
-        css=ANKI_CARD_CSS)
+        css=ANKI_CARD_CSS,
+    )
 
 
-def _create_anki_note(model: genanki.Model, word_de: str, word_de_article: str, word_translated: str, sentence_de: str,
-                      sentence_translated: str, word_audio: str, sentence_audio: str) -> genanki.Note:
+def _create_anki_note(
+    model: genanki.Model,
+    word_de: str,
+    word_de_article: str,
+    word_translated: str,
+    sentence_de: str,
+    sentence_translated: str,
+    word_audio: str,
+    sentence_audio: str,
+) -> genanki.Note:
     check("/" not in word_audio, f"Audio must be a simple file name, not a path, but got word audio={word_audio}")
-    check("/" not in sentence_audio,
-          f"Audio must be a simple file name, not a path, but got sentence audio={word_audio}")
+    check(
+        "/" not in sentence_audio, f"Audio must be a simple file name, not a path, but got sentence audio={word_audio}"
+    )
 
     word_audio = f"[sound:{word_audio}]"
     sentence_audio = f"[sound:{sentence_audio}]"
     return genanki.Note(
         model=model,
-        fields=[word_de, word_de_article, word_translated, sentence_de, sentence_translated, word_audio,
-                sentence_audio])
+        fields=[
+            word_de,
+            word_de_article,
+            word_translated,
+            sentence_de,
+            sentence_translated,
+            word_audio,
+            sentence_audio,
+        ],
+    )
 
 
 def shorten_german_noun_plural_form_for_anki_card(word_singular: str, word_plural: str) -> str:
@@ -92,13 +110,14 @@ def shorten_german_noun_plural_form_for_anki_card(word_singular: str, word_plura
     if word_singular == word_plural:
         return "="
     elif word_plural.startswith(word_singular):
-        return "-" + word_plural[len(word_singular):]
+        return "-" + word_plural[len(word_singular) :]
     else:
         return "die " + word_plural
 
 
-def export_results_to_anki_deck(results: list[GermanWordData], deck_filename: str,
-                                deck_name: str = _GENERATED_DECK_NAME) -> None:
+def export_results_to_anki_deck(
+    results: list[GermanWordData], deck_filename: str, deck_name: str = _GENERATED_DECK_NAME
+) -> None:
     check(deck_filename.endswith(".apkg"), f"Expected deck filename to have .apkg extension, but got {deck_filename}")
 
     my_model = _get_anki_card_model()
@@ -117,8 +136,9 @@ def export_results_to_anki_deck(results: list[GermanWordData], deck_filename: st
         pkg.write_to_file(deck_filename)
 
 
-def _create_anki_note_for_german_word_data(r: GermanWordData, model: genanki.Model, all_media_files: list[str],
-                                           temp_dir: str) -> Note:
+def _create_anki_note_for_german_word_data(
+    r: GermanWordData, model: genanki.Model, all_media_files: list[str], temp_dir: str
+) -> Note:
     word_translated = f"{r.translated_ru}, {r.translated_en}"
     word_de_for_card = r.word_infinitive
     word_audio_text = r.word_infinitive
@@ -136,8 +156,9 @@ def _create_anki_note_for_german_word_data(r: GermanWordData, model: genanki.Mod
         elif not noun_props.singular_form:
             word_de_for_card = f"{r.word_infinitive} (Pl.)"
         else:
-            shortened_plural_form = shorten_german_noun_plural_form_for_anki_card(noun_props.singular_form,
-                                                                                  noun_props.plural_form)
+            shortened_plural_form = shorten_german_noun_plural_form_for_anki_card(
+                noun_props.singular_form, noun_props.plural_form
+            )
             word_de_for_card = f"{r.word_infinitive}, {shortened_plural_form}"
 
         word_article = noun_props.article

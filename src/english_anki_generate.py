@@ -15,8 +15,8 @@ from src.utils import check
 _GENERATED_DECK_ID: Final[int] = 2059400111
 _ANKI_MODEL_ID: Final[int] = 1607392320
 
-_GENERATED_DECK_NAME: Final[str] = '[Anki Cards Generator] – GENERATED ENGLISH'
-_ANKI_MODEL_NAME: Final[str] = '[Anki Cards Generator] Basic With Sentence'
+_GENERATED_DECK_NAME: Final[str] = "[Anki Cards Generator] – GENERATED ENGLISH"
+_ANKI_MODEL_NAME: Final[str] = "[Anki Cards Generator] Basic With Sentence"
 
 
 def _get_anki_card_model(model_id: int = _ANKI_MODEL_ID, model_name: str = _ANKI_MODEL_NAME) -> genanki.Model:
@@ -40,44 +40,55 @@ def _get_anki_card_model(model_id: int = _ANKI_MODEL_ID, model_name: str = _ANKI
         model_id,
         model_name,
         fields=[
-            {'name': 'word'},
-            {'name': 'word_translated'},
-            {'name': 'sentence'},
-            {'name': 'sentence_translated'},
-            {'name': 'word_audio'},
-            {'name': 'sentence_audio'},
+            {"name": "word"},
+            {"name": "word_translated"},
+            {"name": "sentence"},
+            {"name": "sentence_translated"},
+            {"name": "word_audio"},
+            {"name": "sentence_audio"},
         ],
         templates=[
             {
-                'name': 'Card 1',
-                'qfmt': '{{word}} {{word_audio}}',
-                'afmt': CARD_1_ANSWER,
+                "name": "Card 1",
+                "qfmt": "{{word}} {{word_audio}}",
+                "afmt": CARD_1_ANSWER,
             },
             {
-                'name': 'Card 2',
-                'qfmt': '{{word_translated}}',
-                'afmt': CARD_2_ANSWER,
-            }
+                "name": "Card 2",
+                "qfmt": "{{word_translated}}",
+                "afmt": CARD_2_ANSWER,
+            },
         ],
-        css=ANKI_CARD_CSS)
+        css=ANKI_CARD_CSS,
+    )
 
 
-def _create_anki_note(model: genanki.Model, data: EnglishWordData, word_audio: str,
-                      sentence_audio: str) -> genanki.Note:
+def _create_anki_note(
+    model: genanki.Model, data: EnglishWordData, word_audio: str, sentence_audio: str
+) -> genanki.Note:
     check("/" not in word_audio, f"Audio must be a simple file name, not a path, but got word audio={word_audio}")
-    check("/" not in sentence_audio,
-          f"Audio must be a simple file name, not a path, but got sentence audio={word_audio}")
+    check(
+        "/" not in sentence_audio, f"Audio must be a simple file name, not a path, but got sentence audio={word_audio}"
+    )
 
     word_audio = f"[sound:{word_audio}]"
     sentence_audio = f"[sound:{sentence_audio}]"
     return genanki.Note(
         model=model,
-        fields=[data.original_word, data.translated, data.sentence_example, data.sentence_example_translated,
-                word_audio, sentence_audio])
+        fields=[
+            data.original_word,
+            data.translated,
+            data.sentence_example,
+            data.sentence_example_translated,
+            word_audio,
+            sentence_audio,
+        ],
+    )
 
 
-def export_results_to_anki_deck(results: list[EnglishWordData], deck_filename: str,
-                                deck_name: str = _GENERATED_DECK_NAME) -> None:
+def export_results_to_anki_deck(
+    results: list[EnglishWordData], deck_filename: str, deck_name: str = _GENERATED_DECK_NAME
+) -> None:
     check(deck_filename.endswith(".apkg"), f"Expected deck filename to have .apkg extension, but got {deck_filename}")
 
     my_model = _get_anki_card_model()

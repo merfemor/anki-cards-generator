@@ -31,8 +31,8 @@ class OllamaLlmProvider(LlmProvider):
 
     async def ask_llm(self, prompt: str) -> str:
         # Set top_k to have more conservative answers
-        res = await self.client.generate(model='llama3.1:8b', prompt=prompt, options={"top_k": 20})
-        response_text: str = res['response']
+        res = await self.client.generate(model="llama3.1:8b", prompt=prompt, options={"top_k": 20})
+        response_text: str = res["response"]
         return response_text
 
     @staticmethod

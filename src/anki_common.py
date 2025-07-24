@@ -18,4 +18,4 @@ def _get_audio_file_name_for_common(phrase: str, lang: str, content_type: str) -
 
 
 def _generate_random_string(length: int) -> str:
-    return ''.join(random.choices(string.ascii_letters + string.digits, k=length))
+    return "".join(random.choices(string.ascii_letters + string.digits, k=length))
