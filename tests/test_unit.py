@@ -1,6 +1,7 @@
 import random
 from typing import Final
-import unittest
+
+import pytest
 
 import src.german_data_extract
 import src.utils
@@ -16,29 +17,30 @@ sentence_example_translated_en_stub_text: Final[str] = ""
 sentence_example_translated_ru_stub_text: Final[str] = ""
 
 
-class GermanPrepareDataTestCase(unittest.IsolatedAsyncioTestCase):
+@pytest.mark.asyncio(loop_scope="class")
+class TestGermanPrepareData:
     async def test_empty_string(self):
-        with self.assertRaises(ValueError):
+        with pytest.raises(ValueError):
             await self.prepare_data("")
 
     async def test_spaces_string(self):
-        with self.assertRaises(ValueError):
+        with pytest.raises(ValueError):
             await self.prepare_data("   ")
 
     async def test_non_words_symbol(self):
-        with self.assertRaises(ValueError):
+        with pytest.raises(ValueError):
             await self.prepare_data("$")
 
     async def test_non_words_dot(self):
-        with self.assertRaises(ValueError):
+        with pytest.raises(ValueError):
             await self.prepare_data(".")
 
     async def test_non_words_comma(self):
-        with self.assertRaises(ValueError):
+        with pytest.raises(ValueError):
             await self.prepare_data(",")
 
     async def test_non_words_dash(self):
-        with self.assertRaises(ValueError):
+        with pytest.raises(ValueError):
             await self.prepare_data("-")
 
     async def test_noun_feminine(self):
@@ -54,7 +56,7 @@ class GermanPrepareDataTestCase(unittest.IsolatedAsyncioTestCase):
             sentence_example=sentence_example_stub_text,
             sentence_example_translated_en=sentence_example_translated_en_stub_text,
         )
-        self.assertEqual(expected, await self.prepare_data("Katze"))
+        assert expected == await self.prepare_data("Katze")
 
     async def test_noun_no_plural(self):
         expected = GermanWordData(
@@ -69,7 +71,7 @@ class GermanPrepareDataTestCase(unittest.IsolatedAsyncioTestCase):
             sentence_example=sentence_example_stub_text,
             sentence_example_translated_en=sentence_example_translated_en_stub_text,
         )
-        self.assertEqual(expected, await self.prepare_data("Schnee"))
+        assert expected == await self.prepare_data("Schnee")
 
     async def test_noun_two_plural(self):
         expected = GermanWordData(
@@ -84,7 +86,7 @@ class GermanPrepareDataTestCase(unittest.IsolatedAsyncioTestCase):
             sentence_example=sentence_example_stub_text,
             sentence_example_translated_en=sentence_example_translated_en_stub_text,
         )
-        self.assertEqual(expected, await self.prepare_data("Band"))
+        assert expected == await self.prepare_data("Band")
 
     async def test_noun_no_singular(self):
         expected = GermanWordData(
@@ -99,7 +101,7 @@ class GermanPrepareDataTestCase(unittest.IsolatedAsyncioTestCase):
             sentence_example=sentence_example_stub_text,
             sentence_example_translated_en=sentence_example_translated_en_stub_text,
         )
-        self.assertEqual(expected, await self.prepare_data("Ferien"))
+        assert expected == await self.prepare_data("Ferien")
 
     async def test_noun_ambiguity_with_verb(self):
         expected = GermanWordData(
@@ -114,7 +116,7 @@ class GermanPrepareDataTestCase(unittest.IsolatedAsyncioTestCase):
             sentence_example=sentence_example_stub_text,
             sentence_example_translated_en=sentence_example_translated_en_stub_text,
         )
-        self.assertEqual(expected, await self.prepare_data("Schwimmen"))
+        assert expected == await self.prepare_data("Schwimmen")
 
     async def test_verb(self):
         expected = GermanWordData(
@@ -127,7 +129,7 @@ class GermanPrepareDataTestCase(unittest.IsolatedAsyncioTestCase):
             sentence_example=sentence_example_stub_text,
             sentence_example_translated_en=sentence_example_translated_en_stub_text,
         )
-        self.assertEqual(expected, await self.prepare_data("schlafen"))
+        assert expected == await self.prepare_data("schlafen")
 
     async def test_adjective(self):
         expected = GermanWordData(
@@ -140,7 +142,7 @@ class GermanPrepareDataTestCase(unittest.IsolatedAsyncioTestCase):
             sentence_example=sentence_example_stub_text,
             sentence_example_translated_en=sentence_example_translated_en_stub_text,
         )
-        self.assertEqual(expected, await self.prepare_data("lustig"))
+        assert expected == await self.prepare_data("lustig")
 
     async def test_subordinating_conjunction(self):
         expected = GermanWordData(
@@ -153,7 +155,7 @@ class GermanPrepareDataTestCase(unittest.IsolatedAsyncioTestCase):
             sentence_example=sentence_example_stub_text,
             sentence_example_translated_en=sentence_example_translated_en_stub_text,
         )
-        self.assertEqual(expected, await self.prepare_data("obgleich"))
+        assert expected == await self.prepare_data("obgleich")
 
     async def test_coordinating_conjunction(self):
         expected = GermanWordData(
@@ -166,7 +168,7 @@ class GermanPrepareDataTestCase(unittest.IsolatedAsyncioTestCase):
             sentence_example=sentence_example_stub_text,
             sentence_example_translated_en=sentence_example_translated_en_stub_text,
         )
-        self.assertEqual(expected, await self.prepare_data("und"))
+        assert expected == await self.prepare_data("und")
 
     async def test_adverb(self):
         expected = GermanWordData(
@@ -179,7 +181,7 @@ class GermanPrepareDataTestCase(unittest.IsolatedAsyncioTestCase):
             sentence_example=sentence_example_stub_text,
             sentence_example_translated_en=sentence_example_translated_en_stub_text,
         )
-        self.assertEqual(expected, await self.prepare_data("gerade"))
+        assert expected == await self.prepare_data("gerade")
 
     async def test_with_hint(self):
         expected = GermanWordData(
@@ -192,11 +194,8 @@ class GermanPrepareDataTestCase(unittest.IsolatedAsyncioTestCase):
             sentence_example=sentence_example_stub_text,
             sentence_example_translated_en=sentence_example_translated_en_stub_text,
         )
-        self.assertEqual(
-            expected,
-            await src.german_data_extract.prepare_data_for_german_word(
-                "lustig", hints=WordHints("смешной, весёлый"), stub_ai=True
-            ),
+        assert expected == await src.german_data_extract.prepare_data_for_german_word(
+            "lustig", hints=WordHints("смешной, весёлый"), stub_ai=True
         )
 
     async def test_preposition(self):
@@ -210,7 +209,7 @@ class GermanPrepareDataTestCase(unittest.IsolatedAsyncioTestCase):
             sentence_example=sentence_example_stub_text,
             sentence_example_translated_en=sentence_example_translated_en_stub_text,
         )
-        self.assertEqual(expected, await self.prepare_data("durch"))
+        assert expected == await self.prepare_data("durch")
 
     async def test_collocation(self):
         expected = GermanWordData(
@@ -223,10 +222,10 @@ class GermanPrepareDataTestCase(unittest.IsolatedAsyncioTestCase):
             sentence_example=sentence_example_stub_text,
             sentence_example_translated_en=sentence_example_translated_en_stub_text,
         )
-        self.assertEqual(expected, await self.prepare_data("eine Entscheidung treffen"))
+        assert expected == await self.prepare_data("eine Entscheidung treffen")
 
     async def test_rare_compound_word(self):
-        with self.assertRaises(NotImplementedError):
+        with pytest.raises(NotImplementedError):
             await self.prepare_data("Kuddelmuddelkiste")
 
     async def test_noun_with_article_given(self):
@@ -242,7 +241,7 @@ class GermanPrepareDataTestCase(unittest.IsolatedAsyncioTestCase):
             sentence_example=sentence_example_stub_text,
             sentence_example_translated_en=sentence_example_translated_en_stub_text,
         )
-        self.assertEqual(expected, await self.prepare_data("die Katze"))
+        assert expected == await self.prepare_data("die Katze")
 
     async def test_noun_in_plural_given(self):
         expected = GermanWordData(
@@ -257,7 +256,7 @@ class GermanPrepareDataTestCase(unittest.IsolatedAsyncioTestCase):
             sentence_example=sentence_example_stub_text,
             sentence_example_translated_en=sentence_example_translated_en_stub_text,
         )
-        self.assertEqual(expected, await self.prepare_data("Märkte"))
+        assert expected == await self.prepare_data("Märkte")
 
     async def test_adjective_conjugated_given(self):
         expected = GermanWordData(
@@ -270,10 +269,10 @@ class GermanPrepareDataTestCase(unittest.IsolatedAsyncioTestCase):
             sentence_example=sentence_example_stub_text,
             sentence_example_translated_en=sentence_example_translated_en_stub_text,
         )
-        self.assertEqual(expected, await self.prepare_data("schnelle"))
+        assert expected == await self.prepare_data("schnelle")
 
     async def test_noun_with_mistake_given(self):
-        with self.assertRaises(NotImplementedError):
+        with pytest.raises(NotImplementedError):
             await self.prepare_data("Erfarung")
 
     async def test_verb_with_mistake_given(self):
@@ -287,7 +286,7 @@ class GermanPrepareDataTestCase(unittest.IsolatedAsyncioTestCase):
             sentence_example=sentence_example_stub_text,
             sentence_example_translated_en=sentence_example_translated_en_stub_text,
         )
-        self.assertEqual(expected, await self.prepare_data("empfelen"))
+        assert expected == await self.prepare_data("empfelen")
 
     async def test_reflexive_verb(self):
         expected = GermanWordData(
@@ -300,7 +299,7 @@ class GermanPrepareDataTestCase(unittest.IsolatedAsyncioTestCase):
             sentence_example=sentence_example_stub_text,
             sentence_example_translated_en=sentence_example_translated_en_stub_text,
         )
-        self.assertEqual(expected, await self.prepare_data("sich interessieren"))
+        assert expected == await self.prepare_data("sich interessieren")
 
     async def test_rare_adjective(self):
         # Identified as FM = Fremdsprachliches Material
@@ -314,37 +313,38 @@ class GermanPrepareDataTestCase(unittest.IsolatedAsyncioTestCase):
             sentence_example=sentence_example_stub_text,
             sentence_example_translated_en=sentence_example_translated_en_stub_text,
         )
-        self.assertEqual(expected, await self.prepare_data("perplex"))
+        assert expected == await self.prepare_data("perplex")
 
     async def prepare_data(self, word: str) -> src.german_data_extract.GermanWordData:
         return await src.german_data_extract.prepare_data_for_german_word(word, hints=WordHints(""), stub_ai=True)
 
 
-class GermanShortenPluralForm(unittest.TestCase):
-    async def test_simple_ung(self):
+class TestGermanShortenPluralForm:
+    def test_simple_ung(self):
         res = shorten_german_noun_plural_form_for_anki_card("Wohnung", "Wohnungen")
-        self.assertEqual("-en", res)
+        assert "-en" == res
 
-    async def test_common_prefix(self):
+    def test_common_prefix(self):
         res = shorten_german_noun_plural_form_for_anki_card("Zeugnis", "Zeugnisse")
-        self.assertEqual("-se", res)
+        assert "-se" == res
 
-    async def test_same(self):
+    def test_same(self):
         res = shorten_german_noun_plural_form_for_anki_card("Lehrer", "Lehrer")
-        self.assertEqual("=", res)
+        assert "=" == res
 
-    async def test_umlaut(self):
+    def test_umlaut(self):
         res = shorten_german_noun_plural_form_for_anki_card("Apfel", "Äpfel")
-        self.assertEqual("die Äpfel", res)
+        assert "die Äpfel" == res
 
 
-class EnglishPrepareDataTestCase(unittest.IsolatedAsyncioTestCase):
+@pytest.mark.asyncio(loop_scope="class")
+class TestEnglishPrepareData:
     async def test_empty_word(self):
-        with self.assertRaises(ValueError):
+        with pytest.raises(ValueError):
             await self.prepare_data("")
 
     async def test_spaces(self):
-        with self.assertRaises(ValueError):
+        with pytest.raises(ValueError):
             await self.prepare_data("     ")
 
     async def test_noun(self):
@@ -354,7 +354,7 @@ class EnglishPrepareDataTestCase(unittest.IsolatedAsyncioTestCase):
             sentence_example=sentence_example_stub_text,
             sentence_example_translated=sentence_example_translated_ru_stub_text,
         )
-        self.assertEqual(expected, await self.prepare_data("cat"))
+        assert expected == await self.prepare_data("cat")
 
     async def test_verb(self):
         expected = EnglishWordData(
@@ -363,7 +363,7 @@ class EnglishPrepareDataTestCase(unittest.IsolatedAsyncioTestCase):
             sentence_example=sentence_example_stub_text,
             sentence_example_translated=sentence_example_translated_ru_stub_text,
         )
-        self.assertEqual(expected, await self.prepare_data("swim"))
+        assert expected == await self.prepare_data("swim")
 
     async def test_verb_with_to(self):
         expected = EnglishWordData(
@@ -372,7 +372,7 @@ class EnglishPrepareDataTestCase(unittest.IsolatedAsyncioTestCase):
             sentence_example=sentence_example_stub_text,
             sentence_example_translated=sentence_example_translated_ru_stub_text,
         )
-        self.assertEqual(expected, await self.prepare_data("to swim"))
+        assert expected == await self.prepare_data("to swim")
 
     async def test_phrasal_verb(self):
         expected = EnglishWordData(
@@ -381,7 +381,7 @@ class EnglishPrepareDataTestCase(unittest.IsolatedAsyncioTestCase):
             sentence_example=sentence_example_stub_text,
             sentence_example_translated=sentence_example_translated_ru_stub_text,
         )
-        self.assertEqual(expected, await self.prepare_data("cut off"))
+        assert expected == await self.prepare_data("cut off")
 
     async def test_phrasal_verb_with_to(self):
         expected = EnglishWordData(
@@ -390,7 +390,7 @@ class EnglishPrepareDataTestCase(unittest.IsolatedAsyncioTestCase):
             sentence_example=sentence_example_stub_text,
             sentence_example_translated=sentence_example_translated_ru_stub_text,
         )
-        self.assertEqual(expected, await self.prepare_data("to cut off"))
+        assert expected == await self.prepare_data("to cut off")
 
     async def test_adjective(self):
         expected = EnglishWordData(
@@ -399,7 +399,7 @@ class EnglishPrepareDataTestCase(unittest.IsolatedAsyncioTestCase):
             sentence_example=sentence_example_stub_text,
             sentence_example_translated=sentence_example_translated_ru_stub_text,
         )
-        self.assertEqual(expected, await self.prepare_data("miscellaneous"))
+        assert expected == await self.prepare_data("miscellaneous")
 
     async def test_with_hint(self):
         expected = EnglishWordData(
@@ -408,59 +408,59 @@ class EnglishPrepareDataTestCase(unittest.IsolatedAsyncioTestCase):
             sentence_example=sentence_example_stub_text,
             sentence_example_translated=sentence_example_translated_ru_stub_text,
         )
-        self.assertEqual(
-            expected,
-            await prepare_data_for_english_word("miscellaneous", WordHints("смешанный, разнообразный"), stub_llm=True),
+        assert expected == await prepare_data_for_english_word(
+            "miscellaneous", WordHints("смешанный, разнообразный"), stub_llm=True
         )
 
     async def prepare_data(self, word: str) -> EnglishWordData:
         return await prepare_data_for_english_word(word, hints=WordHints(""), stub_llm=True)
 
 
-class LocalTranslatorTestCase(unittest.IsolatedAsyncioTestCase):
+@pytest.mark.asyncio(loop_scope="class")
+class TestLocalTranslator:
     async def test_translate_en_to_ru_text(self):
         actual = await translate_text(
             "The severe storm cut off power to a large section of the city.", src="en", dest="ru"
         )
-        self.assertEqual("Сильный шторм перерезал власть до большой части города.", actual)
+        assert "Сильный шторм перерезал власть до большой части города." == actual
 
     async def test_translate_de_to_ru_text(self):
         sentence_de = "Dass sie trotz der ihr von mehreren Seiten angebotenen Hilfe weiterhin darauf bestand, alles allein zu erledigen, hat nicht nur ihre Freunde überrascht, sondern auch zu Spannungen innerhalb der Gruppe geführt."
         actual = await translate_text(sentence_de, src="de", dest="ru")
-        self.assertEqual(
-            "Тот факт, что, несмотря на помощь, предлагаемую несколькими сторонами, она продолжала настаивать на том, чтобы делать все в одиночестве, не только удивлен ее друзьями, но и приводила к напряженности в группе.",
-            actual,
+        assert (
+            "Тот факт, что, несмотря на помощь, предлагаемую несколькими сторонами, она продолжала настаивать на том, чтобы делать все в одиночестве, не только удивлен ее друзьями, но и приводила к напряженности в группе."
+            == actual
         )
 
     async def test_translate_single_word_de_to_ru(self):
         actual = await translate_text("das Schwimmen", src="de", dest="ru")
-        self.assertEqual("плавание", actual)
+        assert "плавание" == actual
 
     async def test_translate_single_word_de_to_en(self):
         actual = await translate_text("das Schwimmen", src="de", dest="en")
-        self.assertEqual("swimming", actual)
+        assert "swimming" == actual
 
     async def test_translate_single_word_de_to_ru_2(self):
         actual = await translate_text("die Katze", src="de", dest="ru")
-        self.assertEqual("Кошка", actual)
+        assert "Кошка" == actual
 
     async def test_translate_single_word_de_to_en_2(self):
         actual = await translate_text("der Markt", src="de", dest="en")
-        self.assertEqual("The market", actual)
+        assert "The market" == actual
 
 
-class GetAudioFileNameForPhraseTestCase(unittest.TestCase):
-    def setUp(self):
+class TestGetAudioFileNameForPhrase:
+    def setup_method(self):
         random.seed(42)
 
     def test_de_word(self):
         res = get_audio_file_name_for_phrase("Katze", lang="de")
-        self.assertEqual("anki_card_generator_de_Katze_phrase_NbrnTP.mp3", res)
+        assert "anki_card_generator_de_Katze_phrase_NbrnTP.mp3" == res
 
     def test_de_phrase(self):
         res = get_audio_file_name_for_phrase("sich in Träumerei vertiefen", lang="de")
-        self.assertEqual("anki_card_generator_de_sich_in_Träumerei_vertiefen_phrase_NbrnTP.mp3", res)
+        assert "anki_card_generator_de_sich_in_Träumerei_vertiefen_phrase_NbrnTP.mp3" == res
 
     def test_de_sentence(self):
         res = get_audio_file_name_for_sentence("Katze", lang="de")
-        self.assertEqual("anki_card_generator_de_Katze_sentence_NbrnTP.mp3", res)
+        assert "anki_card_generator_de_Katze_sentence_NbrnTP.mp3" == res
