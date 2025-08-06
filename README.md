@@ -12,7 +12,9 @@ You have two options: Ollama (default) and OpenAI.
 
 #### Ollama
 
-Ollama with `llama3.1:8b` model should be installed.
+Install [Ollama](https://ollama.com/download) client and run it. 
+ 
+Pull `llama3.1:8b` model:
 
 ```bash
 ollama pull llama3.1:8b
@@ -20,7 +22,7 @@ ollama pull llama3.1:8b
 
 #### OpenAI
 
-Set key into environment variable `OPENAI_API_KEY`:
+Set API key into environment variable `OPENAI_API_KEY`:
 
 ```bash
 export OPENAI_API_KEY=yourkey
@@ -35,12 +37,14 @@ Then, when running app, specify additional argument `--llm-provider=openai`.
 
 Install [Poetry](https://python-poetry.org/docs/#installation).
 
+Then run the following commands to prepare the environment:
+
 ```bash
 # Install dependencies
 poetry install
 
 # Activate env
-eval $(poetry env activate)
+source .venv/bin/activate
 
 # Hack to resolve dependency conflict (see below)
 pip install --no-deps german-nouns
@@ -53,7 +57,13 @@ This is because of transitive dependency on old `lxml==4.9.4` via `wiktionary-de
 That's why we have to install `german-nouns` separately with ignoring dependencies.
 This is how we fix stuff here.
 
-## Usage
+## Run
+
+Activate virtual environment if haven't yet.
+
+```bash
+source .venv/bin/activate
+```
 
 Run the app with the following command:
 
@@ -61,9 +71,9 @@ Run the app with the following command:
 python main.py
 ```
 
-The web interface will be available http://127.0.0.1:5000/.
+The web interface will be available at http://127.0.0.1:5000/.
 
-Press `Ctrl+C` to stop the app.
+When you're done, press `Ctrl+C` to stop the app.
 
 Beware that the response time is very long, far from instant.
 
