@@ -90,7 +90,10 @@ async function onGenerateButtonClick() {
     await sendCardsRequest(language, wordsWithHints);
     cleanWordsInputField();
   } catch {
-    alert("Something went wrong.");
+    alert("Something went wrong. " +
+        "The most common reason of this is that some noun wasn't found in dictionary. " +
+        "In this case you may try to re-run with smaller amount of words. " +
+        "If not, you have nothing left to do but inspect app logs. 🌚");
   } finally {
     setLoaderVisible(false);
   }
