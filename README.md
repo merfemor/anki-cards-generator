@@ -8,15 +8,7 @@ Also, audios are generated using text-to-speech and embedded into the cards.
 
 ### LLM provider
 
-You have two options: OpenAI (default) and Ollama.
-
-#### OpenAI
-
-Set key into environment variable `OPENAI_API_KEY`:
-
-```bash
-export OPENAI_API_KEY=yourkey
-```
+You have two options: Ollama (default) and OpenAI.
 
 #### Ollama
 
@@ -26,7 +18,18 @@ Ollama with `llama3.1:8b` model should be installed.
 ollama pull llama3.1:8b
 ```
 
-Then, when running app, specify additional argument `--llm-provider=ollama`.
+#### OpenAI
+
+Set key into environment variable `OPENAI_API_KEY`:
+
+```bash
+export OPENAI_API_KEY=yourkey
+```
+
+> [!TIP]
+> You can create `.env` file and specify environment variable there to not enter it each time.
+
+Then, when running app, specify additional argument `--llm-provider=openai`.
 
 ### Python virtual environment
 
@@ -51,16 +54,6 @@ That's why we have to install `german-nouns` separately with ignoring dependenci
 This is how we fix stuff here.
 
 ## Usage
-
-* In the case of Ollama provider, make sure it is up and running.
-* In the case of OpenAI, provide API key through environment variable:
-
-```bash
-export OPENAI_API_KEY=yourkey
-```
-
-> [!TIP]
-> You can create `.env` file and specify environment variable there to not enter it each time.
 
 Run the app with the following command:
 

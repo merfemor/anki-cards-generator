@@ -58,8 +58,8 @@ class OpenaiLlmProvider(LlmProvider):
 
 __LLM_PROVIDER_FACTORIES: Final[dict[str, Callable[[], LlmProvider]]] = {
     # Order is important, the first one will be the default option
-    "openai": OpenaiLlmProvider,
     "ollama": OllamaLlmProvider,
+    "openai": OpenaiLlmProvider,
 }
 
 __LLM_PROVIDER: LlmProvider
