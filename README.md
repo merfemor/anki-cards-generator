@@ -75,8 +75,6 @@ The web interface will be available at http://127.0.0.1:5000/.
 
 When you're done, press `Ctrl+C` to stop the app.
 
-Beware that the response time is very long, far from instant.
-
 ## Development
 
 Install pre-commit hooks:
