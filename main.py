@@ -3,6 +3,8 @@ import logging
 import os
 import sys
 import tempfile
+import threading
+import webbrowser
 from collections.abc import Callable
 from typing import Any, Tuple, Coroutine
 
@@ -106,9 +108,14 @@ def home() -> str:
     return render_template("index.html")
 
 
+def open_in_browser(*, url: str, after_seconds: int) -> None:
+    threading.Timer(after_seconds, lambda: webbrowser.open_new(url)).start()
+
+
 if __name__ == "__main__":
     load_dotenv()
     setup_logging()
     args = parse_arguments()
     set_global_llm_provider(args.llm_provider)
+    open_in_browser(url="http://127.0.0.1:5000/", after_seconds=1)
     app.run(port=5000)

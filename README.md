@@ -83,6 +83,12 @@ Install pre-commit hooks:
 pre-commit install
 ```
 
+To run all pre-commit hooks on all files:
+
+```bash
+pre-commit run -a
+```
+
 ## Tests
 
 To run unit tests, execute:
