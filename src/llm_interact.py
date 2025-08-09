@@ -25,23 +25,35 @@ class LlmProvider(ABC):
 
 
 class OllamaLlmProvider(LlmProvider):
+    OLLAMA_MODEL: Final[str] = "llama3.1:8b"
+
     def __init__(self):
         self.early_check_ollama()
 
     async def ask_llm(self, prompt: str) -> str:
         client = ollama.AsyncClient()
         # Set top_k to have more conservative answers
-        res = await client.generate(model="llama3.1:8b", prompt=prompt, options={"top_k": 20})
+        res = await client.generate(model=self.OLLAMA_MODEL, prompt=prompt, options={"top_k": 20})
         response_text: str = res["response"]
         return response_text
 
-    @staticmethod
-    def early_check_ollama() -> None:
+    def early_check_ollama(self) -> None:
         try:
-            ollama.list()
+            available_models = ollama.list().models
         except ConnectionError:
             print("Error: Ollama is not accessible. Did you forget to start it?")
             sys.exit(1)
+
+        available_model_names: list[str] = [m.model for m in available_models if m.model is not None]
+        if self.OLLAMA_MODEL in available_model_names:
+            logging.info(f"Ollama model {self.OLLAMA_MODEL} is available")
+            return
+
+        print(f"Error: model '{self.OLLAMA_MODEL}' is not found in Ollama.")
+        if available_model_names:
+            print(f"Available models: {', '.join(available_model_names)}")
+        print(f"To install it execute: ollama pull '{self.OLLAMA_MODEL}'")
+        sys.exit(1)
 
 
 class OpenaiLlmProvider(LlmProvider):
