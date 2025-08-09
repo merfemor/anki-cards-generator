@@ -7,12 +7,12 @@ dependencies = [
     "genanki (==0.13.1)",
     "wiktionary-de-parser (==0.12.13)",
     "googletrans (==4.0.2)",
-    "ollama (==0.4.7)",
-    "openai (==1.82.0)",
+    "ollama (==0.5.3)",
+    "openai (==1.99.5)",
     "python-dotenv (==1.1.1)",
     "gtts (==2.5.4)",
-    "HanTa (==1.1.1)",
-    "numpy (==2.2.3)",
+    "HanTa (==1.1.2)",
+    "numpy (==2.3.2)",
 ]
 
 [tool.poetry]
@@ -20,7 +20,7 @@ package-mode = false
 
 [tool.poetry.group.dev.dependencies]
 pre-commit = "^4.2.0"
-mypy = "^1.17.0"
+mypy = "^1.17.1"
 pytest = "^8.4.1"
 pytest-asyncio = "^1.1.0"
 
