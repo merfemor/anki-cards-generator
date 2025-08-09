@@ -26,12 +26,12 @@ class LlmProvider(ABC):
 
 class OllamaLlmProvider(LlmProvider):
     def __init__(self):
-        self.client = ollama.AsyncClient()
         self.early_check_ollama()
 
     async def ask_llm(self, prompt: str) -> str:
+        client = ollama.AsyncClient()
         # Set top_k to have more conservative answers
-        res = await self.client.generate(model="llama3.1:8b", prompt=prompt, options={"top_k": 20})
+        res = await client.generate(model="llama3.1:8b", prompt=prompt, options={"top_k": 20})
         response_text: str = res["response"]
         return response_text
 
