@@ -1,4 +1,4 @@
-from llm_interact import LlmProvider
+from src.llm_interact import LlmProvider
 
 
 class StubLlmProvider(LlmProvider):
