@@ -58,6 +58,11 @@ function setLoaderVisible(visible) {
   loader.style.display = visible ? 'block' : 'none';
 }
 
+function setWordsInputEnabled(enabled) {
+  const wordsInputField = document.getElementById('words');
+  wordsInputField.disabled = !enabled;
+}
+
 function getConvertedValueOfWordsInputField() {
   const wordsInputFiled = document.getElementById('words');
   const wordsInput = wordsInputFiled.value.trim();
@@ -84,6 +89,7 @@ async function onGenerateButtonClick() {
   if (wordsWithHints === null) {
     return;
   }
+  setWordsInputEnabled(false);
   setLoaderVisible(true);
 
   try {
@@ -96,6 +102,7 @@ async function onGenerateButtonClick() {
         "If not, you have nothing left to do but inspect app logs. 🌚");
   } finally {
     setLoaderVisible(false);
+    setWordsInputEnabled(true);
   }
 }
 
