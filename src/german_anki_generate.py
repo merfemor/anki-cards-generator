@@ -133,6 +133,7 @@ def export_results_to_anki_deck(
 
         pkg = genanki.Package(my_deck)
         pkg.media_files = all_media_files
+        logging.info(f"Writing deck to temporary file {deck_filename}")
         pkg.write_to_file(deck_filename)
 
 
