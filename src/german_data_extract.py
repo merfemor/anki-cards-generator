@@ -111,7 +111,7 @@ async def prepare_data_for_german_word(original_word_or_phrase: str, hints: Word
 
     word = word_or_phrase
 
-    word_infinitive, pos_tag = _pos_tagger_de.analyze(word)
+    word_infinitive, pos_tag = get_part_of_speech(word)
     part_of_speech = detect_part_of_speech_for_single_word(word, pos_tag)
 
     if part_of_speech != PartOfSpeech.Noun:
@@ -137,8 +137,9 @@ async def prepare_data_for_german_word(original_word_or_phrase: str, hints: Word
     german_sentence_example = await generate_sentence_example_with_llm(word_infinitive_with_article, language="German")
     sentence_example_translated_en = await translate_text(german_sentence_example, src="de", dest="en")
 
+    word_infinitive_for_card = "sich " + word_infinitive if is_reflexive_verb(word) else word_infinitive
     return GermanWordData(
-        word_infinitive=word_infinitive,
+        word_infinitive=word_infinitive_for_card,
         pos_tag=pos_tag,
         part_of_speech=part_of_speech,
         translated_en=await translate_de_to_en(word_infinitive_with_article, part_of_speech),
@@ -147,6 +148,20 @@ async def prepare_data_for_german_word(original_word_or_phrase: str, hints: Word
         sentence_example=german_sentence_example,
         sentence_example_translated_en=sentence_example_translated_en,
     )
+
+
+def get_part_of_speech(word: str):
+    return _pos_tagger_de.analyze(strip_sich_from_reflexive_verb(word))
+
+
+def strip_sich_from_reflexive_verb(word: str) -> str:
+    if is_reflexive_verb(word):
+        return word[5:]
+    return word
+
+
+def is_reflexive_verb(word: str) -> bool:
+    return word.startswith("sich ")
 
 
 def detect_part_of_speech_for_single_word(word: str, pos_tag: str) -> PartOfSpeech:
@@ -158,6 +173,10 @@ def detect_part_of_speech_for_single_word(word: str, pos_tag: str) -> PartOfSpee
             f"Word {word} sparts with small letter, but was detected by POS tagger as noun, pos_tag={pos_tag}"
         )
         return PartOfSpeech.Other
+
+    if is_reflexive_verb(word) and part_of_speech != PartOfSpeech.Verb:
+        logging.warning(f"Word {word} is reflexive verb, but was detected by POS tagger as {part_of_speech.value}")
+        return PartOfSpeech.Verb
 
     return part_of_speech
 
@@ -190,6 +209,5 @@ async def translate_de_to_en(text: str, part_of_speech: PartOfSpeech) -> str:
 
 
 def is_single_word(word_or_phrase: str) -> bool:
-    if word_or_phrase.startswith("sich "):
-        word_or_phrase = word_or_phrase[5:].strip()
+    word_or_phrase = strip_sich_from_reflexive_verb(word_or_phrase)
     return " " not in word_or_phrase

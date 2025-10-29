@@ -300,7 +300,7 @@ class TestGermanPrepareData:
     async def test_reflexive_verb(self):
         expected = GermanWordData(
             word_infinitive="sich interessieren",
-            pos_tag="VV(INF)",
+            pos_tag="VV(PP)",
             part_of_speech=PartOfSpeech.Verb,
             translated_en="to " + word_translated_stub,
             translated_ru=word_translated_stub,
@@ -336,6 +336,32 @@ class TestGermanPrepareData:
             sentence_example_translated_en=sentence_example_translated_en_stub_text,
         )
         assert expected == await self.prepare_data("zwanglos")
+
+    async def test_reflexive_verb_with_sich_specified(self):
+        expected = GermanWordData(
+            word_infinitive="sich vorstellen",
+            pos_tag="VV(INF)",
+            part_of_speech=PartOfSpeech.Verb,
+            translated_en="to " + word_translated_stub,
+            translated_ru=word_translated_stub,
+            noun_properties=None,
+            sentence_example=sentence_example_stub_text,
+            sentence_example_translated_en=sentence_example_translated_en_stub_text,
+        )
+        assert expected == await self.prepare_data("sich vorstellen")
+
+    async def test_reflexive_verb_with_sich_specified_2(self):
+        expected = GermanWordData(
+            word_infinitive="sich schämen",
+            pos_tag="VV(INF)",
+            part_of_speech=PartOfSpeech.Verb,
+            translated_en="to " + word_translated_stub,
+            translated_ru=word_translated_stub,
+            noun_properties=None,
+            sentence_example=sentence_example_stub_text,
+            sentence_example_translated_en=sentence_example_translated_en_stub_text,
+        )
+        assert expected == await self.prepare_data("sich schämen")
 
     async def prepare_data(self, word: str) -> src.german_data_extract.GermanWordData:
         return await src.german_data_extract.prepare_data_for_german_word(word, hints=WordHints(""))
