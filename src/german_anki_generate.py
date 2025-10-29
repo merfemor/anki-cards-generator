@@ -142,7 +142,6 @@ def _create_anki_note_for_german_word_data(
 ) -> Note:
     word_translated = f"{r.translated_ru}, {r.translated_en}"
     word_de_for_card = r.word_infinitive
-    word_audio_text = r.word_infinitive
     word_article = ""
     word_audio_name = get_audio_file_name_for_phrase(r.word_infinitive, lang="de")
     word_audio_path = f"{temp_dir}/{word_audio_name}"
@@ -163,7 +162,8 @@ def _create_anki_note_for_german_word_data(
             word_de_for_card = f"{r.word_infinitive}, {shortened_plural_form}"
 
         word_article = noun_props.article
-        word_audio_text = f"{noun_props.article} {r.word_infinitive}"
+
+    word_audio_text = get_word_audio_text(r)
     text_to_speech_into_file(word_audio_text, word_audio_path, lang="de")
     note = _create_anki_note(
         model,
@@ -178,3 +178,14 @@ def _create_anki_note_for_german_word_data(
     all_media_files.append(word_audio_path)
     all_media_files.append(sentence_audio_path)
     return note
+
+
+def get_word_audio_text(word_data: GermanWordData) -> str:
+    if word_data.noun_properties:
+        noun_props = word_data.noun_properties
+
+        if noun_props.singular_form and noun_props.plural_form:
+            return f"{noun_props.article} {word_data.word_infinitive}, die {noun_props.plural_form}"
+
+        return f"{noun_props.article} {word_data.word_infinitive}"
+    return word_data.word_infinitive
