@@ -363,6 +363,20 @@ class TestGermanPrepareData:
         )
         assert expected == await self.prepare_data("sich schämen")
 
+    async def test_verb_false_positively_detected_as_adjective(self):
+        actual = await self.prepare_data("lauten")
+        assert actual.pos_tag == "ADJ(A)"
+        assert actual.part_of_speech == PartOfSpeech.Other
+        assert actual.word_infinitive == "laut"
+        assert actual.noun_properties is None
+
+    async def test_adjective_false_positively_detected_as_verb(self):
+        actual = await self.prepare_data("bewusst")
+        assert actual.pos_tag == "VV(PP)"
+        assert actual.part_of_speech == PartOfSpeech.Verb
+        assert actual.word_infinitive == "bewussen"
+        assert actual.noun_properties is None
+
     async def prepare_data(self, word: str) -> src.german_data_extract.GermanWordData:
         return await src.german_data_extract.prepare_data_for_german_word(word, hints=WordHints(""))
 
