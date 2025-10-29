@@ -324,6 +324,19 @@ class TestGermanPrepareData:
         )
         assert expected == await self.prepare_data("perplex")
 
+    async def test_adjective_detected_as_noun_not_found_in_dict(self):
+        expected = GermanWordData(
+            word_infinitive="zwanglos",
+            pos_tag="NN",
+            part_of_speech=PartOfSpeech.Other,
+            translated_en=word_translated_stub,
+            translated_ru=word_translated_stub,
+            noun_properties=None,
+            sentence_example=sentence_example_stub_text,
+            sentence_example_translated_en=sentence_example_translated_en_stub_text,
+        )
+        assert expected == await self.prepare_data("zwanglos")
+
     async def prepare_data(self, word: str) -> src.german_data_extract.GermanWordData:
         return await src.german_data_extract.prepare_data_for_german_word(word, hints=WordHints(""))
 

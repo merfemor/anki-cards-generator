@@ -112,9 +112,7 @@ async def prepare_data_for_german_word(original_word_or_phrase: str, hints: Word
     word = word_or_phrase
 
     word_infinitive, pos_tag = _pos_tagger_de.analyze(word)
-    check(pos_tag not in ["XY", "$,", "$.", "$("], f"Non word: {word}, pos_tag={pos_tag}")
-
-    part_of_speech = pos_tag_to_part_of_speech(pos_tag)
+    part_of_speech = detect_part_of_speech_for_single_word(word, pos_tag)
 
     if part_of_speech != PartOfSpeech.Noun:
         # For some words infinitives start with capital letter despite they are not nouns, e.g. "perplex"
@@ -149,6 +147,19 @@ async def prepare_data_for_german_word(original_word_or_phrase: str, hints: Word
         sentence_example=german_sentence_example,
         sentence_example_translated_en=sentence_example_translated_en,
     )
+
+
+def detect_part_of_speech_for_single_word(word: str, pos_tag: str) -> PartOfSpeech:
+    check(pos_tag not in ["XY", "$,", "$.", "$("], f"Non word: {word}, pos_tag={pos_tag}")
+    part_of_speech = pos_tag_to_part_of_speech(pos_tag)
+
+    if part_of_speech == PartOfSpeech.Noun and word[0].islower():
+        logging.warning(
+            f"Word {word} sparts with small letter, but was detected by POS tagger as noun, pos_tag={pos_tag}"
+        )
+        return PartOfSpeech.Other
+
+    return part_of_speech
 
 
 async def prepare_data_for_german_phrase(phrase: str, hints: WordHints) -> GermanWordData:
