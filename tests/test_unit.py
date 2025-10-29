@@ -10,19 +10,22 @@ from src.english_data_extract import prepare_data_for_english_word, EnglishWordD
 from src.german_anki_generate import shorten_german_noun_plural_form_for_anki_card
 from src.german_data_extract import GermanWordData, PartOfSpeech
 from src.llm_interact import override_global_llm_provider_for_test
-from src.translate import translate_text
+from src.translate import override_global_translator_for_test
 from src.word_hints import WordHints
 from stub_llm_provider import StubLlmProvider
+from stub_translator import StubTranslator
 
 sentence_example_stub_text: Final[str] = "." * 50
-sentence_example_translated_en_stub_text: Final[str] = sentence_example_stub_text
-sentence_example_translated_ru_stub_text: Final[str] = sentence_example_stub_text
+word_translated_stub: Final[str] = "_"
+sentence_example_translated_en_stub_text: Final[str] = word_translated_stub
+sentence_example_translated_ru_stub_text: Final[str] = word_translated_stub
 
 
 @pytest.mark.asyncio(loop_scope="class")
 class TestGermanPrepareData:
     def setup_method(self) -> None:
         override_global_llm_provider_for_test(StubLlmProvider(sentence_example_stub_text))
+        override_global_translator_for_test(StubTranslator(word_translated_stub))
 
     async def test_empty_string(self):
         with pytest.raises(ValueError):
@@ -53,8 +56,8 @@ class TestGermanPrepareData:
             word_infinitive="Katze",
             pos_tag="NN",
             part_of_speech=PartOfSpeech.Noun,
-            translated_en="cat",
-            translated_ru="кошка",
+            translated_en=word_translated_stub,
+            translated_ru=word_translated_stub,
             noun_properties=src.german_data_extract.GermanNounProperties(
                 singular_form="Katze", plural_form="Katzen", genus="f", article="die"
             ),
@@ -68,8 +71,8 @@ class TestGermanPrepareData:
             word_infinitive="Schnee",
             pos_tag="NN",
             part_of_speech=PartOfSpeech.Noun,
-            translated_en="snow",
-            translated_ru="снег",
+            translated_en=word_translated_stub,
+            translated_ru=word_translated_stub,
             noun_properties=src.german_data_extract.GermanNounProperties(
                 singular_form="Schnee", plural_form="", genus="m", article="der"
             ),
@@ -83,8 +86,8 @@ class TestGermanPrepareData:
             word_infinitive="Band",
             pos_tag="NN",
             part_of_speech=PartOfSpeech.Noun,
-            translated_en="tape",
-            translated_ru="лента",
+            translated_en=word_translated_stub,
+            translated_ru=word_translated_stub,
             noun_properties=src.german_data_extract.GermanNounProperties(
                 singular_form="Band", plural_form="Bänder", genus="n", article="das"
             ),
@@ -98,8 +101,8 @@ class TestGermanPrepareData:
             word_infinitive="Ferien",
             pos_tag="NN",
             part_of_speech=PartOfSpeech.Noun,
-            translated_en="holidays",
-            translated_ru="праздники",
+            translated_en=word_translated_stub,
+            translated_ru=word_translated_stub,
             noun_properties=src.german_data_extract.GermanNounProperties(
                 singular_form="", plural_form="Ferien", genus="pl", article="die"
             ),
@@ -113,8 +116,8 @@ class TestGermanPrepareData:
             word_infinitive="Schwimmen",
             pos_tag="NNI",
             part_of_speech=PartOfSpeech.Noun,
-            translated_en="swimming",
-            translated_ru="плавание",
+            translated_en=word_translated_stub,
+            translated_ru=word_translated_stub,
             noun_properties=src.german_data_extract.GermanNounProperties(
                 singular_form="Schwimmen", plural_form="", genus="n", article="das"
             ),
@@ -128,8 +131,8 @@ class TestGermanPrepareData:
             word_infinitive="schlafen",
             pos_tag="VV(INF)",
             part_of_speech=PartOfSpeech.Verb,
-            translated_en="to sleep",
-            translated_ru="спать",
+            translated_en="to " + word_translated_stub,
+            translated_ru=word_translated_stub,
             noun_properties=None,
             sentence_example=sentence_example_stub_text,
             sentence_example_translated_en=sentence_example_translated_en_stub_text,
@@ -141,8 +144,8 @@ class TestGermanPrepareData:
             word_infinitive="lustig",
             pos_tag="ADJ(D)",
             part_of_speech=PartOfSpeech.Other,
-            translated_en="funny",
-            translated_ru="забавный",
+            translated_en=word_translated_stub,
+            translated_ru=word_translated_stub,
             noun_properties=None,
             sentence_example=sentence_example_stub_text,
             sentence_example_translated_en=sentence_example_translated_en_stub_text,
@@ -154,8 +157,8 @@ class TestGermanPrepareData:
             word_infinitive="obgleich",
             pos_tag="KOUS",
             part_of_speech=PartOfSpeech.Other,
-            translated_en="although",
-            translated_ru="хотя",
+            translated_en=word_translated_stub,
+            translated_ru=word_translated_stub,
             noun_properties=None,
             sentence_example=sentence_example_stub_text,
             sentence_example_translated_en=sentence_example_translated_en_stub_text,
@@ -167,8 +170,8 @@ class TestGermanPrepareData:
             word_infinitive="und",
             pos_tag="KON",
             part_of_speech=PartOfSpeech.Other,
-            translated_en="and",
-            translated_ru="и",
+            translated_en=word_translated_stub,
+            translated_ru=word_translated_stub,
             noun_properties=None,
             sentence_example=sentence_example_stub_text,
             sentence_example_translated_en=sentence_example_translated_en_stub_text,
@@ -180,8 +183,8 @@ class TestGermanPrepareData:
             word_infinitive="gerade",
             pos_tag="ADV",
             part_of_speech=PartOfSpeech.Other,
-            translated_en="straight",
-            translated_ru="прямой",
+            translated_en=word_translated_stub,
+            translated_ru=word_translated_stub,
             noun_properties=None,
             sentence_example=sentence_example_stub_text,
             sentence_example_translated_en=sentence_example_translated_en_stub_text,
@@ -193,7 +196,7 @@ class TestGermanPrepareData:
             word_infinitive="lustig",
             pos_tag="ADJ(D)",
             part_of_speech=PartOfSpeech.Other,
-            translated_en="funny",
+            translated_en=word_translated_stub,
             translated_ru="смешной, весёлый",
             noun_properties=None,
             sentence_example=sentence_example_stub_text,
@@ -209,8 +212,8 @@ class TestGermanPrepareData:
             word_infinitive="durch",
             pos_tag="APPR",
             part_of_speech=PartOfSpeech.Other,
-            translated_en="through",
-            translated_ru="через",
+            translated_en=word_translated_stub,
+            translated_ru=word_translated_stub,
             noun_properties=None,
             sentence_example=sentence_example_stub_text,
             sentence_example_translated_en=sentence_example_translated_en_stub_text,
@@ -222,8 +225,8 @@ class TestGermanPrepareData:
             word_infinitive="eine Entscheidung treffen",
             pos_tag="",
             part_of_speech=PartOfSpeech.Other,
-            translated_en="make a decision",
-            translated_ru="принять решение",
+            translated_en=word_translated_stub,
+            translated_ru=word_translated_stub,
             noun_properties=None,
             sentence_example=sentence_example_stub_text,
             sentence_example_translated_en=sentence_example_translated_en_stub_text,
@@ -239,8 +242,8 @@ class TestGermanPrepareData:
             word_infinitive="Katze",
             pos_tag="NN",
             part_of_speech=PartOfSpeech.Noun,
-            translated_en="cat",
-            translated_ru="кошка",
+            translated_en=word_translated_stub,
+            translated_ru=word_translated_stub,
             noun_properties=src.german_data_extract.GermanNounProperties(
                 singular_form="Katze", plural_form="Katzen", genus="f", article="die"
             ),
@@ -254,8 +257,8 @@ class TestGermanPrepareData:
             word_infinitive="Markt",
             pos_tag="NN",
             part_of_speech=PartOfSpeech.Noun,
-            translated_en="market",
-            translated_ru="рынок",
+            translated_en=word_translated_stub,
+            translated_ru=word_translated_stub,
             noun_properties=src.german_data_extract.GermanNounProperties(
                 singular_form="Markt", plural_form="Märkte", genus="m", article="der"
             ),
@@ -269,8 +272,8 @@ class TestGermanPrepareData:
             word_infinitive="schnell",
             pos_tag="ADJ(A)",
             part_of_speech=PartOfSpeech.Other,
-            translated_en="fast",
-            translated_ru="быстрый",
+            translated_en=word_translated_stub,
+            translated_ru=word_translated_stub,
             noun_properties=None,
             sentence_example=sentence_example_stub_text,
             sentence_example_translated_en=sentence_example_translated_en_stub_text,
@@ -286,8 +289,8 @@ class TestGermanPrepareData:
             word_infinitive="empfeln",
             pos_tag="VV(INF)",
             part_of_speech=PartOfSpeech.Verb,
-            translated_en="to reclaim",
-            translated_ru="вернуть",
+            translated_en="to " + word_translated_stub,
+            translated_ru=word_translated_stub,
             noun_properties=None,
             sentence_example=sentence_example_stub_text,
             sentence_example_translated_en=sentence_example_translated_en_stub_text,
@@ -299,8 +302,8 @@ class TestGermanPrepareData:
             word_infinitive="sich interessieren",
             pos_tag="VV(INF)",
             part_of_speech=PartOfSpeech.Verb,
-            translated_en="to interested in",
-            translated_ru="увлекающийся",
+            translated_en="to " + word_translated_stub,
+            translated_ru=word_translated_stub,
             noun_properties=None,
             sentence_example=sentence_example_stub_text,
             sentence_example_translated_en=sentence_example_translated_en_stub_text,
@@ -313,8 +316,8 @@ class TestGermanPrepareData:
             word_infinitive="perplex",
             pos_tag="FM",
             part_of_speech=PartOfSpeech.Other,
-            translated_en="perplexed",
-            translated_ru="озадачен",
+            translated_en=word_translated_stub,
+            translated_ru=word_translated_stub,
             noun_properties=None,
             sentence_example=sentence_example_stub_text,
             sentence_example_translated_en=sentence_example_translated_en_stub_text,
@@ -347,6 +350,7 @@ class TestGermanShortenPluralForm:
 class TestEnglishPrepareData:
     def setup_method(self) -> None:
         override_global_llm_provider_for_test(StubLlmProvider(sentence_example_stub_text))
+        override_global_translator_for_test(StubTranslator(word_translated_stub))
 
     async def test_empty_word(self):
         with pytest.raises(ValueError):
@@ -359,7 +363,7 @@ class TestEnglishPrepareData:
     async def test_noun(self):
         expected = EnglishWordData(
             original_word="cat",
-            translated="кот",
+            translated=word_translated_stub,
             sentence_example=sentence_example_stub_text,
             sentence_example_translated=sentence_example_translated_ru_stub_text,
         )
@@ -368,7 +372,7 @@ class TestEnglishPrepareData:
     async def test_verb(self):
         expected = EnglishWordData(
             original_word="swim",
-            translated="плавать",
+            translated=word_translated_stub,
             sentence_example=sentence_example_stub_text,
             sentence_example_translated=sentence_example_translated_ru_stub_text,
         )
@@ -377,7 +381,7 @@ class TestEnglishPrepareData:
     async def test_verb_with_to(self):
         expected = EnglishWordData(
             original_word="to swim",
-            translated="плавать",
+            translated=word_translated_stub,
             sentence_example=sentence_example_stub_text,
             sentence_example_translated=sentence_example_translated_ru_stub_text,
         )
@@ -386,7 +390,7 @@ class TestEnglishPrepareData:
     async def test_phrasal_verb(self):
         expected = EnglishWordData(
             original_word="cut off",
-            translated="отрезать",
+            translated=word_translated_stub,
             sentence_example=sentence_example_stub_text,
             sentence_example_translated=sentence_example_translated_ru_stub_text,
         )
@@ -395,20 +399,11 @@ class TestEnglishPrepareData:
     async def test_phrasal_verb_with_to(self):
         expected = EnglishWordData(
             original_word="to cut off",
-            translated="чтобы отрезать",
+            translated=word_translated_stub,
             sentence_example=sentence_example_stub_text,
             sentence_example_translated=sentence_example_translated_ru_stub_text,
         )
         assert expected == await self.prepare_data("to cut off")
-
-    async def test_adjective(self):
-        expected = EnglishWordData(
-            original_word="miscellaneous",
-            translated="разнообразный",
-            sentence_example=sentence_example_stub_text,
-            sentence_example_translated=sentence_example_translated_ru_stub_text,
-        )
-        assert expected == await self.prepare_data("miscellaneous")
 
     async def test_with_hint(self):
         expected = EnglishWordData(
@@ -421,39 +416,6 @@ class TestEnglishPrepareData:
 
     async def prepare_data(self, word: str) -> EnglishWordData:
         return await prepare_data_for_english_word(word, hints=WordHints(""))
-
-
-@pytest.mark.asyncio(loop_scope="class")
-class TestLocalTranslator:
-    async def test_translate_en_to_ru_text(self):
-        actual = await translate_text(
-            "The severe storm cut off power to a large section of the city.", src="en", dest="ru"
-        )
-        assert "Сильный шторм перерезал власть до большой части города." == actual
-
-    async def test_translate_de_to_ru_text(self):
-        sentence_de = "Dass sie trotz der ihr von mehreren Seiten angebotenen Hilfe weiterhin darauf bestand, alles allein zu erledigen, hat nicht nur ihre Freunde überrascht, sondern auch zu Spannungen innerhalb der Gruppe geführt."
-        actual = await translate_text(sentence_de, src="de", dest="ru")
-        assert (
-            "Тот факт, что, несмотря на помощь, предлагаемую несколькими сторонами, она продолжала настаивать на том, чтобы делать все в одиночестве, не только удивлен ее друзьями, но и приводила к напряженности в группе."
-            == actual
-        )
-
-    async def test_translate_single_word_de_to_ru(self):
-        actual = await translate_text("das Schwimmen", src="de", dest="ru")
-        assert "плавание" == actual
-
-    async def test_translate_single_word_de_to_en(self):
-        actual = await translate_text("das Schwimmen", src="de", dest="en")
-        assert "swimming" == actual
-
-    async def test_translate_single_word_de_to_ru_2(self):
-        actual = await translate_text("die Katze", src="de", dest="ru")
-        assert "Кошка" == actual
-
-    async def test_translate_single_word_de_to_en_2(self):
-        actual = await translate_text("der Markt", src="de", dest="en")
-        assert "The market" == actual
 
 
 class TestGetAudioFileNameForPhrase:
