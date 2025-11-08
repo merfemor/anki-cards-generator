@@ -128,6 +128,7 @@ def export_results_to_anki_deck(
     with tempfile.TemporaryDirectory(prefix="anki_cards_generator_media_") as temp_dir:
         logging.info("Created temporary directory " + temp_dir)
         for r in results:
+            logging.info(f'Creating Anki note for word "{r.word_infinitive}"')
             note = _create_anki_note_for_german_word_data(r, my_model, all_media_files, temp_dir)
             my_deck.add_note(note)
 
