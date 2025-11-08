@@ -142,6 +142,8 @@ def _create_anki_note_for_german_word_data(
 ) -> Note:
     word_translated = f"{r.translated_ru}, {r.translated_en}"
     word_de_for_card = r.word_infinitive
+    if r.word_note_suffix:
+        word_de_for_card += " " + r.word_note_suffix
     word_article = ""
     word_audio_name = get_audio_file_name_for_phrase(r.word_infinitive, lang="de")
     word_audio_path = f"{temp_dir}/{word_audio_name}"

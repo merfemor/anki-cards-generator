@@ -377,6 +377,22 @@ class TestGermanPrepareData:
         assert actual.word_infinitive == "bewussen"
         assert actual.noun_properties is None
 
+    async def test_verb_with_grammatical_case_note(self):
+        actual = await self.prepare_data("anrufen (+Akk)")
+        assert actual.pos_tag == "VV(INF)"
+        assert actual.part_of_speech == PartOfSpeech.Verb
+        assert actual.word_infinitive == "anrufen"
+        assert actual.word_note_suffix == "(+Akk)"
+        assert actual.noun_properties is None
+
+    async def test_phrase_with_grammatical_case_note(self):
+        actual = await self.prepare_data("Angst haben vor (+Dat)")
+        assert actual.pos_tag == ""
+        assert actual.part_of_speech == PartOfSpeech.Other
+        assert actual.word_infinitive == "Angst haben vor"
+        assert actual.word_note_suffix == "(+Dat)"
+        assert actual.noun_properties is None
+
     async def prepare_data(self, word: str) -> src.german_data_extract.GermanWordData:
         return await src.german_data_extract.prepare_data_for_german_word(word, hints=WordHints(""))
 

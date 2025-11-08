@@ -95,12 +95,24 @@ class GermanWordData:
     noun_properties: Optional[GermanNounProperties]
     sentence_example: str
     sentence_example_translated_en: str
+    # All that shouldn't be translated or said by TTS, but should be in the card. For example, grammatical case
+    word_note_suffix: str = ""
 
 
 def strip_noun_article(word: str) -> str:
     if word.startswith("der ") or word.startswith("die ") or word.startswith("das "):
         return word[4:]
     return word
+
+
+def extract_note_suffix(word_infinitive: str) -> Tuple[str, str]:
+    grammatical_cases = ["Akk", "Dat", "Gen"]
+    for case in grammatical_cases:
+        case_note = f"(+{case})"
+        if word_infinitive.endswith(case_note):
+            return word_infinitive[: -len(case_note)].strip(), case_note
+
+    return word_infinitive, ""
 
 
 async def prepare_data_for_german_word(original_word_or_phrase: str, hints: WordHints) -> GermanWordData:
@@ -110,7 +122,7 @@ async def prepare_data_for_german_word(original_word_or_phrase: str, hints: Word
     if not is_single_word(word_or_phrase):
         return await prepare_data_for_german_phrase(word_or_phrase, hints)
 
-    word = word_or_phrase
+    word, word_note_suffix = extract_note_suffix(word_or_phrase)
 
     word_infinitive, pos_tag = get_part_of_speech(word)
     part_of_speech = detect_part_of_speech_for_single_word(word, pos_tag)
@@ -151,6 +163,7 @@ async def prepare_data_for_german_word(original_word_or_phrase: str, hints: Word
         word_infinitive=word_infinitive_for_card,
         pos_tag=pos_tag,
         part_of_speech=part_of_speech,
+        word_note_suffix=word_note_suffix,
         translated_en=await translate_de_to_en(word_infinitive_with_article, part_of_speech),
         translated_ru=await translate_de_to_ru(word_infinitive_with_article, hints),
         noun_properties=noun_properties,
@@ -191,6 +204,7 @@ def detect_part_of_speech_for_single_word(word: str, pos_tag: str) -> PartOfSpee
 
 
 async def prepare_data_for_german_phrase(phrase: str, hints: WordHints) -> GermanWordData:
+    phrase, note_suffix = extract_note_suffix(phrase)
     german_sentence_example = await generate_sentence_example_with_llm(phrase, language="German")
 
     return GermanWordData(
@@ -202,6 +216,7 @@ async def prepare_data_for_german_phrase(phrase: str, hints: WordHints) -> Germa
         noun_properties=None,
         sentence_example=german_sentence_example,
         sentence_example_translated_en=await translate_text(german_sentence_example, src="de", dest="en"),
+        word_note_suffix=note_suffix,
     )
 
 
@@ -219,4 +234,5 @@ async def translate_de_to_en(text: str, part_of_speech: PartOfSpeech) -> str:
 
 def is_single_word(word_or_phrase: str) -> bool:
     word_or_phrase = strip_sich_from_reflexive_verb(word_or_phrase)
+    word_or_phrase, _ = extract_note_suffix(word_or_phrase)
     return " " not in word_or_phrase
