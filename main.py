@@ -17,6 +17,7 @@ from src.configuration import parse_arguments
 from src.english_data_extract import prepare_data_for_english_word, EnglishWordData
 from src.german_data_extract import prepare_data_for_german_word, GermanWordData
 from src.llm_interact import set_global_llm_provider
+from src.tts import init_tts_engine
 from src.word_hints import WordHints
 from src.translate import check_translator_is_available
 
@@ -118,6 +119,7 @@ if __name__ == "__main__":
     setup_logging()
     args = parse_arguments()
     set_global_llm_provider(args.llm_provider)
+    init_tts_engine()
     check_translator_is_available()
     open_in_browser(url="http://127.0.0.1:5000/", after_seconds=1)
     app.run(port=5000)
