@@ -1836,5 +1836,5 @@ wikitextparser = ">=0.56.2,<0.57.0"
 
 [metadata]
 lock-version = "2.1"
-python-versions = "==3.13.5"
-content-hash = "e85a1c0664d19b9ba7e36b07ea8a46ecafba3b2ee9060a348fcc1bfb421966ef"
+python-versions = ">=3.13.5,<3.14"
+content-hash = "e766f585c0df18a507493693eed199190d53daed1f2575dbbaf291886d511273"
