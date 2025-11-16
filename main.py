@@ -36,6 +36,7 @@ def setup_logging() -> None:
 def parse_hints_from_dict(word_with_context: dict[str, dict[str, str]]) -> WordHints:
     hints: dict[str, str] = word_with_context.get("hints", {})
     translated_ru: str = hints.get("translated_ru", "")
+    translated_ru = translated_ru.strip()
     return WordHints(translated_ru)
 
 
@@ -76,6 +77,7 @@ async def common_generate_cards_file[WD: GermanWordData | EnglishWordData](
     tasks = []
     for word_with_hints in words_with_hints:
         word: str = word_with_hints.get("word", "")
+        word = word.strip()
         if not word:
             return jsonify({"error": f"The word is not specified for the word {word}"}), 400
 
