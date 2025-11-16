@@ -1,12 +1,9 @@
-import random
 from typing import Final
 
 import pytest
 
 import src.german_data_extract
 import src.utils
-from src.anki_common import get_audio_file_name_for_phrase, get_audio_file_name_for_sentence
-from src.english_data_extract import prepare_data_for_english_word, EnglishWordData
 from src.german_anki_generate import shorten_german_noun_plural_form_for_anki_card
 from src.german_data_extract import GermanWordData, PartOfSpeech
 from src.llm_interact import override_global_llm_provider_for_test
@@ -413,96 +410,3 @@ class TestGermanShortenPluralForm:
     def test_umlaut(self):
         res = shorten_german_noun_plural_form_for_anki_card("Apfel", "Äpfel")
         assert "die Äpfel" == res
-
-
-@pytest.mark.asyncio(loop_scope="class")
-class TestEnglishPrepareData:
-    def setup_method(self) -> None:
-        override_global_llm_provider_for_test(StubLlmProvider(sentence_example_stub_text))
-        override_global_translator_for_test(StubTranslator(word_translated_stub))
-
-    async def test_empty_word(self):
-        with pytest.raises(ValueError):
-            await self.prepare_data("")
-
-    async def test_spaces(self):
-        with pytest.raises(ValueError):
-            await self.prepare_data("     ")
-
-    async def test_noun(self):
-        expected = EnglishWordData(
-            original_word="cat",
-            translated=word_translated_stub,
-            sentence_example=sentence_example_stub_text,
-            sentence_example_translated=sentence_example_translated_ru_stub_text,
-        )
-        assert expected == await self.prepare_data("cat")
-
-    async def test_verb(self):
-        expected = EnglishWordData(
-            original_word="swim",
-            translated=word_translated_stub,
-            sentence_example=sentence_example_stub_text,
-            sentence_example_translated=sentence_example_translated_ru_stub_text,
-        )
-        assert expected == await self.prepare_data("swim")
-
-    async def test_verb_with_to(self):
-        expected = EnglishWordData(
-            original_word="to swim",
-            translated=word_translated_stub,
-            sentence_example=sentence_example_stub_text,
-            sentence_example_translated=sentence_example_translated_ru_stub_text,
-        )
-        assert expected == await self.prepare_data("to swim")
-
-    async def test_phrasal_verb(self):
-        expected = EnglishWordData(
-            original_word="cut off",
-            translated=word_translated_stub,
-            sentence_example=sentence_example_stub_text,
-            sentence_example_translated=sentence_example_translated_ru_stub_text,
-        )
-        assert expected == await self.prepare_data("cut off")
-
-    async def test_phrasal_verb_with_to(self):
-        expected = EnglishWordData(
-            original_word="to cut off",
-            translated=word_translated_stub,
-            sentence_example=sentence_example_stub_text,
-            sentence_example_translated=sentence_example_translated_ru_stub_text,
-        )
-        assert expected == await self.prepare_data("to cut off")
-
-    async def test_with_hint(self):
-        expected = EnglishWordData(
-            original_word="miscellaneous",
-            translated="смешанный, разнообразный",
-            sentence_example=sentence_example_stub_text,
-            sentence_example_translated=sentence_example_translated_ru_stub_text,
-        )
-        assert expected == await prepare_data_for_english_word("miscellaneous", WordHints("смешанный, разнообразный"))
-
-    async def prepare_data(self, word: str) -> EnglishWordData:
-        return await prepare_data_for_english_word(word, hints=WordHints(""))
-
-
-class TestGetAudioFileNameForPhrase:
-    def setup_method(self):
-        random.seed(42)
-
-    def test_de_word(self):
-        res = get_audio_file_name_for_phrase("Katze", lang="de")
-        assert "anki_card_generator_de_Katze_phrase_NbrnTP.mp3" == res
-
-    def test_de_phrase(self):
-        res = get_audio_file_name_for_phrase("sich in Träumerei vertiefen", lang="de")
-        assert "anki_card_generator_de_sich_in_Träumerei_vertiefen_phrase_NbrnTP.mp3" == res
-
-    def test_de_sentence(self):
-        res = get_audio_file_name_for_sentence("Katze", lang="de")
-        assert "anki_card_generator_de_Katze_sentence_NbrnTP.mp3" == res
-
-    def test_de_word_with_slash(self):
-        res = get_audio_file_name_for_sentence("sich/jdn. trösten", lang="de")
-        assert "anki_card_generator_de_sich_jdn__trösten_sentence_NbrnTP.mp3" == res
