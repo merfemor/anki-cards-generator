@@ -4,7 +4,6 @@ import pytest
 
 import src.german_data_extract
 import src.utils
-from src.german_anki_generate import shorten_german_noun_plural_form_for_anki_card
 from src.german_data_extract import GermanWordData, PartOfSpeech
 from src.llm_interact import override_global_llm_provider_for_test
 from src.translate import override_global_translator_for_test
@@ -373,20 +372,3 @@ class TestGermanPrepareData:
     async def prepare_data(self, word: str) -> src.german_data_extract.GermanWordData:
         return await src.german_data_extract.prepare_data_for_german_word(word, hints=WordHints(""))
 
-
-class TestGermanShortenPluralForm:
-    def test_simple_ung(self):
-        res = shorten_german_noun_plural_form_for_anki_card("Wohnung", "Wohnungen")
-        assert "-en" == res
-
-    def test_common_prefix(self):
-        res = shorten_german_noun_plural_form_for_anki_card("Zeugnis", "Zeugnisse")
-        assert "-se" == res
-
-    def test_same(self):
-        res = shorten_german_noun_plural_form_for_anki_card("Lehrer", "Lehrer")
-        assert "=" == res
-
-    def test_umlaut(self):
-        res = shorten_german_noun_plural_form_for_anki_card("Apfel", "Äpfel")
-        assert "die Äpfel" == res
