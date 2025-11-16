@@ -147,9 +147,8 @@ async def prepare_data_for_german_word(original_word_or_phrase: str, hints: Word
         )
         word_infinitive_with_article = f"{noun_properties.article} {word_infinitive}"
 
-    word_for_text_generation_request = word_infinitive_with_article
     word_for_text_generation_request = (
-        "sich " + word_for_text_generation_request if is_reflexive_verb(word) else word_infinitive
+        "sich " + word_infinitive_with_article if is_reflexive_verb(word) else word_infinitive_with_article
     )
 
     word_infinitive_for_card = "sich " + word_infinitive if is_reflexive_verb(word) else word_infinitive
