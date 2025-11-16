@@ -86,8 +86,9 @@ class GermanNounProperties:
 
 @dataclass
 class GermanWordData:
-    # Doesn't contain article in case of nouns. Does contain "sich" in case of reflexive verbs.
-    word_infinitive: str
+    # Processed word. Doesn't contain noun article, note suffixes (like '(+Dat)').
+    # But does contain "sich" in the case of reflexive verbs if it was specified in the original word.
+    word: str
     pos_tag: str
     part_of_speech: PartOfSpeech
     translated_en: str
@@ -146,7 +147,7 @@ async def prepare_data_for_german_word(original_word_or_phrase: str, hints: Word
     sentence_example_translated_en = await translate_text(german_sentence_example, src="de", dest="en")
 
     return GermanWordData(
-        word_infinitive=word_infinitive_for_card,
+        word=word_infinitive_for_card,
         pos_tag=pos_tag,
         part_of_speech=part_of_speech,
         word_note_suffix=word_note_suffix,
@@ -194,7 +195,7 @@ async def prepare_data_for_german_phrase(phrase: str, hints: WordHints) -> Germa
     german_sentence_example = await generate_sentence_example_with_llm(phrase, language="German")
 
     return GermanWordData(
-        word_infinitive=phrase,
+        word=phrase,
         pos_tag="",
         part_of_speech=PartOfSpeech.Other,
         translated_en=await translate_de_to_en(phrase, PartOfSpeech.Other),

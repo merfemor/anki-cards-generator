@@ -128,7 +128,7 @@ def export_results_to_anki_deck(
     with tempfile.TemporaryDirectory(prefix="anki_cards_generator_media_") as temp_dir:
         logging.info("Created temporary directory " + temp_dir)
         for r in results:
-            logging.info(f'Creating Anki note for word "{r.word_infinitive}"')
+            logging.info(f'Creating Anki note for word "{r.word}"')
             note = _create_anki_note_for_german_word_data(r, my_model, all_media_files, temp_dir)
             my_deck.add_note(note)
 
@@ -142,27 +142,27 @@ def _create_anki_note_for_german_word_data(
     r: GermanWordData, model: genanki.Model, all_media_files: list[str], temp_dir: str
 ) -> Note:
     word_translated = f"{r.translated_ru}, {r.translated_en}"
-    word_de_for_card = r.word_infinitive
+    word_de_for_card = r.word
     if r.word_note_suffix:
         word_de_for_card += " " + r.word_note_suffix
     word_article = ""
-    word_audio_name = get_audio_file_name_for_phrase(r.word_infinitive, lang="de")
+    word_audio_name = get_audio_file_name_for_phrase(r.word, lang="de")
     word_audio_path = f"{temp_dir}/{word_audio_name}"
-    sentence_audio_name = get_audio_file_name_for_sentence(r.word_infinitive, lang="de")
+    sentence_audio_name = get_audio_file_name_for_sentence(r.word, lang="de")
     sentence_audio_path = f"{temp_dir}/{sentence_audio_name}"
     text_to_speech_into_file(r.sentence_example, sentence_audio_path, lang="de")
     if r.noun_properties:
         noun_props = r.noun_properties
 
         if not noun_props.plural_form:
-            word_de_for_card = f"{r.word_infinitive} (Sg.)"
+            word_de_for_card = f"{r.word} (Sg.)"
         elif not noun_props.singular_form:
-            word_de_for_card = f"{r.word_infinitive} (Pl.)"
+            word_de_for_card = f"{r.word} (Pl.)"
         else:
             shortened_plural_form = shorten_german_noun_plural_form_for_anki_card(
                 noun_props.singular_form, noun_props.plural_form
             )
-            word_de_for_card = f"{r.word_infinitive}, {shortened_plural_form}"
+            word_de_for_card = f"{r.word}, {shortened_plural_form}"
 
         word_article = noun_props.article
 
@@ -188,7 +188,7 @@ def get_word_audio_text(word_data: GermanWordData) -> str:
         noun_props = word_data.noun_properties
 
         if noun_props.singular_form and noun_props.plural_form:
-            return f"{noun_props.article} {word_data.word_infinitive}, die {noun_props.plural_form}"
+            return f"{noun_props.article} {word_data.word}, die {noun_props.plural_form}"
 
-        return f"{noun_props.article} {word_data.word_infinitive}"
-    return word_data.word_infinitive
+        return f"{noun_props.article} {word_data.word}"
+    return word_data.word

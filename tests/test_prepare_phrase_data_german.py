@@ -18,7 +18,7 @@ class TestGermanPhrasePrepareData:
         actual = await self.prepare_data("eine Entscheidung treffen")
         assert actual.pos_tag == ""
         assert actual.part_of_speech == PartOfSpeech.Other
-        assert actual.word_infinitive == "eine Entscheidung treffen"
+        assert actual.word == "eine Entscheidung treffen"
         assert actual.word_note_suffix == ""
         assert actual.noun_properties is None
 
@@ -26,7 +26,7 @@ class TestGermanPhrasePrepareData:
         actual = await self.prepare_data("Angst haben vor (+Dat)")
         assert actual.pos_tag == ""
         assert actual.part_of_speech == PartOfSpeech.Other
-        assert actual.word_infinitive == "Angst haben vor"
+        assert actual.word == "Angst haben vor"
         assert actual.word_note_suffix == "(+Dat)"
         assert actual.noun_properties is None
 

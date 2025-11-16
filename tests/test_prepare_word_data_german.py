@@ -49,7 +49,7 @@ class TestGermanPrepareData:
 
     async def test_noun_feminine(self):
         expected = GermanWordData(
-            word_infinitive="Katze",
+            word="Katze",
             pos_tag="NN",
             part_of_speech=PartOfSpeech.Noun,
             translated_en=word_translated_stub,
@@ -64,7 +64,7 @@ class TestGermanPrepareData:
 
     async def test_noun_no_plural(self):
         expected = GermanWordData(
-            word_infinitive="Schnee",
+            word="Schnee",
             pos_tag="NN",
             part_of_speech=PartOfSpeech.Noun,
             translated_en=word_translated_stub,
@@ -79,7 +79,7 @@ class TestGermanPrepareData:
 
     async def test_noun_two_plural(self):
         expected = GermanWordData(
-            word_infinitive="Band",
+            word="Band",
             pos_tag="NN",
             part_of_speech=PartOfSpeech.Noun,
             translated_en=word_translated_stub,
@@ -94,7 +94,7 @@ class TestGermanPrepareData:
 
     async def test_noun_no_singular(self):
         expected = GermanWordData(
-            word_infinitive="Ferien",
+            word="Ferien",
             pos_tag="NN",
             part_of_speech=PartOfSpeech.Noun,
             translated_en=word_translated_stub,
@@ -109,7 +109,7 @@ class TestGermanPrepareData:
 
     async def test_noun_ambiguity_with_verb(self):
         expected = GermanWordData(
-            word_infinitive="Schwimmen",
+            word="Schwimmen",
             pos_tag="NNI",
             part_of_speech=PartOfSpeech.Noun,
             translated_en=word_translated_stub,
@@ -124,7 +124,7 @@ class TestGermanPrepareData:
 
     async def test_verb(self):
         expected = GermanWordData(
-            word_infinitive="schlafen",
+            word="schlafen",
             pos_tag="VV(INF)",
             part_of_speech=PartOfSpeech.Verb,
             translated_en="to " + word_translated_stub,
@@ -137,7 +137,7 @@ class TestGermanPrepareData:
 
     async def test_adjective(self):
         expected = GermanWordData(
-            word_infinitive="lustig",
+            word="lustig",
             pos_tag="ADJ(D)",
             part_of_speech=PartOfSpeech.Other,
             translated_en=word_translated_stub,
@@ -150,7 +150,7 @@ class TestGermanPrepareData:
 
     async def test_subordinating_conjunction(self):
         expected = GermanWordData(
-            word_infinitive="obgleich",
+            word="obgleich",
             pos_tag="KOUS",
             part_of_speech=PartOfSpeech.Other,
             translated_en=word_translated_stub,
@@ -163,7 +163,7 @@ class TestGermanPrepareData:
 
     async def test_coordinating_conjunction(self):
         expected = GermanWordData(
-            word_infinitive="und",
+            word="und",
             pos_tag="KON",
             part_of_speech=PartOfSpeech.Other,
             translated_en=word_translated_stub,
@@ -176,7 +176,7 @@ class TestGermanPrepareData:
 
     async def test_adverb(self):
         expected = GermanWordData(
-            word_infinitive="gerade",
+            word="gerade",
             pos_tag="ADV",
             part_of_speech=PartOfSpeech.Other,
             translated_en=word_translated_stub,
@@ -189,7 +189,7 @@ class TestGermanPrepareData:
 
     async def test_with_hint(self):
         expected = GermanWordData(
-            word_infinitive="lustig",
+            word="lustig",
             pos_tag="ADJ(D)",
             part_of_speech=PartOfSpeech.Other,
             translated_en=word_translated_stub,
@@ -205,7 +205,7 @@ class TestGermanPrepareData:
 
     async def test_preposition(self):
         expected = GermanWordData(
-            word_infinitive="durch",
+            word="durch",
             pos_tag="APPR",
             part_of_speech=PartOfSpeech.Other,
             translated_en=word_translated_stub,
@@ -222,7 +222,7 @@ class TestGermanPrepareData:
 
     async def test_noun_with_article_given(self):
         expected = GermanWordData(
-            word_infinitive="Katze",
+            word="Katze",
             pos_tag="NN",
             part_of_speech=PartOfSpeech.Noun,
             translated_en=word_translated_stub,
@@ -237,7 +237,7 @@ class TestGermanPrepareData:
 
     async def test_noun_in_plural_given(self):
         expected = GermanWordData(
-            word_infinitive="Märkte",
+            word="Märkte",
             pos_tag="NN",
             part_of_speech=PartOfSpeech.Noun,
             translated_en=word_translated_stub,
@@ -252,7 +252,7 @@ class TestGermanPrepareData:
 
     async def test_adjective_conjugated_given(self):
         expected = GermanWordData(
-            word_infinitive="schnelle",
+            word="schnelle",
             pos_tag="ADJ(A)",
             part_of_speech=PartOfSpeech.Other,
             translated_en=word_translated_stub,
@@ -269,7 +269,7 @@ class TestGermanPrepareData:
 
     async def test_verb_with_mistake_given(self):
         expected = GermanWordData(
-            word_infinitive="empfelen",
+            word="empfelen",
             pos_tag="VV(INF)",
             part_of_speech=PartOfSpeech.Verb,
             translated_en="to " + word_translated_stub,
@@ -282,7 +282,7 @@ class TestGermanPrepareData:
 
     async def test_reflexive_verb(self):
         expected = GermanWordData(
-            word_infinitive="sich interessieren",
+            word="sich interessieren",
             pos_tag="VV(INF)",
             part_of_speech=PartOfSpeech.Verb,
             translated_en="to " + word_translated_stub,
@@ -297,12 +297,12 @@ class TestGermanPrepareData:
         actual = await self.prepare_data("sich vorstellen")
         assert actual.pos_tag == "VV(INF)"
         assert actual.part_of_speech == PartOfSpeech.Verb
-        assert actual.word_infinitive == "sich vorstellen"
+        assert actual.word == "sich vorstellen"
 
     async def test_rare_adjective(self):
         # Identified as FM = Fremdsprachliches Material
         expected = GermanWordData(
-            word_infinitive="perplex",
+            word="perplex",
             pos_tag="FM",
             part_of_speech=PartOfSpeech.Other,
             translated_en=word_translated_stub,
@@ -315,7 +315,7 @@ class TestGermanPrepareData:
 
     async def test_adjective_detected_as_noun_not_found_in_dict(self):
         expected = GermanWordData(
-            word_infinitive="zwanglos",
+            word="zwanglos",
             pos_tag="ADJ(D)",
             part_of_speech=PartOfSpeech.Other,
             translated_en=word_translated_stub,
@@ -330,27 +330,27 @@ class TestGermanPrepareData:
         actual = await self.prepare_data("lauten")
         assert actual.pos_tag == "ADJ(A)"
         assert actual.part_of_speech == PartOfSpeech.Other
-        assert actual.word_infinitive == "lauten"
+        assert actual.word == "lauten"
         assert actual.noun_properties is None
 
     async def test_adjective_not_false_positively_detected_as_verb(self):
         actual = await self.prepare_data("bewusst")
         assert actual.pos_tag == "ADJ(D)"
         assert actual.part_of_speech == PartOfSpeech.Other
-        assert actual.word_infinitive == "bewusst"
+        assert actual.word == "bewusst"
         assert actual.noun_properties is None
 
     async def test_verb_with_grammatical_case_note(self):
         actual = await self.prepare_data("anrufen (+Akk)")
         assert actual.pos_tag == "VV(INF)"
         assert actual.part_of_speech == PartOfSpeech.Verb
-        assert actual.word_infinitive == "anrufen"
+        assert actual.word == "anrufen"
         assert actual.word_note_suffix == "(+Akk)"
         assert actual.noun_properties is None
 
     async def test_adjective_not_auto_corrected_to_verb(self):
         actual = await self.prepare_data("versetzt")
-        assert actual.word_infinitive == "versetzt"
+        assert actual.word == "versetzt"
 
     async def prepare_data(self, word: str) -> src.german_data_extract.GermanWordData:
         return await src.german_data_extract.prepare_data_for_german_word(word, hints=WordHints(""))
