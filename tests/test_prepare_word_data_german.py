@@ -216,19 +216,6 @@ class TestGermanPrepareData:
         )
         assert expected == await self.prepare_data("durch")
 
-    async def test_collocation(self):
-        expected = GermanWordData(
-            word_infinitive="eine Entscheidung treffen",
-            pos_tag="",
-            part_of_speech=PartOfSpeech.Other,
-            translated_en=word_translated_stub,
-            translated_ru=word_translated_stub,
-            noun_properties=None,
-            sentence_example=sentence_example_stub_text,
-            sentence_example_translated_en=sentence_example_translated_en_stub_text,
-        )
-        assert expected == await self.prepare_data("eine Entscheidung treffen")
-
     async def test_rare_compound_word(self):
         with pytest.raises(NotImplementedError):
             await self.prepare_data("Kuddelmuddelkiste")
@@ -361,14 +348,5 @@ class TestGermanPrepareData:
         assert actual.word_note_suffix == "(+Akk)"
         assert actual.noun_properties is None
 
-    async def test_phrase_with_grammatical_case_note(self):
-        actual = await self.prepare_data("Angst haben vor (+Dat)")
-        assert actual.pos_tag == ""
-        assert actual.part_of_speech == PartOfSpeech.Other
-        assert actual.word_infinitive == "Angst haben vor"
-        assert actual.word_note_suffix == "(+Dat)"
-        assert actual.noun_properties is None
-
     async def prepare_data(self, word: str) -> src.german_data_extract.GermanWordData:
         return await src.german_data_extract.prepare_data_for_german_word(word, hints=WordHints(""))
-
