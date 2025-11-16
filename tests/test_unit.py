@@ -300,7 +300,7 @@ class TestGermanPrepareData:
     async def test_reflexive_verb(self):
         expected = GermanWordData(
             word_infinitive="sich interessieren",
-            pos_tag="VV(PP)",
+            pos_tag="VV(INF)",
             part_of_speech=PartOfSpeech.Verb,
             translated_en="to " + word_translated_stub,
             translated_ru=word_translated_stub,
@@ -327,7 +327,7 @@ class TestGermanPrepareData:
     async def test_adjective_detected_as_noun_not_found_in_dict(self):
         expected = GermanWordData(
             word_infinitive="zwanglos",
-            pos_tag="NN",
+            pos_tag="ADJ(D)",
             part_of_speech=PartOfSpeech.Other,
             translated_en=word_translated_stub,
             translated_ru=word_translated_stub,
@@ -370,11 +370,11 @@ class TestGermanPrepareData:
         assert actual.word_infinitive == "laut"
         assert actual.noun_properties is None
 
-    async def test_adjective_false_positively_detected_as_verb(self):
+    async def test_adjective_not_false_positively_detected_as_verb(self):
         actual = await self.prepare_data("bewusst")
-        assert actual.pos_tag == "VV(PP)"
-        assert actual.part_of_speech == PartOfSpeech.Verb
-        assert actual.word_infinitive == "bewussen"
+        assert actual.pos_tag == "ADJ(D)"
+        assert actual.part_of_speech == PartOfSpeech.Other
+        assert actual.word_infinitive == "bewusst"
         assert actual.noun_properties is None
 
     async def test_verb_with_grammatical_case_note(self):
