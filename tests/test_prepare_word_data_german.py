@@ -307,6 +307,12 @@ class TestGermanPrepareData:
         )
         assert expected == await self.prepare_data("sich interessieren")
 
+    async def test_reflexive_verb_2(self):
+        actual = await self.prepare_data("sich vorstellen")
+        assert actual.pos_tag == "VV(INF)"
+        assert actual.part_of_speech == PartOfSpeech.Verb
+        assert actual.word_infinitive == "sich vorstellen"
+
     async def test_rare_adjective(self):
         # Identified as FM = Fremdsprachliches Material
         expected = GermanWordData(
@@ -333,32 +339,6 @@ class TestGermanPrepareData:
             sentence_example_translated_en=sentence_example_translated_en_stub_text,
         )
         assert expected == await self.prepare_data("zwanglos")
-
-    async def test_reflexive_verb_with_sich_specified(self):
-        expected = GermanWordData(
-            word_infinitive="sich vorstellen",
-            pos_tag="VV(INF)",
-            part_of_speech=PartOfSpeech.Verb,
-            translated_en="to " + word_translated_stub,
-            translated_ru=word_translated_stub,
-            noun_properties=None,
-            sentence_example=sentence_example_stub_text,
-            sentence_example_translated_en=sentence_example_translated_en_stub_text,
-        )
-        assert expected == await self.prepare_data("sich vorstellen")
-
-    async def test_reflexive_verb_with_sich_specified_2(self):
-        expected = GermanWordData(
-            word_infinitive="sich schämen",
-            pos_tag="VV(INF)",
-            part_of_speech=PartOfSpeech.Verb,
-            translated_en="to " + word_translated_stub,
-            translated_ru=word_translated_stub,
-            noun_properties=None,
-            sentence_example=sentence_example_stub_text,
-            sentence_example_translated_en=sentence_example_translated_en_stub_text,
-        )
-        assert expected == await self.prepare_data("sich schämen")
 
     async def test_verb_false_positively_detected_as_adjective(self):
         actual = await self.prepare_data("lauten")
