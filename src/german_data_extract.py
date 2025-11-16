@@ -122,40 +122,27 @@ async def prepare_data_for_german_word(original_word_or_phrase: str, hints: Word
     if not is_single_word(word_or_phrase):
         return await prepare_data_for_german_phrase(word_or_phrase, hints)
 
-    word, word_note_suffix = extract_note_suffix(word_or_phrase)
+    word = word_or_phrase
+    word, word_note_suffix = extract_note_suffix(word)
 
-    word_infinitive, pos_tag = get_part_of_speech(word)
+    _, pos_tag = get_part_of_speech(word)
     part_of_speech = detect_part_of_speech_for_single_word(word, pos_tag)
 
-    if part_of_speech != PartOfSpeech.Noun:
-        # For some words infinitives start with capital letter despite they are not nouns, e.g. "perplex"
-        word_infinitive = word_infinitive.lower()
-
-    if original_word_or_phrase != word_infinitive:
-        logging.info(f"Auto corrected word: original={original_word_or_phrase}, infinitive={word_infinitive}")
-
     noun_properties = None
-    word_infinitive_with_article = word_infinitive
+    word_infinitive_for_card = word
+    word_with_article = word
 
     if part_of_speech == PartOfSpeech.Noun:
-        singular, plural, genus = get_extra_noun_info(word_infinitive)
+        singular, plural, genus = get_extra_noun_info(word)
         noun_properties = GermanNounProperties(
             singular_form=singular,
             plural_form=plural,
             genus=genus,
             article=get_article_for_german_genus(genus),
         )
-        word_infinitive_with_article = f"{noun_properties.article} {word_infinitive}"
+        word_with_article = f"{noun_properties.article} {word}"
 
-    word_for_text_generation_request = (
-        "sich " + word_infinitive_with_article if is_reflexive_verb(word) else word_infinitive_with_article
-    )
-
-    word_infinitive_for_card = "sich " + word_infinitive if is_reflexive_verb(word) else word_infinitive
-
-    german_sentence_example = await generate_sentence_example_with_llm(
-        word_for_text_generation_request, language="German"
-    )
+    german_sentence_example = await generate_sentence_example_with_llm(word_with_article, language="German")
     sentence_example_translated_en = await translate_text(german_sentence_example, src="de", dest="en")
 
     return GermanWordData(
@@ -163,15 +150,15 @@ async def prepare_data_for_german_word(original_word_or_phrase: str, hints: Word
         pos_tag=pos_tag,
         part_of_speech=part_of_speech,
         word_note_suffix=word_note_suffix,
-        translated_en=await translate_de_to_en(word_infinitive_with_article, part_of_speech),
-        translated_ru=await translate_de_to_ru(word_infinitive_with_article, hints),
+        translated_en=await translate_de_to_en(word_with_article, part_of_speech),
+        translated_ru=await translate_de_to_ru(word_with_article, hints),
         noun_properties=noun_properties,
         sentence_example=german_sentence_example,
         sentence_example_translated_en=sentence_example_translated_en,
     )
 
 
-def get_part_of_speech(word: str):
+def get_part_of_speech(word: str) -> Tuple[str, str]:
     return _pos_tagger_de.analyze(strip_sich_from_reflexive_verb(word))
 
 

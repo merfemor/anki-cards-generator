@@ -237,7 +237,7 @@ class TestGermanPrepareData:
 
     async def test_noun_in_plural_given(self):
         expected = GermanWordData(
-            word_infinitive="Markt",
+            word_infinitive="Märkte",
             pos_tag="NN",
             part_of_speech=PartOfSpeech.Noun,
             translated_en=word_translated_stub,
@@ -252,7 +252,7 @@ class TestGermanPrepareData:
 
     async def test_adjective_conjugated_given(self):
         expected = GermanWordData(
-            word_infinitive="schnell",
+            word_infinitive="schnelle",
             pos_tag="ADJ(A)",
             part_of_speech=PartOfSpeech.Other,
             translated_en=word_translated_stub,
@@ -269,7 +269,7 @@ class TestGermanPrepareData:
 
     async def test_verb_with_mistake_given(self):
         expected = GermanWordData(
-            word_infinitive="empfeln",
+            word_infinitive="empfelen",
             pos_tag="VV(INF)",
             part_of_speech=PartOfSpeech.Verb,
             translated_en="to " + word_translated_stub,
@@ -330,7 +330,7 @@ class TestGermanPrepareData:
         actual = await self.prepare_data("lauten")
         assert actual.pos_tag == "ADJ(A)"
         assert actual.part_of_speech == PartOfSpeech.Other
-        assert actual.word_infinitive == "laut"
+        assert actual.word_infinitive == "lauten"
         assert actual.noun_properties is None
 
     async def test_adjective_not_false_positively_detected_as_verb(self):
@@ -347,6 +347,10 @@ class TestGermanPrepareData:
         assert actual.word_infinitive == "anrufen"
         assert actual.word_note_suffix == "(+Akk)"
         assert actual.noun_properties is None
+
+    async def test_adjective_not_auto_corrected_to_verb(self):
+        actual = await self.prepare_data("versetzt")
+        assert actual.word_infinitive == "versetzt"
 
     async def prepare_data(self, word: str) -> src.german_data_extract.GermanWordData:
         return await src.german_data_extract.prepare_data_for_german_word(word, hints=WordHints(""))
