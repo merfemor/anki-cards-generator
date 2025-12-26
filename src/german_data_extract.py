@@ -143,7 +143,9 @@ async def prepare_data_for_german_word(original_word_or_phrase: str, hints: Word
         )
         word_with_article = f"{noun_properties.article} {word}"
 
-    german_sentence_example = await generate_sentence_example_with_llm(word_with_article, language="German")
+    german_sentence_example = await generate_sentence_example_with_llm(
+        word_with_article, language="German", is_phrase=False
+    )
     sentence_example_translated_en = await translate_text(german_sentence_example, src="de", dest="en")
 
     return GermanWordData(
@@ -192,7 +194,7 @@ def detect_part_of_speech_for_single_word(word: str, pos_tag: str) -> PartOfSpee
 
 async def prepare_data_for_german_phrase(phrase: str, hints: WordHints) -> GermanWordData:
     phrase, note_suffix = extract_note_suffix(phrase)
-    german_sentence_example = await generate_sentence_example_with_llm(phrase, language="German")
+    german_sentence_example = await generate_sentence_example_with_llm(phrase, language="German", is_phrase=True)
 
     return GermanWordData(
         word=phrase,
