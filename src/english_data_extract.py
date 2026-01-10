@@ -1,6 +1,8 @@
+import logging
 from dataclasses import dataclass
 
 from src.common_data_extract import generate_sentence_example_with_llm
+from src.spelling import correct_spelling
 from src.translate import translate_text
 from src.utils import check
 from src.word_hints import WordHints
@@ -16,6 +18,11 @@ class EnglishWordData:
 
 async def prepare_data_for_english_word(word: str, hints: WordHints) -> EnglishWordData:
     check(len(word.strip()) > 0, "Expected non empty word")
+
+    orig_word = word
+    word = correct_spelling(word, language="en")
+    if orig_word != word:
+        logging.info(f"Corrected spelling from {orig_word} to {word}")
 
     en_sentence_example = await generate_sentence_example_with_llm(word, language="English", is_phrase=False)
 

@@ -13,6 +13,7 @@ dependencies = [
     "gtts (==2.5.4)",
     "HanTa (==1.1.2)",
     "numpy (==2.3.2)",
+    "pyspellchecker (==0.8.4)",
 ]
 
 [tool.poetry]

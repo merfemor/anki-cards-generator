@@ -264,21 +264,19 @@ class TestGermanPrepareData:
         assert expected == await self.prepare_data("schnelle")
 
     async def test_noun_with_mistake_given(self):
-        with pytest.raises(NotImplementedError):
-            await self.prepare_data("Erfarung")
+        actual = await self.prepare_data("Erfarung")
+        assert actual.word == "Erfahrung"
+        assert actual.part_of_speech == PartOfSpeech.Noun
 
     async def test_verb_with_mistake_given(self):
-        expected = GermanWordData(
-            word="empfelen",
-            pos_tag="VV(INF)",
-            part_of_speech=PartOfSpeech.Verb,
-            translated_en="to " + word_translated_stub,
-            translated_ru=word_translated_stub,
-            noun_properties=None,
-            sentence_example=sentence_example_stub_text,
-            sentence_example_translated_en=sentence_example_translated_en_stub_text,
-        )
-        assert expected == await self.prepare_data("empfelen")
+        actual = await self.prepare_data("empfelen")
+        assert actual.word == "empfehlen"
+        assert actual.part_of_speech == PartOfSpeech.Verb
+
+    async def test_noun_with_mistake_and_not_best_correction(self):
+        actual = await self.prepare_data("Hönig")
+        assert actual.word == "König"  # But Honig would be better
+        assert actual.part_of_speech == PartOfSpeech.Noun
 
     async def test_reflexive_verb(self):
         expected = GermanWordData(

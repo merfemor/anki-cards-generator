@@ -7,6 +7,7 @@ import german_nouns.lookup
 from HanTa.HanoverTagger import HanoverTagger
 
 from src.common_data_extract import generate_sentence_example_with_llm
+from src.spelling import correct_spelling
 from src.translate import translate_text
 from src.utils import check
 from src.word_hints import WordHints
@@ -125,6 +126,10 @@ async def prepare_data_for_german_word(original_word_or_phrase: str, hints: Word
 
     word = word_or_phrase
     word, word_note_suffix = extract_note_suffix(word)
+    before_correcting_word = word
+    word = correct_spelling(word, language="de")
+    if before_correcting_word != word:
+        logging.info(f"Corrected spelling from {before_correcting_word} to {word}")
 
     _, pos_tag = get_part_of_speech(word)
     part_of_speech = detect_part_of_speech_for_single_word(word, pos_tag)

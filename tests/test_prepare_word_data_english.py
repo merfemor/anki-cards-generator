@@ -82,5 +82,13 @@ class TestEnglishPrepareData:
         )
         assert expected == await prepare_data_for_english_word("miscellaneous", WordHints("смешанный, разнообразный"))
 
+    async def test_word_with_mistake(self):
+        actual = await self.prepare_data("heigh")
+        assert actual.original_word == "high"
+
+    async def test_phrase_with_mistake_not_corrected(self):
+        actual = await self.prepare_data("make and efort")
+        assert actual.original_word == "make and efort"
+
     async def prepare_data(self, word: str) -> EnglishWordData:
         return await prepare_data_for_english_word(word, hints=WordHints(""))

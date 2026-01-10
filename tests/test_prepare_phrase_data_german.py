@@ -30,6 +30,10 @@ class TestGermanPhrasePrepareData:
         assert actual.word_note_suffix == "(+Dat)"
         assert actual.noun_properties is None
 
+    async def test_phrase_with_mistake_given_not_corrected(self):
+        actual = await self.prepare_data("Entsheidung treffen")
+        assert actual.word == "Entsheidung treffen"
+
     @staticmethod
     async def prepare_data(phrase: str) -> GermanWordData:
         return await prepare_data_for_german_word(phrase, hints=WordHints(""))
