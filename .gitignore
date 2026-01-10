@@ -3,6 +3,7 @@ __pycache__/
 .DS_Store
 .idea
 .env
+.junie
 
 # Generated Anki packages
 *.apkg
