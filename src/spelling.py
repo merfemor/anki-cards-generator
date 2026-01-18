@@ -1,6 +1,6 @@
 from spellchecker import SpellChecker
 
-from utils import check
+from src.utils import check
 
 _spells = {
     "en": SpellChecker(language="en"),
@@ -16,6 +16,8 @@ def correct_spelling(word_or_phrase: str, language: str) -> str:
         return word_or_phrase
 
     spell = _spells.get(language)
+    if spell is None:
+        raise ValueError(f"Unknown language {language}")
     orig = word_or_phrase
     corrected = spell.correction(word_or_phrase)
     if not corrected:
