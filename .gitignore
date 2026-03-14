@@ -4,6 +4,7 @@ __pycache__/
 .idea
 .env
 .junie
+poetry.lock
 
 # Generated Anki packages
 *.apkg
