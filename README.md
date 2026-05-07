@@ -14,10 +14,10 @@ You have two options: Ollama (default) and OpenAI.
 
 Install [Ollama](https://ollama.com/download) client and run it. 
  
-Pull `llama3.1:8b` model:
+Download `qwen3.5:4b` model:
 
 ```bash
-ollama pull llama3.1:8b
+ollama pull qwen3.5:4b
 ```
 
 #### OpenAI

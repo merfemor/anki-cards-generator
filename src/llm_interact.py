@@ -25,7 +25,7 @@ class LlmProvider(ABC):
 
 
 class OllamaLlmProvider(LlmProvider):
-    OLLAMA_MODEL: Final[str] = "llama3.1:8b"
+    OLLAMA_MODEL: Final[str] = "qwen3.5:4b"
 
     def __init__(self):
         self.early_check_ollama()
@@ -33,7 +33,7 @@ class OllamaLlmProvider(LlmProvider):
     async def ask_llm(self, prompt: str) -> str:
         client = ollama.AsyncClient()
         # Set top_k to have more conservative answers
-        res = await client.generate(model=self.OLLAMA_MODEL, prompt=prompt, options={"top_k": 20})
+        res = await client.generate(model=self.OLLAMA_MODEL, prompt=prompt, options={"top_k": 20}, think=False)
         response_text: str = res["response"]
         return response_text
 
