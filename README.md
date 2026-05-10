@@ -59,16 +59,10 @@ This is how we fix stuff here.
 
 ## Run
 
-Activate virtual environment if haven't yet.
-
-```bash
-source .venv/bin/activate
-```
-
 Run the app with the following command:
 
 ```bash
-python main.py
+poetry run python main.py
 ```
 
 The web interface will be available at http://127.0.0.1:5000/.
