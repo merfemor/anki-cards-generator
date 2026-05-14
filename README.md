@@ -42,24 +42,14 @@ Then run the following commands to prepare the environment:
 ```bash
 # Install dependencies
 uv sync
-
-# Hack to resolve dependency conflict (see below)
-uv pip install --no-deps german-nouns
 ```
-
-#### Note about `german-nouns` package
-
-I'm constantly getting errors during installation of `german-nouns==1.2.5` package.
-This is because of transitive dependency on old `lxml==4.9.4` via `wiktionary-de-parser`.
-That's why we have to install `german-nouns` separately with ignoring dependencies.
-This is how we fix stuff here.
 
 ## Run
 
 Run the app with the following command:
 
 ```bash
-uv run python main.py
+uv run main.py
 ```
 
 The web interface will be available at http://127.0.0.1:5000/.

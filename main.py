@@ -6,7 +6,7 @@ import tempfile
 import threading
 import webbrowser
 from collections.abc import Callable
-from typing import Any, Tuple, Coroutine
+from typing import Any, Tuple, Coroutine, TypeVar
 
 from dotenv import load_dotenv
 from flask import Flask, jsonify, request, send_file, render_template, Response
@@ -68,7 +68,10 @@ async def generate_cards_file() -> Tuple[Response, int] | Response:
         return jsonify({"error": f"Expected language to be one of 'en', 'de', but got '{language}'"}), 400
 
 
-async def common_generate_cards_file[WD: GermanWordData | EnglishWordData](
+WD = TypeVar("WD", GermanWordData, EnglishWordData)
+
+
+async def common_generate_cards_file(
     words_with_hints: list[dict[str, Any]],
     prepare_data_fn: Callable[[str, WordHints], Coroutine[None, None, WD]],
     export_fn: Callable[[list[WD], str], None],
