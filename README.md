@@ -35,19 +35,16 @@ Then, when running app, specify additional argument `--llm-provider=openai`.
 
 ### Python virtual environment
 
-Install [Poetry](https://python-poetry.org/docs/#installation).
+Install [uv](https://docs.astral.sh/uv/getting-started/installation/).
 
 Then run the following commands to prepare the environment:
 
 ```bash
 # Install dependencies
-poetry install
-
-# Activate env
-source .venv/bin/activate
+uv sync
 
 # Hack to resolve dependency conflict (see below)
-pip install --no-deps german-nouns
+uv pip install --no-deps german-nouns
 ```
 
 #### Note about `german-nouns` package
@@ -62,7 +59,7 @@ This is how we fix stuff here.
 Run the app with the following command:
 
 ```bash
-poetry run python main.py
+uv run python main.py
 ```
 
 The web interface will be available at http://127.0.0.1:5000/.
@@ -88,5 +85,5 @@ pre-commit run -a
 To run unit tests, execute:
 
 ```bash
-PYTHONPATH=. poetry run pytest
+PYTHONPATH=. uv run pytest
 ```
