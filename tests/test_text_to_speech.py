@@ -1,7 +1,7 @@
 import os
 import tempfile
 
-from src import tts
+from app import tts
 
 
 class TestTextToSpeech:

@@ -1,6 +1,6 @@
 from typing import Literal
 
-from src.utils import check
+from app.utils import check
 
 
 def get_sentence_example_prompt(word_or_phrase: str, language: Literal["German", "English"], is_phrase: bool) -> str:

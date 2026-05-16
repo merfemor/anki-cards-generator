@@ -49,7 +49,7 @@ uv sync
 Run the app with the following command:
 
 ```bash
-uv run main.py
+uv run -m app
 ```
 
 The web interface will be available at http://127.0.0.1:5000/.
@@ -75,5 +75,5 @@ pre-commit run -a
 To run unit tests, execute:
 
 ```bash
-PYTHONPATH=. uv run pytest
+uv run pytest
 ```

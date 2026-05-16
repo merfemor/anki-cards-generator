@@ -1,6 +1,6 @@
 import random
 
-from src.anki_common import get_audio_file_name_for_phrase, get_audio_file_name_for_sentence
+from app.anki_common import get_audio_file_name_for_phrase, get_audio_file_name_for_sentence
 
 
 class TestGetAudioFileNameForPhrase:

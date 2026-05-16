@@ -1,6 +1,6 @@
 import argparse
 
-from src.llm_interact import llm_provider_choices
+from app.llm_interact import llm_provider_choices
 
 
 def parse_arguments() -> argparse.Namespace:

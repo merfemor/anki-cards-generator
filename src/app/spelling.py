@@ -1,6 +1,6 @@
 from spellchecker import SpellChecker
 
-from src.utils import check
+from app.utils import check
 
 _spells = {
     "en": SpellChecker(language="en"),

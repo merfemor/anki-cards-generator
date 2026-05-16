@@ -1,4 +1,4 @@
-from src.german_anki_generate import shorten_german_noun_plural_form_for_anki_card
+from app.german_anki_generate import shorten_german_noun_plural_form_for_anki_card
 
 
 class TestGermanShortenPluralForm:

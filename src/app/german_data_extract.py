@@ -6,11 +6,11 @@ from typing import Final, Optional, Literal, Tuple
 import german_nouns.lookup
 from HanTa.HanoverTagger import HanoverTagger
 
-from src.common_data_extract import generate_sentence_example_with_llm
-from src.spelling import correct_spelling
-from src.translate import translate_text
-from src.utils import check
-from src.word_hints import WordHints
+from app.common_data_extract import generate_sentence_example_with_llm
+from app.spelling import correct_spelling
+from app.translate import translate_text
+from app.utils import check
+from app.word_hints import WordHints
 
 _pos_tagger_de = HanoverTagger("morphmodel_ger.pgz")
 _german_nouns_obj: Final[german_nouns.lookup.Nouns] = german_nouns.lookup.Nouns()

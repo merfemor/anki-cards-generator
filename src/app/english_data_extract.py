@@ -1,11 +1,11 @@
 import logging
 from dataclasses import dataclass
 
-from src.common_data_extract import generate_sentence_example_with_llm
-from src.spelling import correct_spelling
-from src.translate import translate_text
-from src.utils import check
-from src.word_hints import WordHints
+from app.common_data_extract import generate_sentence_example_with_llm
+from app.spelling import correct_spelling
+from app.translate import translate_text
+from app.utils import check
+from app.word_hints import WordHints
 
 
 @dataclass

@@ -5,11 +5,11 @@ from typing import Final
 
 import genanki
 
-from src.anki_card_style import ANKI_CARD_CSS
-from src.anki_common import get_audio_file_name_for_phrase, get_audio_file_name_for_sentence
-from src.english_data_extract import EnglishWordData
-from src.tts import text_to_speech_into_file
-from src.utils import check
+from app.anki_card_style import ANKI_CARD_CSS
+from app.anki_common import get_audio_file_name_for_phrase, get_audio_file_name_for_sentence
+from app.english_data_extract import EnglishWordData
+from app.tts import text_to_speech_into_file
+from app.utils import check
 
 # Magic constant. Just random number, because we have to assign something unique.
 _GENERATED_DECK_ID: Final[int] = 2059400111

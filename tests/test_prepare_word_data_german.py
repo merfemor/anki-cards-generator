@@ -2,12 +2,12 @@ from typing import Final
 
 import pytest
 
-import src.german_data_extract
-import src.utils
-from src.german_data_extract import GermanWordData, PartOfSpeech
-from src.llm_interact import override_global_llm_provider_for_test
-from src.translate import override_global_translator_for_test
-from src.word_hints import WordHints
+import app.german_data_extract
+import app.utils
+from app.german_data_extract import GermanWordData, PartOfSpeech
+from app.llm_interact import override_global_llm_provider_for_test
+from app.translate import override_global_translator_for_test
+from app.word_hints import WordHints
 from stub_llm_provider import StubLlmProvider
 from stub_translator import StubTranslator
 
@@ -54,7 +54,7 @@ class TestGermanPrepareData:
             part_of_speech=PartOfSpeech.Noun,
             translated_en=word_translated_stub,
             translated_ru=word_translated_stub,
-            noun_properties=src.german_data_extract.GermanNounProperties(
+            noun_properties=app.german_data_extract.GermanNounProperties(
                 singular_form="Katze", plural_form="Katzen", genus="f", article="die"
             ),
             sentence_example=sentence_example_stub_text,
@@ -69,7 +69,7 @@ class TestGermanPrepareData:
             part_of_speech=PartOfSpeech.Noun,
             translated_en=word_translated_stub,
             translated_ru=word_translated_stub,
-            noun_properties=src.german_data_extract.GermanNounProperties(
+            noun_properties=app.german_data_extract.GermanNounProperties(
                 singular_form="Schnee", plural_form="", genus="m", article="der"
             ),
             sentence_example=sentence_example_stub_text,
@@ -84,7 +84,7 @@ class TestGermanPrepareData:
             part_of_speech=PartOfSpeech.Noun,
             translated_en=word_translated_stub,
             translated_ru=word_translated_stub,
-            noun_properties=src.german_data_extract.GermanNounProperties(
+            noun_properties=app.german_data_extract.GermanNounProperties(
                 singular_form="Band", plural_form="Bänder", genus="n", article="das"
             ),
             sentence_example=sentence_example_stub_text,
@@ -99,7 +99,7 @@ class TestGermanPrepareData:
             part_of_speech=PartOfSpeech.Noun,
             translated_en=word_translated_stub,
             translated_ru=word_translated_stub,
-            noun_properties=src.german_data_extract.GermanNounProperties(
+            noun_properties=app.german_data_extract.GermanNounProperties(
                 singular_form="", plural_form="Ferien", genus="pl", article="die"
             ),
             sentence_example=sentence_example_stub_text,
@@ -114,7 +114,7 @@ class TestGermanPrepareData:
             part_of_speech=PartOfSpeech.Noun,
             translated_en=word_translated_stub,
             translated_ru=word_translated_stub,
-            noun_properties=src.german_data_extract.GermanNounProperties(
+            noun_properties=app.german_data_extract.GermanNounProperties(
                 singular_form="Schwimmen", plural_form="", genus="n", article="das"
             ),
             sentence_example=sentence_example_stub_text,
@@ -198,7 +198,7 @@ class TestGermanPrepareData:
             sentence_example=sentence_example_stub_text,
             sentence_example_translated_en=sentence_example_translated_en_stub_text,
         )
-        assert expected == await src.german_data_extract.prepare_data_for_german_word(
+        assert expected == await app.german_data_extract.prepare_data_for_german_word(
             "lustig",
             hints=WordHints("смешной, весёлый"),
         )
@@ -227,7 +227,7 @@ class TestGermanPrepareData:
             part_of_speech=PartOfSpeech.Noun,
             translated_en=word_translated_stub,
             translated_ru=word_translated_stub,
-            noun_properties=src.german_data_extract.GermanNounProperties(
+            noun_properties=app.german_data_extract.GermanNounProperties(
                 singular_form="Katze", plural_form="Katzen", genus="f", article="die"
             ),
             sentence_example=sentence_example_stub_text,
@@ -242,7 +242,7 @@ class TestGermanPrepareData:
             part_of_speech=PartOfSpeech.Noun,
             translated_en=word_translated_stub,
             translated_ru=word_translated_stub,
-            noun_properties=src.german_data_extract.GermanNounProperties(
+            noun_properties=app.german_data_extract.GermanNounProperties(
                 singular_form="Markt", plural_form="Märkte", genus="m", article="der"
             ),
             sentence_example=sentence_example_stub_text,
@@ -350,5 +350,5 @@ class TestGermanPrepareData:
         actual = await self.prepare_data("versetzt")
         assert actual.word == "versetzt"
 
-    async def prepare_data(self, word: str) -> src.german_data_extract.GermanWordData:
-        return await src.german_data_extract.prepare_data_for_german_word(word, hints=WordHints(""))
+    async def prepare_data(self, word: str) -> app.german_data_extract.GermanWordData:
+        return await app.german_data_extract.prepare_data_for_german_word(word, hints=WordHints(""))

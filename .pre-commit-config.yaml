@@ -14,5 +14,5 @@ repos:
       entry: mypy
       language: system
       types: [python]
-      args: [--ignore-missing-imports, main.py]
+      args: [--ignore-missing-imports, src/app/main.py]
       pass_filenames: false

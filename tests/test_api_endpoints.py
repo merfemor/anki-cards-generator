@@ -1,6 +1,6 @@
 import json
 
-from main import app
+from app.main import app
 
 
 class TestApiEndpoints:

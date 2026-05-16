@@ -1,8 +1,8 @@
 from typing import Literal
 
-from src.llm_interact import ask_llm
-from src.prompts import get_sentence_example_prompt
-from src.utils import check
+from app.llm_interact import ask_llm
+from app.prompts import get_sentence_example_prompt
+from app.utils import check
 
 
 async def generate_sentence_example_with_llm(word: str, language: Literal["English", "German"], is_phrase: bool) -> str:

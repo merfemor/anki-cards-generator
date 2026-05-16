@@ -1,8 +1,8 @@
 import os
 import tempfile
 
-from src import tts, german_anki_generate
-from src.german_data_extract import GermanWordData, GermanNounProperties, PartOfSpeech
+from app import tts, german_anki_generate
+from app.german_data_extract import GermanWordData, GermanNounProperties, PartOfSpeech
 
 
 class TestWordDataExportToAnki:

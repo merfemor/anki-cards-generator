@@ -1,5 +1,5 @@
 [project]
-name = "anki-cards-generator"
+name = "app"
 version = "0.1.0"
 requires-python = ">=3.11,<3.12"
 classifiers = [
@@ -29,8 +29,10 @@ dev = [
 ]
 
 [tool.uv]
-package = false
 default-groups = "all"
+
+[project.scripts]
+app = "app:main"
 
 [build-system]
 requires = ["uv_build>=0.11.14,<0.12.0"]

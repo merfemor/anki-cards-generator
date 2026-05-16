@@ -3,7 +3,7 @@ from abc import ABC, abstractmethod
 
 from gtts import gTTS
 
-from src.utils import check
+from app.utils import check
 
 
 class TextToSpeechEngine(ABC):

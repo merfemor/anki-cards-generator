@@ -11,15 +11,15 @@ from typing import Any, Tuple, Coroutine, TypeVar
 from dotenv import load_dotenv
 from flask import Flask, jsonify, request, send_file, render_template, Response
 
-import src.english_anki_generate
-import src.german_anki_generate
-from src.configuration import parse_arguments
-from src.english_data_extract import prepare_data_for_english_word, EnglishWordData
-from src.german_data_extract import prepare_data_for_german_word, GermanWordData
-from src.llm_interact import set_global_llm_provider
-from src.tts import init_tts_engine
-from src.word_hints import WordHints
-from src.translate import check_translator_is_available
+from app import english_anki_generate
+from app import german_anki_generate
+from app.configuration import parse_arguments
+from app.english_data_extract import prepare_data_for_english_word, EnglishWordData
+from app.german_data_extract import prepare_data_for_german_word, GermanWordData
+from app.llm_interact import set_global_llm_provider
+from app.translate import check_translator_is_available
+from app.tts import init_tts_engine
+from app.word_hints import WordHints
 
 app = Flask(__name__)
 
@@ -53,7 +53,7 @@ async def generate_cards_file() -> Tuple[Response, int] | Response:
         return await common_generate_cards_file(
             words_with_hints,
             prepare_data_fn=prepare_data_for_german_word,
-            export_fn=src.german_anki_generate.export_results_to_anki_deck,
+            export_fn=german_anki_generate.export_results_to_anki_deck,
             file_suffix="to_import_german_anki_generated.apkg",
         )
     elif language == "en":
@@ -61,7 +61,7 @@ async def generate_cards_file() -> Tuple[Response, int] | Response:
         return await common_generate_cards_file(
             words_with_hints,
             prepare_data_fn=prepare_data_for_english_word,
-            export_fn=src.english_anki_generate.export_results_to_anki_deck,
+            export_fn=english_anki_generate.export_results_to_anki_deck,
             file_suffix="to_import_english_anki_generated.apkg",
         )
     else:
@@ -119,7 +119,7 @@ def open_in_browser(*, url: str, after_seconds: int) -> None:
     threading.Timer(after_seconds, lambda: webbrowser.open_new(url)).start()
 
 
-if __name__ == "__main__":
+def main():
     load_dotenv()
     setup_logging()
     args = parse_arguments()

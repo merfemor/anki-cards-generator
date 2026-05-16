@@ -1,9 +1,9 @@
 import pytest
 
-from src.german_data_extract import GermanWordData, PartOfSpeech, prepare_data_for_german_word
-from src.llm_interact import override_global_llm_provider_for_test
-from src.translate import override_global_translator_for_test
-from src.word_hints import WordHints
+from app.german_data_extract import GermanWordData, PartOfSpeech, prepare_data_for_german_word
+from app.llm_interact import override_global_llm_provider_for_test
+from app.translate import override_global_translator_for_test
+from app.word_hints import WordHints
 from stub_llm_provider import StubLlmProvider
 from stub_translator import StubTranslator
 
