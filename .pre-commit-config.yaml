@@ -11,8 +11,8 @@ repos:
   hooks:
     - id: mypy-on-entry
       name: Run mypy on main.py file
-      entry: mypy
+      entry: uv
       language: system
       types: [python]
-      args: [--ignore-missing-imports, src/app/main.py]
+      args: [run, mypy, --ignore-missing-imports, src/app/main.py]
       pass_filenames: false
