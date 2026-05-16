@@ -14,7 +14,6 @@ dependencies = [
     "ollama (==0.6.2)",
     "openai (==2.35.1)",
     "python-dotenv (==1.2.2)",
-    "gtts (==2.5.4)",
     "HanTa (==1.2.1)",
     "numpy (==2.4.4)",
     "pyspellchecker (==0.8.4)",
