@@ -1,18 +1,24 @@
 # Anki Cards Generator
 
-Generator of Anki cards for learning German or English words using Google Translate and a pinch of AI.
-Each card contains not only translation to Russian (and English in case of German), but also a sentence example with a translation to English or Russian.
+Generator of Anki cards for learning German or English words.
+Each card contains not only a translation to Russian (and English, in the case of German), but also a sentence example.
 Also, audios are generated using text-to-speech and embedded into the cards.
 
 ## Installation
+
+**Prerequisites**:
+
+* Python 3.11
+* [uv](https://docs.astral.sh/uv/getting-started/installation/)
+* [Ollama](https://ollama.com/download) or OpenAI API key
+* macOS (text to speech relies on the default `say` command)
+* [lame](https://lame.sourceforge.io/)
 
 ### LLM provider
 
 You have two options: Ollama (default) and OpenAI.
 
 #### Ollama
-
-Install [Ollama](https://ollama.com/download) client and run it. 
  
 Download `qwen3.5:4b` model:
 
@@ -35,12 +41,9 @@ Then, when running app, specify additional argument `--llm-provider=openai`.
 
 ### Python virtual environment
 
-Install [uv](https://docs.astral.sh/uv/getting-started/installation/).
-
-Then run the following commands to prepare the environment:
+Run the following command to prepare the environment:
 
 ```bash
-# Install dependencies
 uv sync
 ```
 
@@ -58,6 +61,8 @@ When you're done, press `Ctrl+C` to stop the app.
 
 ## Development
 
+### Pre-commit hooks
+
 Install pre-commit hooks:
 
 ```bash
@@ -70,7 +75,7 @@ To run all pre-commit hooks on all files:
 pre-commit run -a
 ```
 
-## Tests
+### Tests
 
 To run unit tests, execute:
 
