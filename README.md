@@ -55,6 +55,8 @@ Run the app with the following command:
 uv run -m app
 ```
 
+or just script `run.sh`.
+
 The web interface will be available at http://127.0.0.1:5000/.
 
 When you're done, press `Ctrl+C` to stop the app.
