@@ -31,9 +31,7 @@ async function sendCardsRequest(language, wordsWithHints) {
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = language === 'de'
-            ? "to_import_german_anki_generated.apkg"
-            : "to_import_english_anki_generated.apkg";
+        a.download = getGeneratedAnkiFileName(language);
         document.body.appendChild(a);
         a.click();
         a.remove();
@@ -67,6 +65,33 @@ function parseWordWithHint(word) {
         return null;
     }
     return response;
+}
+
+/**
+ * @param {string} language
+ * @returns {string}
+ */
+function getGeneratedAnkiFileName(language) {
+    const languagePart = language === 'de' ? "german" : "english"
+    const localDateTimePart = formatLocalDateTime();
+    return `to_import_${languagePart}_anki_generated_${localDateTimePart}.apkg`;
+}
+
+/**
+ * @returns {string}
+ */
+function formatLocalDateTime() {
+    const date = new Date()
+    const pad = n => String(n).padStart(2, '0');
+    return [
+        date.getFullYear(),
+        pad(date.getMonth() + 1),
+        pad(date.getDate())
+    ].join('-') + '_' + [
+        pad(date.getHours()),
+        pad(date.getMinutes()),
+        pad(date.getSeconds())
+    ].join('-');
 }
 
 /**
