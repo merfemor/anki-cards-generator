@@ -1,3 +1,16 @@
+/**
+ * @typedef {Object} WordHints
+ * @property {string} translated_ru
+ *
+ * @typedef {Object} WordWithHints
+ * @property {string} word
+ * @property {?WordHints} hints
+ */
+
+/**
+ * @param {string} language
+ * @param {WordWithHints[]} wordsWithHints
+ */
 async function sendCardsRequest(language, wordsWithHints) {
   try {
     const requestBody = {
@@ -33,6 +46,9 @@ async function sendCardsRequest(language, wordsWithHints) {
   }
 }
 
+/**
+ * @returns {?WordWithHints}
+ */
 function parseWordWithHint(word) {
   const parts = word.split('=').map(part => part.trim());
   const response = {
@@ -53,16 +69,25 @@ function parseWordWithHint(word) {
   return response;
 }
 
+/**
+ * @param {boolean} visible
+ */
 function setLoaderVisible(visible) {
   const loader = document.getElementById('loader');
   loader.style.display = visible ? 'block' : 'none';
 }
 
+/**
+ * @param {boolean} enabled
+ */
 function setWordsInputEnabled(enabled) {
   const wordsInputField = document.getElementById('words');
   wordsInputField.disabled = !enabled;
 }
 
+/**
+ * @returns {WordWithHints[]}
+ */
 function getConvertedValueOfWordsInputField() {
   const wordsInputFiled = document.getElementById('words');
   const wordsInput = wordsInputFiled.value.trim();
