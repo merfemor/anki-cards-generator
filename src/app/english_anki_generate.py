@@ -97,7 +97,7 @@ def export_results_to_anki_deck(
     all_media_files = []
 
     with tempfile.TemporaryDirectory(prefix="anki_cards_generator_media_") as temp_dir:
-        logging.info("Created temporary directory " + temp_dir)
+        logging.debug("Created temporary directory " + temp_dir)
         for r in results:
             word_audio_name = get_audio_file_name_for_phrase(r.original_word, lang="en")
             word_audio_path = f"{temp_dir}/{word_audio_name}"
@@ -114,5 +114,5 @@ def export_results_to_anki_deck(
 
         pkg = genanki.Package(my_deck)
         pkg.media_files = all_media_files
-        logging.info(f"Writing deck to temporary file {deck_filename}")
+        logging.debug(f"Writing deck to temporary file {deck_filename}")
         pkg.write_to_file(deck_filename)

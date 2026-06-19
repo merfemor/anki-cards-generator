@@ -9,12 +9,11 @@ import openai
 
 async def ask_llm(prompt: str) -> str:
     llm_provider = __LLM_PROVIDER
-    logging.info(f"LLM request, provider={llm_provider.__class__.__name__}, prompt='{prompt}'")
     try:
         response_text = await llm_provider.ask_llm(prompt)
     except Exception as e:
         raise Exception("Exception during LLM request") from e
-    logging.info(f"LLM response='{response_text}'")
+    logging.debug(f"LLM response='{response_text}', prompt='{prompt}', provider={llm_provider.__class__.__name__}")
     return response_text
 
 

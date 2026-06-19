@@ -49,7 +49,7 @@ async def generate_cards_file() -> Tuple[Response, int] | Response:
     language = request.get_json().get("language")
 
     if language == "de":
-        logging.info(f"Preparing German card data for the words {words_with_hints}")
+        logging.debug(f"Preparing German card data for the words {words_with_hints}")
         return await common_generate_cards_file(
             words_with_hints,
             prepare_data_fn=prepare_data_for_german_word,
@@ -57,7 +57,7 @@ async def generate_cards_file() -> Tuple[Response, int] | Response:
             file_suffix="to_import_german_anki_generated.apkg",
         )
     elif language == "en":
-        logging.info(f"Preparing English card data for the words {words_with_hints}")
+        logging.debug(f"Preparing English card data for the words {words_with_hints}")
         return await common_generate_cards_file(
             words_with_hints,
             prepare_data_fn=prepare_data_for_english_word,
@@ -93,7 +93,7 @@ async def common_generate_cards_file(
     with tempfile.NamedTemporaryFile(delete=False, suffix=file_suffix) as temp_file:
         deck_filename = temp_file.name
 
-    logging.info(f'Exporting the results into the temporary Anki deck file "{deck_filename}"')
+    logging.debug(f'Exporting the results into the temporary Anki deck file "{deck_filename}"')
     try:
         export_fn(results, deck_filename)
 
@@ -107,7 +107,7 @@ async def common_generate_cards_file(
     finally:
         if os.path.exists(deck_filename):
             os.remove(deck_filename)
-            logging.info(f'Removed temporary Anki deck file "{deck_filename}"')
+            logging.debug(f'Removed temporary Anki deck file "{deck_filename}"')
 
 
 @app.route("/", methods=["GET"])
