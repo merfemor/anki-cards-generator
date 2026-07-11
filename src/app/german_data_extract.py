@@ -30,11 +30,12 @@ def pos_tag_to_part_of_speech(pos_tag: str) -> PartOfSpeech:
     return PartOfSpeech.Other
 
 
-def get_extra_noun_info(word: str) -> Tuple[str, str, str]:
+def get_extra_noun_info(word: str) -> Tuple[str, str, str] | None:
     result = _german_nouns_obj[word]
 
     if len(result) == 0:
-        raise NotImplementedError(f'No noun info for word "{word}"')
+        logging.info(f"Word {word} detected as noun, but not found in dictionary")
+        return None
 
     flexion = result[0]["flexion"]
     genus = result[0].get("genus", "pl")
@@ -139,14 +140,18 @@ async def prepare_data_for_german_word(original_word_or_phrase: str, hints: Word
     word_with_article = word
 
     if part_of_speech == PartOfSpeech.Noun:
-        singular, plural, genus = get_extra_noun_info(word)
-        noun_properties = GermanNounProperties(
-            singular_form=singular,
-            plural_form=plural,
-            genus=genus,
-            article=get_article_for_german_genus(genus),
-        )
-        word_with_article = f"{noun_properties.article} {word}"
+        noun_info = get_extra_noun_info(word)
+        if noun_info:
+            singular, plural, genus = get_extra_noun_info(word)
+            noun_properties = GermanNounProperties(
+                singular_form=singular,
+                plural_form=plural,
+                genus=genus,
+                article=get_article_for_german_genus(genus),
+            )
+            word_with_article = f"{noun_properties.article} {word}"
+        else:
+            word_with_article = word
 
     german_sentence_example = await generate_sentence_example_with_llm(
         word_with_article, language="German", is_phrase=False

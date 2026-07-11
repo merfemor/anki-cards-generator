@@ -216,9 +216,19 @@ class TestGermanPrepareData:
         )
         assert expected == await self.prepare_data("durch")
 
-    async def test_rare_compound_word(self):
-        with pytest.raises(NotImplementedError):
-            await self.prepare_data("Kuddelmuddelkiste")
+    # Other examples: Selbsteinschätzung, Klimmzugstange, Berufseinstieg, Erachten, Achterbahnfahren, Freiklettern, Tiefseetauschen, Eisbaden, Fallschirmspringen.
+    async def test_noun_not_found_in_dictionary(self):
+        expected = GermanWordData(
+            word="Kuddelmuddelkiste",
+            pos_tag="NN",
+            part_of_speech=PartOfSpeech.Noun,
+            translated_en=word_translated_stub,
+            translated_ru=word_translated_stub,
+            noun_properties=None,
+            sentence_example=sentence_example_stub_text,
+            sentence_example_translated_en=sentence_example_translated_en_stub_text,
+        )
+        assert expected == await self.prepare_data("Kuddelmuddelkiste")
 
     async def test_noun_with_article_given(self):
         expected = GermanWordData(
