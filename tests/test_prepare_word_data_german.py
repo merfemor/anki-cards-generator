@@ -348,6 +348,14 @@ class TestGermanPrepareData:
         assert actual.word == "bewusst"
         assert actual.noun_properties is None
 
+    async def test_adjective_also_perfekt_verb_form_ambiguity(self):
+        actual = await self.prepare_data("angetrunken")
+        # Wrong POS, but at least it's not autocorrected to "antrinken"
+        assert actual.pos_tag == "VV(PP)"
+        assert actual.part_of_speech == PartOfSpeech.Verb
+        assert actual.word == "angetrunken"
+        assert actual.noun_properties is None
+
     async def test_verb_with_grammatical_case_note(self):
         actual = await self.prepare_data("anrufen (+Akk)")
         assert actual.pos_tag == "VV(INF)"
