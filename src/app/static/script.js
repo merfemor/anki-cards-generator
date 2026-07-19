@@ -133,8 +133,16 @@ function cleanWordsInputField() {
     wordsInputFiled.value = '';
 }
 
+/**
+ * @returns {string}
+ */
+function getSelectedLanguage() {
+    const activeBtn = document.querySelector('#languageGroup .btn-active');
+    return activeBtn ? activeBtn.dataset.value : 'de';
+}
+
 async function onGenerateButtonClick() {
-    const language = document.getElementById('language').value;
+    const language = getSelectedLanguage();
     const wordsWithHints = getConvertedValueOfWordsInputField();
     if (wordsWithHints === null) {
         return;
@@ -154,3 +162,10 @@ async function onGenerateButtonClick() {
 }
 
 document.getElementById('generateBtn').addEventListener('click', onGenerateButtonClick);
+
+document.getElementById('languageGroup').addEventListener('click', function (e) {
+    if (e.target.classList.contains('btn')) {
+        this.querySelectorAll('.btn').forEach(btn => btn.classList.remove('btn-active'));
+        e.target.classList.add('btn-active');
+    }
+});

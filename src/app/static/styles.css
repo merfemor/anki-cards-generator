@@ -56,6 +56,48 @@ select:focus, textarea:focus {
     box-shadow: 0 0 0 2px rgba(76, 209, 55, 0.2);
 }
 
+/* Button group */
+.btn-group {
+    display: flex;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 15px;
+}
+
+.btn-group .btn {
+    flex: 1;
+    padding: 12px;
+    border: none;
+    border-radius: 0;
+    background-color: #f5f6fa;
+    color: #444;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.btn-group .btn:first-child {
+    border-radius: 8px 0 0 8px;
+}
+
+.btn-group .btn:last-child {
+    border-radius: 0 8px 8px 0;
+}
+
+.btn-group .btn:hover {
+    background-color: #e9eaed;
+}
+
+.btn-group .btn-active {
+    background-color: #44bd32;
+    color: white;
+    font-weight: bold;
+}
+
+.btn-group .btn-active:hover {
+    background-color: #4cd137;
+}
+
 textarea {
     resize: vertical;
     min-height: 120px;

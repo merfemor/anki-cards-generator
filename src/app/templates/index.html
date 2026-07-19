@@ -10,11 +10,11 @@
   <div class="container">
     <h1>Anki Cards Generator</h1>
 
-    <label for="language">Select Language:</label>
-    <select id="language">
-      <option value="de">German</option>
-      <option value="en">English</option>
-    </select>
+    <label>Select Language:</label>
+    <div class="btn-group" id="languageGroup">
+      <button type="button" class="btn btn-active" data-value="de">German</button>
+      <button type="button" class="btn" data-value="en">English</button>
+    </div>
 
     <label for="words">Enter words (one per line):</label>
     <textarea id="words" placeholder="cat&#10;dog&#10;capybara"></textarea>
