@@ -1,3 +1,4 @@
+import textwrap
 from typing import Literal
 
 from app.llm_interact import ask_llm
@@ -10,6 +11,7 @@ async def generate_sentence_example_with_llm(word: str, language: Literal["Engli
 
     res = (await ask_llm(prompt)).strip()
     check(len(res) > len(word), f"Too short response: {res}")
-    check(len(res) < 1000, f"Too long response, len={len(res)}")
+    shortened = textwrap.shorten(res, width=120, placeholder="...")
+    check(len(res) < 1000, f"Too long response, len={len(res)}: {shortened}")
 
     return res
