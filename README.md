@@ -13,6 +13,7 @@ Also, audios are generated using text-to-speech and embedded into the cards.
 * [Ollama](https://ollama.com/download) or OpenAI API key
 * macOS (text to speech relies on the default `say` command)
 * [lame](https://lame.sourceforge.io/)
+* [DeepL](https://www.deepl.com/) API key
 
 ### LLM provider
 
@@ -38,6 +39,16 @@ export OPENAI_API_KEY=yourkey
 > You can create `.env` file and specify environment variable there to not enter it each time.
 
 Then, when running app, specify additional argument `--llm-provider=openai`.
+
+### DeepL API key
+
+Obtain a DeepL API key as described in [documentation](https://support.deepl.com/hc/en-us/articles/360020695820-API-key-for-DeepL-API#h_01HM9MFQ195GTHM93RRY63M18W).
+
+Write it into environment variable `DEEPL_API_KEY` or `.env` file:
+
+```bash
+export DEEPL_API_KEY=key
+```
 
 ### Python virtual environment
 

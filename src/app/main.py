@@ -17,7 +17,7 @@ from app.configuration import parse_arguments
 from app.english_data_extract import prepare_data_for_english_word, EnglishWordData
 from app.german_data_extract import prepare_data_for_german_word, GermanWordData
 from app.llm_interact import set_global_llm_provider
-from app.translate import check_translator_is_available
+from app.translate import init_translator
 from app.tts import init_tts_engine
 from app.word_hints import WordHints
 
@@ -31,6 +31,7 @@ def setup_logging() -> None:
         handlers=[logging.StreamHandler(sys.stdout)],
     )
     logging.getLogger("httpx").setLevel(logging.CRITICAL)
+    logging.getLogger("deepl").setLevel(logging.WARNING)
 
 
 def parse_hints_from_dict(word_with_context: dict[str, dict[str, str]]) -> WordHints:
@@ -125,6 +126,6 @@ def main():
     args = parse_arguments()
     set_global_llm_provider(args.llm_provider)
     init_tts_engine()
-    check_translator_is_available()
+    init_translator()
     open_in_browser(url="http://127.0.0.1:5000/", after_seconds=1)
     app.run(port=5000)
