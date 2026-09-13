@@ -3,7 +3,7 @@ from typing import Literal
 from app.utils import check
 
 PROMPT_TEMPLATE = """
-Generate one sentence in {LANGUAGE} using the {TYPE} "{WORD_OR_PHRASE}". Output only the sentence. Do not use markdown, formatting, or styling. Max response length is {MAX_LENGTH} characters.
+Generate one sentence in {LANGUAGE} using the {TYPE} "{WORD_OR_PHRASE}". Output only the sentence and nothing else (no quotation marks, no notes, etc.) Do not use markdown, formatting, or styling. Max response length is {MAX_LENGTH} characters.
 """.strip()
 
 
