@@ -25,3 +25,7 @@ pre-commit run -a       # lint, format, type-check
 - Source code lives under `src/app/`, tests under `tests/`.
 - Async I/O (LLM calls, translations, TTS) uses `async`/`await`.
 - The `main.py` module owns the Flask app and route handlers; business logic is delegated to separate modules (`*_data_extract`, `*_anki_generate`, etc.).
+
+## Git / GitHub
+
+- Use [Conventional Commits](https://www.conventionalcommits.org/) format: prefix with `feat:`, `fix:`, `refactor:`, `chore:`, etc.

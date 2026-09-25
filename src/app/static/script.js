@@ -167,5 +167,6 @@ document.getElementById('languageGroup').addEventListener('click', function (e) 
     if (e.target.classList.contains('btn')) {
         this.querySelectorAll('.btn').forEach(btn => btn.classList.remove('btn-active'));
         e.target.classList.add('btn-active');
+        document.getElementById('words').placeholder = e.target.dataset.placeholder;
     }
 });
