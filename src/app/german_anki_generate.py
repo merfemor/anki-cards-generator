@@ -7,7 +7,8 @@ import genanki
 from genanki import Note
 
 from app.anki_card_style import ANKI_CARD_CSS
-from app.anki_common import get_audio_file_name_for_phrase, get_audio_file_name_for_sentence
+from app.anki_common import get_audio_file_name_for_phrase, get_audio_file_name_for_sentence, to_anki_sound_tag
+from app.configuration import GENERATE_AUDIO_FOR_SENTENCES
 from app.german_data_extract import GermanWordData
 from app.tts import text_to_speech_into_file
 from app.utils import check
@@ -80,8 +81,8 @@ def _create_anki_note(
         "/" not in sentence_audio, f"Audio must be a simple file name, not a path, but got sentence audio={word_audio}"
     )
 
-    word_audio = f"[sound:{word_audio}]"
-    sentence_audio = f"[sound:{sentence_audio}]"
+    word_audio = to_anki_sound_tag(word_audio)
+    sentence_audio = to_anki_sound_tag(sentence_audio)
     return genanki.Note(
         model=model,
         fields=[
@@ -148,9 +149,14 @@ def _create_anki_note_for_german_word_data(
     word_article = ""
     word_audio_name = get_audio_file_name_for_phrase(r.word, lang="de")
     word_audio_path = f"{temp_dir}/{word_audio_name}"
-    sentence_audio_name = get_audio_file_name_for_sentence(r.word, lang="de")
-    sentence_audio_path = f"{temp_dir}/{sentence_audio_name}"
-    text_to_speech_into_file(r.sentence_example, sentence_audio_path, lang="de")
+
+    if GENERATE_AUDIO_FOR_SENTENCES:
+        sentence_audio_name = get_audio_file_name_for_sentence(r.word, lang="de")
+        sentence_audio_path = f"{temp_dir}/{sentence_audio_name}"
+        text_to_speech_into_file(r.sentence_example, sentence_audio_path, lang="de")
+    else:
+        sentence_audio_name = ""
+
     if r.noun_properties:
         noun_props = r.noun_properties
 
@@ -179,7 +185,8 @@ def _create_anki_note_for_german_word_data(
         sentence_audio=sentence_audio_name,
     )
     all_media_files.append(word_audio_path)
-    all_media_files.append(sentence_audio_path)
+    if GENERATE_AUDIO_FOR_SENTENCES:
+        all_media_files.append(sentence_audio_path)
     return note
 
 

@@ -6,7 +6,8 @@ from typing import Final
 import genanki
 
 from app.anki_card_style import ANKI_CARD_CSS
-from app.anki_common import get_audio_file_name_for_phrase, get_audio_file_name_for_sentence
+from app.anki_common import get_audio_file_name_for_phrase, get_audio_file_name_for_sentence, to_anki_sound_tag
+from app.configuration import GENERATE_AUDIO_FOR_SENTENCES
 from app.english_data_extract import EnglishWordData
 from app.tts import text_to_speech_into_file
 from app.utils import check
@@ -71,8 +72,8 @@ def _create_anki_note(
         "/" not in sentence_audio, f"Audio must be a simple file name, not a path, but got sentence audio={word_audio}"
     )
 
-    word_audio = f"[sound:{word_audio}]"
-    sentence_audio = f"[sound:{sentence_audio}]"
+    word_audio = to_anki_sound_tag(word_audio)
+    sentence_audio = to_anki_sound_tag(sentence_audio)
     return genanki.Note(
         model=model,
         fields=[
@@ -104,10 +105,13 @@ def export_results_to_anki_deck(
             text_to_speech_into_file(r.original_word, word_audio_path, lang="en")
             all_media_files.append(word_audio_path)
 
-            sentence_audio_name = get_audio_file_name_for_sentence(r.original_word, lang="en")
-            sentence_audio_path = f"{temp_dir}/{sentence_audio_name}"
-            text_to_speech_into_file(r.sentence_example, sentence_audio_path, lang="en")
-            all_media_files.append(sentence_audio_path)
+            if GENERATE_AUDIO_FOR_SENTENCES:
+                sentence_audio_name = get_audio_file_name_for_sentence(r.original_word, lang="en")
+                sentence_audio_path = f"{temp_dir}/{sentence_audio_name}"
+                text_to_speech_into_file(r.sentence_example, sentence_audio_path, lang="en")
+                all_media_files.append(sentence_audio_path)
+            else:
+                sentence_audio_name = ""
 
             note = _create_anki_note(my_model, data=r, word_audio=word_audio_name, sentence_audio=sentence_audio_name)
             my_deck.add_note(note)

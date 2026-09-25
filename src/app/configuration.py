@@ -2,6 +2,8 @@ import argparse
 
 from app.llm_interact import llm_provider_choices
 
+GENERATE_AUDIO_FOR_SENTENCES = False
+
 
 def parse_arguments() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Run the Anki cards generator server")
