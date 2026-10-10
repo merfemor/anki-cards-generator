@@ -4,34 +4,37 @@
   <meta charset="UTF-8">
   <title>Anki Cards Generator</title>
   <link rel="stylesheet" href="/static/styles.css">
+  <script defer src="/static/script.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.17.4/dist/cdn.min.js"></script>
 </head>
 <body>
 
-  <div class="container">
+  <div class="container" x-data="ankiApp()">
     <h1>Anki Cards Generator</h1>
 
     <label>Select Language:</label>
     <div class="btn-group" id="languageGroup">
-      <button type="button" class="btn btn-active" data-value="de" data-placeholder="Katze&#10;Hund&#10;Geschwindigkeitsbeschränkung">German</button>
-      <button type="button" class="btn" data-value="en" data-placeholder="cat&#10;dog&#10;capybara">English</button>
+      <button type="button" class="btn" :class="{ 'btn-active': language === 'de' }" :disabled="loading" @click="language = 'de'">German</button>
+      <button type="button" class="btn" :class="{ 'btn-active': language === 'en' }" :disabled="loading" @click="language = 'en'">English</button>
     </div>
 
     <label for="words">Enter words (one per line):</label>
-    <textarea id="words" placeholder="Katze&#10;Hund&#10;Geschwindigkeitsbeschränkung"></textarea>
+    <textarea id="words" x-model="words" :placeholder="placeholders[language]" :disabled="loading"></textarea>
 
     <div class="tip-box">
       <p><strong>Tip:</strong> You can use the <code>=</code> sign to specify a Russian translation hint.</p>
       <p>Example: <code>Katze = кошка</code></p>
     </div>
 
-    <button id="generateBtn">✨ Generate</button>
+    <button id="generateBtn" type="button" :disabled="loading" @click="onGenerateButtonClick()">
+      <span x-show="!loading">✨ Generate</span>
+      <span x-show="loading" x-cloak>⏳ Generating…</span>
+    </button>
 
-    <div id="loader">
+    <div id="loader" x-show="loading" x-cloak>
         ⏳ Generating your Anki cards...<br/>
         <b>Note:</b> response time might be long.
     </div>
   </div>
-
-  <script src="/static/script.js"></script>
 </body>
 </html>

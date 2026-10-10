@@ -95,32 +95,10 @@ function formatLocalDateTime() {
 }
 
 /**
- * @param {boolean} visible
+ * @param {string} wordsInput
+ * @returns {?WordWithHints[]}
  */
-function setLoaderVisible(visible) {
-    const loader = document.getElementById('loader');
-    loader.style.display = visible ? 'block' : 'none';
-}
-
-/**
- * @param {boolean} enabled
- */
-function setWordsInputEnabled(enabled) {
-    const wordsInputField = document.getElementById('words');
-    wordsInputField.disabled = !enabled;
-}
-
-/**
- * @returns {WordWithHints[]}
- */
-function getConvertedValueOfWordsInputField() {
-    const wordsInputFiled = document.getElementById('words');
-    const wordsInput = wordsInputFiled.value.trim();
-
-    if (!wordsInput) {
-        alert("Enter at least one word.");
-        return null;
-    }
+function getConvertedValueOfWordsInputField(wordsInput) {
     const words = wordsInput.split('\n').map(word => word.trim()).map(parseWordWithHint);
     if (words.includes(null)) {
         return null;
@@ -128,45 +106,38 @@ function getConvertedValueOfWordsInputField() {
     return words;
 }
 
-function cleanWordsInputField() {
-    const wordsInputFiled = document.getElementById('words');
-    wordsInputFiled.value = '';
-}
+document.addEventListener('alpine:init', () => {
+    Alpine.data('ankiApp', () => ({
+        language: 'de',
+        words: '',
+        loading: false,
+        placeholders: {
+            de: "Katze\nHund\nGeschwindigkeitsbeschränkung",
+            en: "cat\ndog\ncapybara",
+        },
 
-/**
- * @returns {string}
- */
-function getSelectedLanguage() {
-    const activeBtn = document.querySelector('#languageGroup .btn-active');
-    return activeBtn ? activeBtn.dataset.value : 'de';
-}
+        async onGenerateButtonClick() {
+            const wordsInput = this.words.trim();
 
-async function onGenerateButtonClick() {
-    const language = getSelectedLanguage();
-    const wordsWithHints = getConvertedValueOfWordsInputField();
-    if (wordsWithHints === null) {
-        return;
-    }
-    setWordsInputEnabled(false);
-    setLoaderVisible(true);
+            if (!wordsInput) {
+                alert("Enter at least one word.");
+                return;
+            }
+            const wordsWithHints = getConvertedValueOfWordsInputField(wordsInput);
+            if (wordsWithHints === null) {
+                return;
+            }
 
-    try {
-        await sendCardsRequest(language, wordsWithHints);
-        cleanWordsInputField();
-    } catch {
-        alert("Something went wrong. Inspect app logs for more details. 🥷");
-    } finally {
-        setLoaderVisible(false);
-        setWordsInputEnabled(true);
-    }
-}
+            this.loading = true;
 
-document.getElementById('generateBtn').addEventListener('click', onGenerateButtonClick);
-
-document.getElementById('languageGroup').addEventListener('click', function (e) {
-    if (e.target.classList.contains('btn')) {
-        this.querySelectorAll('.btn').forEach(btn => btn.classList.remove('btn-active'));
-        e.target.classList.add('btn-active');
-        document.getElementById('words').placeholder = e.target.dataset.placeholder;
-    }
+            try {
+                await sendCardsRequest(this.language, wordsWithHints);
+                this.words = '';
+            } catch {
+                alert("Something went wrong. Inspect app logs for more details. 🥷");
+            } finally {
+                this.loading = false;
+            }
+        },
+    }));
 });

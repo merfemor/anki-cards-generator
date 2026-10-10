@@ -4,7 +4,7 @@ Python 3.11 project that generates Anki flashcards for learning German/English w
 
 ## Tech stack
 
-- Flask (async) web app with a web UI
+- Flask (async) web app with a web UI (vanilla JS + Alpine.js, plain CSS, no bundler)
 - `uv` for dependency management
 - Ruff (lint + format) + mypy for type checking
 - pytest for tests

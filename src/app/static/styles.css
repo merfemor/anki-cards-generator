@@ -1,3 +1,7 @@
+[x-cloak] {
+    display: none !important;
+}
+
 /* Reset & base styles */
 * {
     box-sizing: border-box;
@@ -117,7 +121,6 @@ button:hover {
 
 /* Loader */
 #loader {
-    display: none;
     text-align: center;
     color: #718093;
     margin-top: 10px;
