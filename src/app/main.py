@@ -1,4 +1,3 @@
-import asyncio
 import logging
 import os
 import sys
@@ -6,7 +5,7 @@ import tempfile
 import threading
 import webbrowser
 from collections.abc import Callable
-from typing import Tuple, Coroutine, TypeVar
+from typing import Any, Tuple, TypeVar
 
 from dotenv import load_dotenv
 from flask import Flask, jsonify, request, send_file, render_template, Response
@@ -14,14 +13,13 @@ from pydantic import ValidationError
 
 from app import english_anki_generate
 from app import german_anki_generate
-from app.api_payload import GenerateCardsFilePayload, WordPayload
+from app.api_payload import ExportDeckFilePayload, GenerateWordDataPayload
 from app.configuration import parse_arguments
 from app.english_data_extract import prepare_data_for_english_word, EnglishWordData
 from app.german_data_extract import prepare_data_for_german_word, GermanWordData
 from app.llm_interact import set_global_llm_provider
 from app.translate import init_translator
 from app.tts import init_tts_engine
-from app.word_hints import WordHints
 
 app = Flask(__name__)
 
@@ -44,51 +42,46 @@ def invalid_payload_response(exc: ValidationError) -> Tuple[Response, int]:
     return jsonify({"error": "Invalid request payload", "details": details}), 400
 
 
-@app.route("/api/generateCardsFile", methods=["POST"])
-async def generate_cards_file() -> Tuple[Response, int] | Response:
+@app.route("/api/exportDeckFile", methods=["POST"])
+async def export_deck_file() -> Tuple[Response, int] | Response:
     try:
-        payload = GenerateCardsFilePayload.model_validate(request.get_json(silent=True))
-    except ValidationError as exc:
-        return invalid_payload_response(exc)
+        payload = ExportDeckFilePayload.model_validate(request.get_json(silent=True))
+    except ValidationError as e:
+        return invalid_payload_response(e)
 
-    words = payload.words
-    if not words:
-        return jsonify({"error": 'The "words" list cannot be empty'}), 400
-
+    words_data = payload.words
     language = payload.language
-    if language == "de":
-        logging.debug(f"Preparing German card data for the words {words}")
-        return await common_generate_cards_file(
-            words,
-            prepare_data_fn=prepare_data_for_german_word,
-            export_fn=german_anki_generate.export_results_to_anki_deck,
-            file_suffix="to_import_german_anki_generated.apkg",
-        )
-    elif language == "en":
-        logging.debug(f"Preparing English card data for the words {words}")
-        return await common_generate_cards_file(
-            words,
-            prepare_data_fn=prepare_data_for_english_word,
-            export_fn=english_anki_generate.export_results_to_anki_deck,
-            file_suffix="to_import_english_anki_generated.apkg",
-        )
-    else:
-        return jsonify({"error": f"Expected language to be one of 'en', 'de', but got '{language}'"}), 400
+    try:
+        if language == "de":
+            logging.debug(f"Exporting German Anki deck for the word data {words_data}")
+            return common_export_cards_file(
+                to_word_data_list(words_data, GermanWordData),
+                export_fn=german_anki_generate.export_results_to_anki_deck,
+                file_suffix="to_import_german_anki_generated.apkg",
+            )
+        else:
+            logging.debug(f"Exporting English Anki deck for the word data {words_data}")
+            return common_export_cards_file(
+                to_word_data_list(words_data, EnglishWordData),
+                export_fn=english_anki_generate.export_results_to_anki_deck,
+                file_suffix="to_import_english_anki_generated.apkg",
+            )
+    except ValidationError as e:
+        return invalid_payload_response(e)
 
 
 WD = TypeVar("WD", GermanWordData, EnglishWordData)
 
 
-async def common_generate_cards_file(
-    words: list[WordPayload],
-    prepare_data_fn: Callable[[str, WordHints], Coroutine[None, None, WD]],
+def to_word_data_list(items: list[dict[str, Any]], model: type[WD]) -> list[WD]:
+    return [model.model_validate(item) for item in items]
+
+
+def common_export_cards_file(
+    results: list[WD],
     export_fn: Callable[[list[WD], str], None],
     file_suffix: str,
 ) -> Response:
-    tasks = [asyncio.create_task(prepare_data_fn(entry.word, entry.to_word_hints())) for entry in words]
-
-    results = await asyncio.gather(*tasks)
-
     with tempfile.NamedTemporaryFile(delete=False, suffix=file_suffix) as temp_file:
         deck_filename = temp_file.name
 
@@ -107,6 +100,23 @@ async def common_generate_cards_file(
         if os.path.exists(deck_filename):
             os.remove(deck_filename)
             logging.debug(f'Removed temporary Anki deck file "{deck_filename}"')
+
+
+@app.route("/api/generateWordData", methods=["POST"])
+async def generate_word_data() -> Tuple[Response, int] | Response:
+    try:
+        payload = GenerateWordDataPayload.model_validate(request.get_json(silent=True))
+    except ValidationError as e:
+        return invalid_payload_response(e)
+
+    language = payload.language
+    logging.debug(f"Extracting {language} data for the word {payload.word}")
+    data: EnglishWordData | GermanWordData
+    if language == "de":
+        data = await prepare_data_for_german_word(payload.word, payload.to_word_hints())
+    else:
+        data = await prepare_data_for_english_word(payload.word, payload.to_word_hints())
+    return jsonify(data.model_dump(mode="json"))
 
 
 @app.route("/", methods=["GET"])

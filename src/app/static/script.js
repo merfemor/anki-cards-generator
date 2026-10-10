@@ -1,10 +1,7 @@
+import {exportDeckFile, generateWordsData} from './api.js';
+
 /**
- * @typedef {Object} WordHints
- * @property {string} translated_ru
- *
- * @typedef {Object} WordWithHints
- * @property {string} word
- * @property {?WordHints} hints
+ * @typedef {import('./api.js').WordWithHints} WordWithHints
  */
 
 /**
@@ -12,36 +9,24 @@
  * @param {WordWithHints[]} wordsWithHints
  */
 async function sendCardsRequest(language, wordsWithHints) {
-    try {
-        const requestBody = {
-            words: wordsWithHints,
-            language: language,
-        };
-        const response = await fetch('/api/generateCardsFile', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(requestBody)
-        });
+    const wordsData = await generateWordsData(language, wordsWithHints);
+    const deckFile = await exportDeckFile(language, wordsData);
+    downloadBlob(deckFile, getGeneratedAnkiFileName(language));
+}
 
-        if (!response.ok) throw new Error("Request failed");
-
-        const blob = await response.blob();
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = getGeneratedAnkiFileName(language);
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
-        window.URL.revokeObjectURL(url);
-
-        return true; // Success indicator
-    } catch (error) {
-        console.error(error);
-        throw error; // Let the caller handle the error
-    }
+/**
+ * @param {Blob} blob
+ * @param {string} fileName
+ */
+function downloadBlob(blob, fileName) {
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = fileName;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    window.URL.revokeObjectURL(url);
 }
 
 /**
@@ -138,7 +123,8 @@ document.addEventListener('alpine:init', () => {
             try {
                 await sendCardsRequest(this.language, wordsWithHints);
                 this.words = '';
-            } catch {
+            } catch (error) {
+                console.error(error);
                 alert("Something went wrong. Inspect app logs for more details. 🥷");
             } finally {
                 this.loading = false;
