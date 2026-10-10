@@ -99,7 +99,11 @@ function formatLocalDateTime() {
  * @returns {?WordWithHints[]}
  */
 function getConvertedValueOfWordsInputField(wordsInput) {
-    const words = wordsInput.split('\n').map(word => word.trim()).map(parseWordWithHint);
+    const words = wordsInput
+        .split('\n')
+        .map(word => word.trim())
+        .filter(word => word !== '')
+        .map(parseWordWithHint);
     if (words.includes(null)) {
         return null;
     }
@@ -116,14 +120,15 @@ document.addEventListener('alpine:init', () => {
             en: "cat\ndog\ncapybara",
         },
 
-        async onGenerateButtonClick() {
-            const wordsInput = this.words.trim();
+        get canGenerate() {
+            return !this.loading && this.words.trim() !== '';
+        },
 
-            if (!wordsInput) {
-                alert("Enter at least one word.");
+        async onGenerateButtonClick() {
+            if (!this.canGenerate) {
                 return;
             }
-            const wordsWithHints = getConvertedValueOfWordsInputField(wordsInput);
+            const wordsWithHints = getConvertedValueOfWordsInputField(this.words.trim());
             if (wordsWithHints === null) {
                 return;
             }

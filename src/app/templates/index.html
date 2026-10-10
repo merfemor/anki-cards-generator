@@ -26,10 +26,7 @@
       <p>Example: <code>Katze = кошка</code></p>
     </div>
 
-    <button id="generateBtn" type="button" :disabled="loading" @click="onGenerateButtonClick()">
-      <span x-show="!loading">✨ Generate</span>
-      <span x-show="loading" x-cloak>⏳ Generating…</span>
-    </button>
+    <button id="generateBtn" type="button" :disabled="!canGenerate" @click="onGenerateButtonClick()">✨ Generate</button>
 
     <div id="loader" x-show="loading" x-cloak>
         ⏳ Generating your Anki cards...<br/>

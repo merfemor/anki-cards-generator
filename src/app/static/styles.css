@@ -119,6 +119,22 @@ button:hover {
     background-color: #4cd137;
 }
 
+button:disabled {
+    background-color: #a4b0be;
+    color: #f1f2f6;
+    cursor: not-allowed;
+}
+
+.btn-group .btn:disabled {
+    background-color: #f1f2f6;
+    color: #a4b0be;
+}
+
+.btn-group .btn-active:disabled {
+    background-color: #a4b0be;
+    color: white;
+}
+
 /* Loader */
 #loader {
     text-align: center;
