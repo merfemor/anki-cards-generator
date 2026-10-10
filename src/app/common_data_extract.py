@@ -12,7 +12,8 @@ async def generate_sentence_example_with_llm(word: str, language: Literal["Engli
     prompt = get_sentence_example_prompt(word, language, is_phrase, MAX_RESPONSE_LENGTH)
 
     res = (await ask_llm(prompt)).strip()
-    check(len(res) > len(word), f"Too short response: {res}")
+    check(len(res) >= len(word), f"Too short response: {res}")
+    check(" " in res, f"Response consists of a single word: {res}")
     shortened = textwrap.shorten(res, width=120, placeholder="...")
     check(len(res) < MAX_RESPONSE_LENGTH, f"Too long response, len={len(res)}: {shortened}")
 

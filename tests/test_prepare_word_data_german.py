@@ -8,10 +8,10 @@ from app.german_data_extract import GermanWordData, PartOfSpeech
 from app.llm_interact import override_global_llm_provider_for_test
 from app.translate import override_global_translator_for_test
 from app.word_hints import WordHints
-from stub_llm_provider import StubLlmProvider
+from stub_llm_provider import StubLlmProvider, STANDARD_RESPONSE_STUB
 from stub_translator import StubTranslator
 
-sentence_example_stub_text: Final[str] = "." * 50
+sentence_example_stub_text: Final[str] = STANDARD_RESPONSE_STUB
 word_translated_stub: Final[str] = "_"
 sentence_example_translated_en_stub_text: Final[str] = word_translated_stub
 sentence_example_translated_ru_stub_text: Final[str] = word_translated_stub
@@ -20,7 +20,7 @@ sentence_example_translated_ru_stub_text: Final[str] = word_translated_stub
 @pytest.mark.asyncio(loop_scope="class")
 class TestGermanPrepareData:
     def setup_method(self) -> None:
-        override_global_llm_provider_for_test(StubLlmProvider(sentence_example_stub_text))
+        override_global_llm_provider_for_test(StubLlmProvider())
         override_global_translator_for_test(StubTranslator(word_translated_stub))
 
     async def test_empty_string(self):

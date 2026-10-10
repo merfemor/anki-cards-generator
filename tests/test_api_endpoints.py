@@ -4,12 +4,12 @@ from flask import Response
 
 from app.llm_interact import override_global_llm_provider_for_test
 from app.main import app
-from app.tts import init_tts_engine
 from app.translate import override_global_translator_for_test
-from stub_llm_provider import StubLlmProvider
+from app.tts import init_tts_engine
+from stub_llm_provider import StubLlmProvider, STANDARD_RESPONSE_STUB
 from stub_translator import StubTranslator
 
-SENTENCE_EXAMPLE_STUB: Final[str] = "." * 50
+SENTENCE_EXAMPLE_STUB: Final[str] = STANDARD_RESPONSE_STUB
 TRANSLATION_STUB: Final[str] = "_"
 GENERATE_WORD_DATA_ENDPOINT: Final[str] = "/api/generateWordData"
 EXPORT_DECK_FILE_ENDPOINT: Final[str] = "/api/exportDeckFile"
@@ -19,7 +19,7 @@ class EndpointTestBase:
     endpoint: str
 
     def setup_method(self) -> None:
-        override_global_llm_provider_for_test(StubLlmProvider(SENTENCE_EXAMPLE_STUB))
+        override_global_llm_provider_for_test(StubLlmProvider(STANDARD_RESPONSE_STUB))
         override_global_translator_for_test(StubTranslator(TRANSLATION_STUB))
         init_tts_engine()
         self.app = app.test_client()

@@ -11,7 +11,7 @@ from stub_translator import StubTranslator
 @pytest.mark.asyncio(loop_scope="class")
 class TestGermanPhrasePrepareData:
     def setup_method(self) -> None:
-        override_global_llm_provider_for_test(StubLlmProvider("." * 50))
+        override_global_llm_provider_for_test(StubLlmProvider())
         override_global_translator_for_test(StubTranslator("_"))
 
     async def test_collocation(self):
