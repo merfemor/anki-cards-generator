@@ -32,11 +32,27 @@ class TestApiEndpoints:
         assert response.status_code == 400
 
     def test_absent_language(self):
-        response = self.do_request({"words": ["Katze"]})
+        response = self.do_request({"words": [{"word": "Katze"}]})
         assert response.status_code == 400
 
     def test_not_supported_language(self):
-        response = self.do_request({"words": ["katt"], "language": "sv"})
+        response = self.do_request({"words": [{"word": "katt"}], "language": "sv"})
+        assert response.status_code == 400
+
+    def test_blank_word(self):
+        response = self.do_request({"words": [{"word": "   "}], "language": "de"})
+        assert response.status_code == 400
+
+    def test_word_of_wrong_type(self):
+        response = self.do_request({"words": ["Katze"], "language": "de"})
+        assert response.status_code == 400
+
+    def test_hints_of_wrong_type(self):
+        response = self.do_request({"words": [{"word": "Katze", "hints": "cat"}], "language": "de"})
+        assert response.status_code == 400
+
+    def test_malformed_json_body(self):
+        response = self.app.post("/api/generateCardsFile", data="{not json", content_type="application/json")
         assert response.status_code == 400
 
     def test_generate_german_deck_ok_response(self) -> None:

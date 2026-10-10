@@ -17,6 +17,7 @@ dependencies = [
     "numpy (==2.4.4)",
     "pyspellchecker (==0.8.4)",
     "deepl (==1.32.0)",
+    "pydantic (==2.13.4)",
 ]
 
 [dependency-groups]
