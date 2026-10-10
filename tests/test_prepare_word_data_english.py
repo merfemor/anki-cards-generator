@@ -30,65 +30,65 @@ class TestEnglishPrepareData:
 
     async def test_noun(self):
         expected = EnglishWordData(
-            original_word="cat",
-            translated=word_translated_stub,
+            word="cat",
+            translated_ru=word_translated_stub,
             sentence_example=sentence_example_stub_text,
-            sentence_example_translated=sentence_example_translated_ru_stub_text,
+            sentence_example_translated_ru=sentence_example_translated_ru_stub_text,
         )
         assert expected == await self.prepare_data("cat")
 
     async def test_verb(self):
         expected = EnglishWordData(
-            original_word="swim",
-            translated=word_translated_stub,
+            word="swim",
+            translated_ru=word_translated_stub,
             sentence_example=sentence_example_stub_text,
-            sentence_example_translated=sentence_example_translated_ru_stub_text,
+            sentence_example_translated_ru=sentence_example_translated_ru_stub_text,
         )
         assert expected == await self.prepare_data("swim")
 
     async def test_verb_with_to(self):
         expected = EnglishWordData(
-            original_word="to swim",
-            translated=word_translated_stub,
+            word="to swim",
+            translated_ru=word_translated_stub,
             sentence_example=sentence_example_stub_text,
-            sentence_example_translated=sentence_example_translated_ru_stub_text,
+            sentence_example_translated_ru=sentence_example_translated_ru_stub_text,
         )
         assert expected == await self.prepare_data("to swim")
 
     async def test_phrasal_verb(self):
         expected = EnglishWordData(
-            original_word="cut off",
-            translated=word_translated_stub,
+            word="cut off",
+            translated_ru=word_translated_stub,
             sentence_example=sentence_example_stub_text,
-            sentence_example_translated=sentence_example_translated_ru_stub_text,
+            sentence_example_translated_ru=sentence_example_translated_ru_stub_text,
         )
         assert expected == await self.prepare_data("cut off")
 
     async def test_phrasal_verb_with_to(self):
         expected = EnglishWordData(
-            original_word="to cut off",
-            translated=word_translated_stub,
+            word="to cut off",
+            translated_ru=word_translated_stub,
             sentence_example=sentence_example_stub_text,
-            sentence_example_translated=sentence_example_translated_ru_stub_text,
+            sentence_example_translated_ru=sentence_example_translated_ru_stub_text,
         )
         assert expected == await self.prepare_data("to cut off")
 
     async def test_with_hint(self):
         expected = EnglishWordData(
-            original_word="miscellaneous",
-            translated="смешанный, разнообразный",
+            word="miscellaneous",
+            translated_ru="смешанный, разнообразный",
             sentence_example=sentence_example_stub_text,
-            sentence_example_translated=sentence_example_translated_ru_stub_text,
+            sentence_example_translated_ru=sentence_example_translated_ru_stub_text,
         )
         assert expected == await prepare_data_for_english_word("miscellaneous", WordHints("смешанный, разнообразный"))
 
     async def test_word_with_mistake(self):
         actual = await self.prepare_data("heigh")
-        assert actual.original_word == "high"
+        assert actual.word == "high"
 
     async def test_phrase_with_mistake_not_corrected(self):
         actual = await self.prepare_data("make and efort")
-        assert actual.original_word == "make and efort"
+        assert actual.word == "make and efort"
 
     async def prepare_data(self, word: str) -> EnglishWordData:
         return await prepare_data_for_english_word(word, hints=WordHints(""))

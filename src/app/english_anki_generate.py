@@ -77,10 +77,10 @@ def _create_anki_note(
     return genanki.Note(
         model=model,
         fields=[
-            data.original_word,
-            data.translated,
+            data.word,
+            data.translated_ru,
             data.sentence_example,
-            data.sentence_example_translated,
+            data.sentence_example_translated_ru,
             word_audio,
             sentence_audio,
         ],
@@ -100,13 +100,13 @@ def export_results_to_anki_deck(
     with tempfile.TemporaryDirectory(prefix="anki_cards_generator_media_") as temp_dir:
         logging.debug("Created temporary directory " + temp_dir)
         for r in results:
-            word_audio_name = get_audio_file_name_for_phrase(r.original_word, lang="en")
+            word_audio_name = get_audio_file_name_for_phrase(r.word, lang="en")
             word_audio_path = f"{temp_dir}/{word_audio_name}"
-            text_to_speech_into_file(r.original_word, word_audio_path, lang="en")
+            text_to_speech_into_file(r.word, word_audio_path, lang="en")
             all_media_files.append(word_audio_path)
 
             if GENERATE_AUDIO_FOR_SENTENCES:
-                sentence_audio_name = get_audio_file_name_for_sentence(r.original_word, lang="en")
+                sentence_audio_name = get_audio_file_name_for_sentence(r.word, lang="en")
                 sentence_audio_path = f"{temp_dir}/{sentence_audio_name}"
                 text_to_speech_into_file(r.sentence_example, sentence_audio_path, lang="en")
                 all_media_files.append(sentence_audio_path)

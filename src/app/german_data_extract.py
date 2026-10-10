@@ -1,10 +1,10 @@
 import logging
-from dataclasses import dataclass
 from enum import Enum
 from typing import Final, Optional, Literal, Tuple
 
 import german_nouns.lookup
 from HanTa.HanoverTagger import HanoverTagger
+from pydantic import BaseModel, model_validator
 
 from app.common_data_extract import generate_sentence_example_with_llm
 from app.spelling import correct_spelling
@@ -73,21 +73,21 @@ def post_process_en_translation(translated_text: str, part_of_speech: PartOfSpee
     return translated_text
 
 
-@dataclass
-class GermanNounProperties:
+class GermanNounProperties(BaseModel):
     singular_form: str
     plural_form: str
     genus: str
     article: Literal["der", "die", "das"]
 
-    def __post_init__(self) -> None:
+    @model_validator(mode="after")
+    def check_forms(self) -> "GermanNounProperties":
         check(
             self.singular_form != "" or self.plural_form != "", "Either singular_form or plural_form must be not empty"
         )
+        return self
 
 
-@dataclass
-class GermanWordData:
+class GermanWordData(BaseModel):
     # Processed word. Doesn't contain noun article, note suffixes (like '(+Dat)').
     # But does contain "sich" in the case of reflexive verbs if it was specified in the original word.
     word: str
