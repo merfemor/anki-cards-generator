@@ -18,12 +18,58 @@
       <button type="button" class="btn" :class="{ 'btn-active': language === 'en' }" :disabled="loading" @click="language = 'en'">English</button>
     </div>
 
-    <label for="words">Enter words (one per line):</label>
-    <textarea id="words" x-model="words" :placeholder="placeholders[language]" :disabled="loading"></textarea>
+    <label for="wordInput">Enter words:</label>
 
-    <div class="tip-box">
-      <p><strong>Tip:</strong> You can use the <code>=</code> sign to specify a Russian translation hint.</p>
-      <p>Example: <code>Katze = кошка</code></p>
+    <div class="vocab-stack" x-show="items.length > 0">
+      <template x-for="(item, index) in items" :key="index">
+        <div class="vocab-row">
+          <div class="vocab-content">
+            <span class="vocab-word" x-text="item.word"></span>
+            <span class="hint-badge" x-show="item.hint" x-text="'HINT: ' + item.hint"></span>
+          </div>
+          <button
+            type="button"
+            class="btn-delete"
+            @click="removeItem(index)"
+            :disabled="loading"
+            title="Delete row"
+            aria-label="Delete row"
+          >×</button>
+        </div>
+      </template>
+    </div>
+
+    <input
+      id="wordInput"
+      type="text"
+      x-model="inputValue"
+      :placeholder="placeholders[language]"
+      :lang="language"
+      :disabled="loading"
+      @keydown.enter.prevent="addWord()"
+      @keydown.backspace="handleBackspace($event)"
+      @paste="handlePaste($event)"
+      autocomplete="off"
+      spellcheck="true"
+    />
+
+    <div class="shortcuts-bar">
+      <div class="shortcut-item">
+        <kbd class="shortcut-key">↵</kbd>
+        <span class="shortcut-label">Enter to add row</span>
+      </div>
+      <div class="shortcut-item">
+        <kbd class="shortcut-key">⌫</kbd>
+        <span class="shortcut-label">Backspace to edit previous</span>
+      </div>
+      <div class="shortcut-item">
+        <kbd class="shortcut-key">📋</kbd>
+        <span class="shortcut-label">Paste multiline text</span>
+      </div>
+      <div class="shortcut-item">
+        <kbd class="shortcut-key">=</kbd>
+        <span class="shortcut-label">Add optional Russian translation hint (e.g. Katze = кошка)</span>
+      </div>
     </div>
 
     <button id="generateBtn" type="button" :disabled="!canGenerate" @click="onGenerateButtonClick()">✨ Generate</button>
