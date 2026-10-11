@@ -12,20 +12,20 @@ dependencies = [
     "german-nouns (==1.2.5)",
     "ollama (==0.6.3)",
     "openai (==3.28.0)",
-    "python-dotenv (==1.2.2)",
+    "python-dotenv (==1.2.4)",
     "HanTa (==1.2.1)",
     "numpy (==2.4.4)",
-    "pyspellchecker (==0.8.4)",
+    "pyspellchecker (==0.9.1)",
     "deepl (==1.32.0)",
-    "pydantic (==2.13.4)",
+    "pydantic (==2.14.0)",
 ]
 
 [dependency-groups]
 dev = [
-    "pre-commit==4.6.0",
-    "mypy==2.0.0",
-    "pytest==9.0.3",
-    "pytest-asyncio==1.3.0",
+    "pre-commit==4.6.2",
+    "mypy==2.4.0",
+    "pytest==9.1.1",
+    "pytest-asyncio==1.4.0",
     "pytest-timeout==2.4.0",
 ]
 
