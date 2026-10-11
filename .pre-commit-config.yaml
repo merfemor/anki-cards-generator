@@ -10,9 +10,9 @@ repos:
 - repo: local
   hooks:
     - id: mypy-on-entry
-      name: Run mypy on main.py file
+      name: Run mypy on main.py and tests
       entry: uv
       language: system
       types: [python]
-      args: [run, mypy, --ignore-missing-imports, src/app/main.py]
+      args: [run, mypy, --ignore-missing-imports, src/app/main.py, tests]
       pass_filenames: false

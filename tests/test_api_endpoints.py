@@ -1,6 +1,6 @@
 from typing import Any, Final
 
-from flask import Response
+from werkzeug.test import TestResponse
 
 from app.llm_interact import override_global_llm_provider_for_test
 from app.main import app
@@ -23,9 +23,9 @@ class EndpointTestBase:
         override_global_translator_for_test(StubTranslator(TRANSLATION_STUB))
         init_tts_engine()
         self.app = app.test_client()
-        self.app.testing = True
+        app.testing = True
 
-    def do_request(self, body: Any) -> Response:
+    def do_request(self, body: Any) -> TestResponse:
         return self.app.post(self.endpoint, json=body)
 
     def test_absent_language(self):
