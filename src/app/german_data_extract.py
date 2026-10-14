@@ -88,6 +88,8 @@ class GermanNounProperties(BaseModel):
 
 
 class GermanWordData(BaseModel):
+    # Word as entered by the user, before any processing (stripping article and note suffix, spell check).
+    raw_word: str
     # Processed word. Doesn't contain noun article, note suffixes (like '(+Dat)').
     # But does contain "sich" in the case of reflexive verbs if it was specified in the original word.
     word: str
@@ -123,7 +125,7 @@ async def prepare_data_for_german_word(original_word_or_phrase: str, hints: Word
     check(len(word_or_phrase.strip()) > 0, "Expected non empty word_or_phrase")
 
     if not is_single_word(word_or_phrase):
-        return await prepare_data_for_german_phrase(word_or_phrase, hints)
+        return await prepare_data_for_german_phrase(original_word_or_phrase, word_or_phrase, hints)
 
     word = word_or_phrase
     word, word_note_suffix = extract_note_suffix(word)
@@ -159,6 +161,7 @@ async def prepare_data_for_german_word(original_word_or_phrase: str, hints: Word
     sentence_example_translated_en = await translate_text(german_sentence_example, src="de", dest="en")
 
     return GermanWordData(
+        raw_word=original_word_or_phrase,
         word=word_infinitive_for_card,
         pos_tag=pos_tag,
         part_of_speech=part_of_speech,
@@ -202,11 +205,12 @@ def detect_part_of_speech_for_single_word(word: str, pos_tag: str) -> PartOfSpee
     return part_of_speech
 
 
-async def prepare_data_for_german_phrase(phrase: str, hints: WordHints) -> GermanWordData:
+async def prepare_data_for_german_phrase(raw_word: str, phrase: str, hints: WordHints) -> GermanWordData:
     phrase, note_suffix = extract_note_suffix(phrase)
     german_sentence_example = await generate_sentence_example_with_llm(phrase, language="German", is_phrase=True)
 
     return GermanWordData(
+        raw_word=raw_word,
         word=phrase,
         pos_tag="",
         part_of_speech=PartOfSpeech.Other,

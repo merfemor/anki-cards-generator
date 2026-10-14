@@ -11,6 +11,7 @@ class TestWordDataExportToAnki:
 
     def test_export_singe_de_word(self):
         katze_word_data = GermanWordData(
+            raw_word="die Katze",
             word="die Katze",
             pos_tag="NN",
             part_of_speech=PartOfSpeech.Noun,

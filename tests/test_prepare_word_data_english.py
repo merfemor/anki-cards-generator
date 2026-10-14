@@ -30,6 +30,7 @@ class TestEnglishPrepareData:
 
     async def test_noun(self):
         expected = EnglishWordData(
+            raw_word="cat",
             word="cat",
             translated_ru=word_translated_stub,
             sentence_example=sentence_example_stub_text,
@@ -39,6 +40,7 @@ class TestEnglishPrepareData:
 
     async def test_verb(self):
         expected = EnglishWordData(
+            raw_word="swim",
             word="swim",
             translated_ru=word_translated_stub,
             sentence_example=sentence_example_stub_text,
@@ -48,6 +50,7 @@ class TestEnglishPrepareData:
 
     async def test_verb_with_to(self):
         expected = EnglishWordData(
+            raw_word="to swim",
             word="to swim",
             translated_ru=word_translated_stub,
             sentence_example=sentence_example_stub_text,
@@ -57,6 +60,7 @@ class TestEnglishPrepareData:
 
     async def test_phrasal_verb(self):
         expected = EnglishWordData(
+            raw_word="cut off",
             word="cut off",
             translated_ru=word_translated_stub,
             sentence_example=sentence_example_stub_text,
@@ -66,6 +70,7 @@ class TestEnglishPrepareData:
 
     async def test_phrasal_verb_with_to(self):
         expected = EnglishWordData(
+            raw_word="to cut off",
             word="to cut off",
             translated_ru=word_translated_stub,
             sentence_example=sentence_example_stub_text,
@@ -75,6 +80,7 @@ class TestEnglishPrepareData:
 
     async def test_with_hint(self):
         expected = EnglishWordData(
+            raw_word="miscellaneous",
             word="miscellaneous",
             translated_ru="смешанный, разнообразный",
             sentence_example=sentence_example_stub_text,
@@ -84,6 +90,7 @@ class TestEnglishPrepareData:
 
     async def test_word_with_mistake(self):
         actual = await self.prepare_data("heigh")
+        assert actual.raw_word == "heigh"
         assert actual.word == "high"
 
     async def test_phrase_with_mistake_not_corrected(self):

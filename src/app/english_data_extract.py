@@ -10,6 +10,8 @@ from app.word_hints import WordHints
 
 
 class EnglishWordData(BaseModel):
+    # Word as it was entered by the user, before spelling correction.
+    raw_word: str
     word: str
     translated_ru: str
     sentence_example: str
@@ -32,6 +34,7 @@ async def prepare_data_for_english_word(word: str, hints: WordHints) -> EnglishW
         translated_ru = (await translate_text(word, src="en", dest="ru")).lower()
 
     return EnglishWordData(
+        raw_word=orig_word,
         word=word,
         translated_ru=translated_ru,
         sentence_example=en_sentence_example,

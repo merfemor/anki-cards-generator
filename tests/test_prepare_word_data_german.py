@@ -49,6 +49,7 @@ class TestGermanPrepareData:
 
     async def test_noun_feminine(self):
         expected = GermanWordData(
+            raw_word="Katze",
             word="Katze",
             pos_tag="NN",
             part_of_speech=PartOfSpeech.Noun,
@@ -64,6 +65,7 @@ class TestGermanPrepareData:
 
     async def test_noun_no_plural(self):
         expected = GermanWordData(
+            raw_word="Schnee",
             word="Schnee",
             pos_tag="NN",
             part_of_speech=PartOfSpeech.Noun,
@@ -79,6 +81,7 @@ class TestGermanPrepareData:
 
     async def test_noun_two_plural(self):
         expected = GermanWordData(
+            raw_word="Band",
             word="Band",
             pos_tag="NN",
             part_of_speech=PartOfSpeech.Noun,
@@ -94,6 +97,7 @@ class TestGermanPrepareData:
 
     async def test_noun_no_singular(self):
         expected = GermanWordData(
+            raw_word="Ferien",
             word="Ferien",
             pos_tag="NN",
             part_of_speech=PartOfSpeech.Noun,
@@ -109,6 +113,7 @@ class TestGermanPrepareData:
 
     async def test_noun_ambiguity_with_verb(self):
         expected = GermanWordData(
+            raw_word="Schwimmen",
             word="Schwimmen",
             pos_tag="NNI",
             part_of_speech=PartOfSpeech.Noun,
@@ -124,6 +129,7 @@ class TestGermanPrepareData:
 
     async def test_verb(self):
         expected = GermanWordData(
+            raw_word="schlafen",
             word="schlafen",
             pos_tag="VV(INF)",
             part_of_speech=PartOfSpeech.Verb,
@@ -137,6 +143,7 @@ class TestGermanPrepareData:
 
     async def test_adjective(self):
         expected = GermanWordData(
+            raw_word="lustig",
             word="lustig",
             pos_tag="ADJ(D)",
             part_of_speech=PartOfSpeech.Other,
@@ -150,6 +157,7 @@ class TestGermanPrepareData:
 
     async def test_subordinating_conjunction(self):
         expected = GermanWordData(
+            raw_word="obgleich",
             word="obgleich",
             pos_tag="KOUS",
             part_of_speech=PartOfSpeech.Other,
@@ -163,6 +171,7 @@ class TestGermanPrepareData:
 
     async def test_coordinating_conjunction(self):
         expected = GermanWordData(
+            raw_word="und",
             word="und",
             pos_tag="KON",
             part_of_speech=PartOfSpeech.Other,
@@ -176,6 +185,7 @@ class TestGermanPrepareData:
 
     async def test_adverb(self):
         expected = GermanWordData(
+            raw_word="gerade",
             word="gerade",
             pos_tag="ADV",
             part_of_speech=PartOfSpeech.Other,
@@ -189,6 +199,7 @@ class TestGermanPrepareData:
 
     async def test_with_hint(self):
         expected = GermanWordData(
+            raw_word="lustig",
             word="lustig",
             pos_tag="ADJ(D)",
             part_of_speech=PartOfSpeech.Other,
@@ -205,6 +216,7 @@ class TestGermanPrepareData:
 
     async def test_preposition(self):
         expected = GermanWordData(
+            raw_word="durch",
             word="durch",
             pos_tag="APPR",
             part_of_speech=PartOfSpeech.Other,
@@ -219,6 +231,7 @@ class TestGermanPrepareData:
     # Other examples: Selbsteinschätzung, Klimmzugstange, Berufseinstieg, Erachten, Achterbahnfahren, Freiklettern, Tiefseetauschen, Eisbaden, Fallschirmspringen.
     async def test_noun_not_found_in_dictionary(self):
         expected = GermanWordData(
+            raw_word="Kuddelmuddelkiste",
             word="Kuddelmuddelkiste",
             pos_tag="NN",
             part_of_speech=PartOfSpeech.Noun,
@@ -232,6 +245,7 @@ class TestGermanPrepareData:
 
     async def test_noun_with_article_given(self):
         expected = GermanWordData(
+            raw_word="die Katze",
             word="Katze",
             pos_tag="NN",
             part_of_speech=PartOfSpeech.Noun,
@@ -247,6 +261,7 @@ class TestGermanPrepareData:
 
     async def test_noun_in_plural_given(self):
         expected = GermanWordData(
+            raw_word="Märkte",
             word="Märkte",
             pos_tag="NN",
             part_of_speech=PartOfSpeech.Noun,
@@ -262,6 +277,7 @@ class TestGermanPrepareData:
 
     async def test_adjective_conjugated_given(self):
         expected = GermanWordData(
+            raw_word="schnelle",
             word="schnelle",
             pos_tag="ADJ(A)",
             part_of_speech=PartOfSpeech.Other,
@@ -275,6 +291,7 @@ class TestGermanPrepareData:
 
     async def test_noun_with_mistake_given(self):
         actual = await self.prepare_data("Erfarung")
+        assert actual.raw_word == "Erfarung"
         assert actual.word == "Erfahrung"
         assert actual.part_of_speech == PartOfSpeech.Noun
 
@@ -290,6 +307,7 @@ class TestGermanPrepareData:
 
     async def test_reflexive_verb(self):
         expected = GermanWordData(
+            raw_word="sich interessieren",
             word="sich interessieren",
             pos_tag="VV(INF)",
             part_of_speech=PartOfSpeech.Verb,
@@ -310,6 +328,7 @@ class TestGermanPrepareData:
     async def test_rare_adjective(self):
         # Identified as FM = Fremdsprachliches Material
         expected = GermanWordData(
+            raw_word="perplex",
             word="perplex",
             pos_tag="FM",
             part_of_speech=PartOfSpeech.Other,
@@ -323,6 +342,7 @@ class TestGermanPrepareData:
 
     async def test_adjective_detected_as_noun_not_found_in_dict(self):
         expected = GermanWordData(
+            raw_word="zwanglos",
             word="zwanglos",
             pos_tag="ADJ(D)",
             part_of_speech=PartOfSpeech.Other,
@@ -358,6 +378,7 @@ class TestGermanPrepareData:
 
     async def test_verb_with_grammatical_case_note(self):
         actual = await self.prepare_data("anrufen (+Akk)")
+        assert actual.raw_word == "anrufen (+Akk)"
         assert actual.pos_tag == "VV(INF)"
         assert actual.part_of_speech == PartOfSpeech.Verb
         assert actual.word == "anrufen"
