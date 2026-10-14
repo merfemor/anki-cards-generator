@@ -70,7 +70,7 @@ class OpenaiLlmProvider(LlmProvider):
 
 
 class GeminiLlmProvider(LlmProvider):
-    GEMINI_MODEL: Final[str] = "gemini-3.8-flash"
+    GEMINI_MODEL: Final[str] = "gemini-3.5-flash-lite"
 
     def __init__(self):
         api_key = os.environ.get("GEMINI_API_KEY")
