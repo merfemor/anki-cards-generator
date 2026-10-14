@@ -1,10 +1,12 @@
 import logging
+import os
 import sys
 from abc import abstractmethod, ABC
 from typing import Final, Callable
 
 import ollama
 import openai
+from google import genai
 
 
 async def ask_llm(prompt: str) -> str:
@@ -67,10 +69,29 @@ class OpenaiLlmProvider(LlmProvider):
         return response.output_text
 
 
+class GeminiLlmProvider(LlmProvider):
+    GEMINI_MODEL: Final[str] = "gemini-3.8-flash"
+
+    def __init__(self):
+        api_key = os.environ.get("GEMINI_API_KEY")
+        if api_key is None:
+            print("Error: GEMINI_API_KEY env variable is not set.")
+            sys.exit(1)
+        self.client = genai.Client(api_key=api_key)
+
+    async def ask_llm(self, prompt: str) -> str:
+        response = await self.client.aio.models.generate_content(
+            model=self.GEMINI_MODEL,
+            contents=prompt,
+        )
+        return response.text or ""
+
+
 __LLM_PROVIDER_FACTORIES: Final[dict[str, Callable[[], LlmProvider]]] = {
     # Order is important, the first one will be the default option
     "ollama": OllamaLlmProvider,
     "openai": OpenaiLlmProvider,
+    "gemini": GeminiLlmProvider,
 }
 
 __LLM_PROVIDER: LlmProvider

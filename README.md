@@ -10,14 +10,14 @@ Also, audios are generated using text-to-speech and embedded into the cards.
 
 * Python 3.11
 * [uv](https://docs.astral.sh/uv/getting-started/installation/)
-* [Ollama](https://ollama.com/download) or OpenAI API key
+* [Ollama](https://ollama.com/download), OpenAI or Gemini API key
 * macOS (text to speech relies on the default `say` command)
 * [lame](https://lame.sourceforge.io/)
 * [DeepL](https://www.deepl.com/) API key
 
 ### LLM provider
 
-You have two options: Ollama (default) and OpenAI.
+You have three options: Ollama (default), OpenAI and Gemini.
 
 #### Ollama
  
@@ -39,6 +39,16 @@ export OPENAI_API_KEY=yourkey
 > You can create `.env` file and specify environment variable there to not enter it each time.
 
 Then, when running app, specify additional argument `--llm-provider=openai`.
+
+#### Gemini
+
+Set API key into environment variable `GEMINI_API_KEY`:
+
+```bash
+export GEMINI_API_KEY=yourkey
+```
+
+Then, when running app, specify additional argument `--llm-provider=gemini`.
 
 ### DeepL API key
 
