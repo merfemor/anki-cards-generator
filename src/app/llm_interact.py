@@ -58,15 +58,13 @@ class OllamaLlmProvider(LlmProvider):
 
 
 class OpenaiLlmProvider(LlmProvider):
-    def __init__(self):
-        self.client = openai.AsyncOpenAI()
-
     async def ask_llm(self, prompt: str) -> str:
-        response = await self.client.responses.create(
-            model="gpt-4.1-nano",
-            input=prompt,
-        )
-        return response.output_text
+        async with openai.AsyncOpenAI() as client:
+            response = await client.responses.create(
+                model="gpt-4.1-nano",
+                input=prompt,
+            )
+            return response.output_text
 
 
 class GeminiLlmProvider(LlmProvider):
@@ -77,14 +75,15 @@ class GeminiLlmProvider(LlmProvider):
         if api_key is None:
             print("Error: GEMINI_API_KEY env variable is not set.")
             sys.exit(1)
-        self.client = genai.Client(api_key=api_key)
+        self.api_key = api_key
 
     async def ask_llm(self, prompt: str) -> str:
-        response = await self.client.aio.models.generate_content(
-            model=self.GEMINI_MODEL,
-            contents=prompt,
-        )
-        return response.text or ""
+        async with genai.Client(api_key=self.api_key).aio as client:
+            response = await client.models.generate_content(
+                model=self.GEMINI_MODEL,
+                contents=prompt,
+            )
+            return response.text or ""
 
 
 __LLM_PROVIDER_FACTORIES: Final[dict[str, Callable[[], LlmProvider]]] = {
