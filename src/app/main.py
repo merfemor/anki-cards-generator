@@ -32,6 +32,7 @@ def setup_logging() -> None:
     )
     logging.getLogger("httpx").setLevel(logging.CRITICAL)
     logging.getLogger("deepl").setLevel(logging.WARNING)
+    logging.getLogger("google_genai.models").setLevel(logging.WARNING)
 
 
 def invalid_payload_response(exc: ValidationError) -> Tuple[Response, int]:
