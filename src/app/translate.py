@@ -4,6 +4,7 @@ import sys
 from abc import ABC, abstractmethod
 
 import deepl
+from flask import current_app
 
 
 class Translator(ABC):
@@ -40,21 +41,11 @@ class DeeplTranslatorImpl(Translator):
             raise e
 
 
-__GLOBAL_TRANSLATOR: Translator
-
-
 async def translate_text(text: str, src: str, dest: str) -> str:
-    global __GLOBAL_TRANSLATOR
-
-    return await __GLOBAL_TRANSLATOR.translate_text(text, src, dest)
-
-
-def override_global_translator_for_test(translator: Translator) -> None:
-    global __GLOBAL_TRANSLATOR
-    __GLOBAL_TRANSLATOR = translator
+    translator: Translator = current_app.extensions["translator"]
+    return await translator.translate_text(text, src, dest)
 
 
-def init_translator() -> None:
-    global __GLOBAL_TRANSLATOR
+def init_translator() -> Translator:
     logging.info("Using DeepL API as a translator.")
-    __GLOBAL_TRANSLATOR = DeeplTranslatorImpl()
+    return DeeplTranslatorImpl()

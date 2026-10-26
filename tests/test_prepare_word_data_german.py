@@ -5,11 +5,9 @@ import pytest
 import app.german_data_extract
 import app.utils
 from app.german_data_extract import GermanWordData, PartOfSpeech
-from app.llm_interact import override_global_llm_provider_for_test
-from app.translate import override_global_translator_for_test
 from app.word_hints import WordHints
-from stub_llm_provider import StubLlmProvider, STANDARD_RESPONSE_STUB
-from stub_translator import StubTranslator
+from base_app_test import AbstractAppRestTest
+from stub_llm_provider import STANDARD_RESPONSE_STUB
 
 sentence_example_stub_text: Final[str] = STANDARD_RESPONSE_STUB
 word_translated_stub: Final[str] = "_"
@@ -18,11 +16,7 @@ sentence_example_translated_ru_stub_text: Final[str] = word_translated_stub
 
 
 @pytest.mark.asyncio(loop_scope="class")
-class TestGermanPrepareData:
-    def setup_method(self) -> None:
-        override_global_llm_provider_for_test(StubLlmProvider())
-        override_global_translator_for_test(StubTranslator(word_translated_stub))
-
+class TestGermanPrepareData(AbstractAppRestTest):
     async def test_empty_string(self):
         with pytest.raises(ValueError):
             await self.prepare_data("")
@@ -209,10 +203,11 @@ class TestGermanPrepareData:
             sentence_example=sentence_example_stub_text,
             sentence_example_translated_en=sentence_example_translated_en_stub_text,
         )
-        assert expected == await app.german_data_extract.prepare_data_for_german_word(
-            "lustig",
-            hints=WordHints("смешной, весёлый"),
-        )
+        with self.get_test_context():
+            assert expected == await app.german_data_extract.prepare_data_for_german_word(
+                "lustig",
+                hints=WordHints("смешной, весёлый"),
+            )
 
     async def test_preposition(self):
         expected = GermanWordData(
@@ -390,4 +385,5 @@ class TestGermanPrepareData:
         assert actual.word == "versetzt"
 
     async def prepare_data(self, word: str) -> app.german_data_extract.GermanWordData:
-        return await app.german_data_extract.prepare_data_for_german_word(word, hints=WordHints(""))
+        with self.get_test_context():
+            return await app.german_data_extract.prepare_data_for_german_word(word, hints=WordHints(""))

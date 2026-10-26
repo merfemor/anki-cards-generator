@@ -3,11 +3,9 @@ from typing import Final
 import pytest
 
 from app.english_data_extract import EnglishWordData, prepare_data_for_english_word
-from app.llm_interact import override_global_llm_provider_for_test
-from app.translate import override_global_translator_for_test
 from app.word_hints import WordHints
-from stub_llm_provider import StubLlmProvider, STANDARD_RESPONSE_STUB
-from stub_translator import StubTranslator
+from base_app_test import AbstractAppRestTest
+from stub_llm_provider import STANDARD_RESPONSE_STUB
 
 sentence_example_stub_text: Final[str] = STANDARD_RESPONSE_STUB
 word_translated_stub: Final[str] = "_"
@@ -15,11 +13,7 @@ sentence_example_translated_ru_stub_text: Final[str] = word_translated_stub
 
 
 @pytest.mark.asyncio(loop_scope="class")
-class TestEnglishPrepareData:
-    def setup_method(self) -> None:
-        override_global_llm_provider_for_test(StubLlmProvider())
-        override_global_translator_for_test(StubTranslator(word_translated_stub))
-
+class TestEnglishPrepareData(AbstractAppRestTest):
     async def test_empty_word(self):
         with pytest.raises(ValueError):
             await self.prepare_data("")
@@ -86,7 +80,10 @@ class TestEnglishPrepareData:
             sentence_example=sentence_example_stub_text,
             sentence_example_translated_ru=sentence_example_translated_ru_stub_text,
         )
-        assert expected == await prepare_data_for_english_word("miscellaneous", WordHints("смешанный, разнообразный"))
+        with self.get_test_context():
+            assert expected == await prepare_data_for_english_word(
+                "miscellaneous", WordHints("смешанный, разнообразный")
+            )
 
     async def test_word_with_mistake(self):
         actual = await self.prepare_data("heigh")
@@ -98,4 +95,5 @@ class TestEnglishPrepareData:
         assert actual.word == "make and efort"
 
     async def prepare_data(self, word: str) -> EnglishWordData:
-        return await prepare_data_for_english_word(word, hints=WordHints(""))
+        with self.get_test_context():
+            return await prepare_data_for_english_word(word, hints=WordHints(""))

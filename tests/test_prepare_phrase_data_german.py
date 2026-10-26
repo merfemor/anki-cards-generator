@@ -1,19 +1,12 @@
 import pytest
 
 from app.german_data_extract import GermanWordData, PartOfSpeech, prepare_data_for_german_word
-from app.llm_interact import override_global_llm_provider_for_test
-from app.translate import override_global_translator_for_test
 from app.word_hints import WordHints
-from stub_llm_provider import StubLlmProvider
-from stub_translator import StubTranslator
+from base_app_test import AbstractAppRestTest
 
 
 @pytest.mark.asyncio(loop_scope="class")
-class TestGermanPhrasePrepareData:
-    def setup_method(self) -> None:
-        override_global_llm_provider_for_test(StubLlmProvider())
-        override_global_translator_for_test(StubTranslator("_"))
-
+class TestGermanPhrasePrepareData(AbstractAppRestTest):
     async def test_collocation(self):
         actual = await self.prepare_data("eine Entscheidung treffen")
         assert actual.pos_tag == ""
@@ -37,6 +30,6 @@ class TestGermanPhrasePrepareData:
         assert actual.raw_word == "Entsheidung treffen"
         assert actual.word == "Entsheidung treffen"
 
-    @staticmethod
-    async def prepare_data(phrase: str) -> GermanWordData:
-        return await prepare_data_for_german_word(phrase, hints=WordHints(""))
+    async def prepare_data(self, phrase: str) -> GermanWordData:
+        with self.get_test_context():
+            return await prepare_data_for_german_word(phrase, hints=WordHints(""))

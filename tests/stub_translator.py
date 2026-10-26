@@ -1,4 +1,8 @@
+from typing import Final
+
 from app.translate import Translator
+
+TRANSLATION_STUB: Final[str] = "_"
 
 
 class StubTranslator(Translator):

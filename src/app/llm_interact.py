@@ -6,11 +6,12 @@ from typing import Final, Callable
 
 import ollama
 import openai
+from flask import current_app
 from google import genai
 
 
 async def ask_llm(prompt: str) -> str:
-    llm_provider = __LLM_PROVIDER
+    llm_provider: LlmProvider = current_app.extensions["llm_provider"]
     try:
         response_text = await llm_provider.ask_llm(prompt)
     except Exception as e:
@@ -93,8 +94,6 @@ __LLM_PROVIDER_FACTORIES: Final[dict[str, Callable[[], LlmProvider]]] = {
     "gemini": GeminiLlmProvider,
 }
 
-__LLM_PROVIDER: LlmProvider
-
 
 def parse_llm_provider_argument() -> str:
     llm_providers = list(__LLM_PROVIDER_FACTORIES.keys())
@@ -105,14 +104,7 @@ def parse_llm_provider_argument() -> str:
     return llm_provider_raw
 
 
-def init_llm_provider() -> None:
-    global __LLM_PROVIDER
+def init_llm_provider() -> LlmProvider:
     provider = parse_llm_provider_argument()
     logging.info(f"Using LLM provider {provider}")
-    factory = __LLM_PROVIDER_FACTORIES[provider]
-    __LLM_PROVIDER = factory()
-
-
-def override_global_llm_provider_for_test(llm_provider: LlmProvider) -> None:
-    global __LLM_PROVIDER
-    __LLM_PROVIDER = llm_provider
+    return __LLM_PROVIDER_FACTORIES[provider]()

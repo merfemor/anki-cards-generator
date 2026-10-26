@@ -1,14 +1,12 @@
 import os
 import tempfile
 
-from app import tts, german_anki_generate
+from app import german_anki_generate
 from app.german_data_extract import GermanWordData, GermanNounProperties, PartOfSpeech
+from base_app_test import AbstractAppRestTest
 
 
-class TestWordDataExportToAnki:
-    def setup_method(self):
-        tts.init_tts_engine()
-
+class TestWordDataExportToAnki(AbstractAppRestTest):
     def test_export_singe_de_word(self):
         katze_word_data = GermanWordData(
             raw_word="die Katze",
@@ -32,5 +30,9 @@ class TestWordDataExportToAnki:
         with tempfile.NamedTemporaryFile(suffix=".apkg") as tmp_file:
             file_path = tmp_file.name
             assert os.path.getsize(file_path) == 0
-            german_anki_generate.export_results_to_anki_deck(word_data, file_path)
+            self.run_export(word_data, file_path)
             assert os.path.getsize(file_path) > 0
+
+    def run_export(self, word_data, file_path: str) -> None:
+        with self.get_test_context():
+            german_anki_generate.export_results_to_anki_deck(word_data, file_path)

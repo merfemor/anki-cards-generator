@@ -4,6 +4,8 @@ import subprocess
 import tempfile
 from abc import ABC, abstractmethod
 
+from flask import current_app
+
 from app.utils import check
 
 
@@ -43,17 +45,14 @@ class MacTextToSpeechEngineImpl(TextToSpeechEngine):
             subprocess.run(["lame", "--quiet", "-b", "128", temp_aiff_path, save_to_path], check=True)
 
 
-__TTS_ENGINE: TextToSpeechEngine
-
-
-def init_tts_engine() -> None:
-    global __TTS_ENGINE
+def init_tts_engine() -> TextToSpeechEngine:
     logging.info("Using Mac 'say' as text-to-speech engine")
-    __TTS_ENGINE = MacTextToSpeechEngineImpl()
+    return MacTextToSpeechEngineImpl()
 
 
 def text_to_speech_into_file(text: str, save_to_path: str, lang: str) -> None:
     check(save_to_path.endswith(".mp3"), f"Expected path to end with .mp3 extension, but got {save_to_path}")
 
     logging.debug(f"Generate text to speech for text={text} in lang={lang} into {save_to_path}")
-    __TTS_ENGINE.text_to_speech_into_file(text, save_to_path, lang)
+    tts_engine: TextToSpeechEngine = current_app.extensions["tts_engine"]
+    tts_engine.text_to_speech_into_file(text, save_to_path, lang)

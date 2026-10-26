@@ -1,29 +1,19 @@
+from abc import ABC
 from typing import Any, Final
 
 from werkzeug.test import TestResponse
 
-from app.llm_interact import override_global_llm_provider_for_test
-from app.main import app
-from app.translate import override_global_translator_for_test
-from app.tts import init_tts_engine
-from stub_llm_provider import StubLlmProvider, STANDARD_RESPONSE_STUB
-from stub_translator import StubTranslator
+from base_app_test import AbstractAppRestTest
+from stub_llm_provider import STANDARD_RESPONSE_STUB
+from stub_translator import TRANSLATION_STUB
 
 SENTENCE_EXAMPLE_STUB: Final[str] = STANDARD_RESPONSE_STUB
-TRANSLATION_STUB: Final[str] = "_"
 GENERATE_WORD_DATA_ENDPOINT: Final[str] = "/api/generateWordData"
 EXPORT_DECK_FILE_ENDPOINT: Final[str] = "/api/exportDeckFile"
 
 
-class EndpointTestBase:
+class EndpointTestBase(AbstractAppRestTest, ABC):
     endpoint: str
-
-    def setup_method(self) -> None:
-        override_global_llm_provider_for_test(StubLlmProvider(STANDARD_RESPONSE_STUB))
-        override_global_translator_for_test(StubTranslator(TRANSLATION_STUB))
-        init_tts_engine()
-        self.app = app.test_client()
-        app.testing = True
 
     def do_request(self, body: Any) -> TestResponse:
         return self.app.post(self.endpoint, json=body)
@@ -112,6 +102,6 @@ class TestExportDeckFileEndpoint(EndpointTestBase):
         assert len(response.data) > 0
 
 
-class TestHomePage:
+class TestHomePage(AbstractAppRestTest):
     def test_home_page_ok_response(self):
-        assert app.test_client().get("/").status_code == 200
+        assert self.app.get("/").status_code == 200
