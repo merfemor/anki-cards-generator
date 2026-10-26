@@ -36,9 +36,9 @@ export OPENAI_API_KEY=yourkey
 ```
 
 > [!TIP]
-> You can create `.env` file and specify environment variable there to not enter it each time.
+> You can create `.env` file and specify environment variables there to not enter it each time.
 
-Then, when running app, specify additional argument `--llm-provider=openai`.
+Then, when running app, set `LLM_PROVIDER` environment variable to `openai`.
 
 #### Gemini
 
@@ -48,7 +48,7 @@ Set API key into environment variable `GEMINI_API_KEY`:
 export GEMINI_API_KEY=yourkey
 ```
 
-Then, when running app, specify additional argument `--llm-provider=gemini`.
+Then, when running app, set `LLM_PROVIDER` environment variable to `gemini`.
 
 ### DeepL API key
 

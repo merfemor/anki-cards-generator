@@ -96,12 +96,18 @@ __LLM_PROVIDER_FACTORIES: Final[dict[str, Callable[[], LlmProvider]]] = {
 __LLM_PROVIDER: LlmProvider
 
 
-def llm_provider_choices() -> list[str]:
-    return list(__LLM_PROVIDER_FACTORIES.keys())
+def parse_llm_provider_argument() -> str:
+    llm_providers = list(__LLM_PROVIDER_FACTORIES.keys())
+    llm_provider_raw: str = os.getenv("LLM_PROVIDER", llm_providers[0])
+    if llm_provider_raw not in llm_providers:
+        print(f'Usage: invalid LLM_PROVIDER variable "{llm_provider_raw}". Choose from: {", ".join(llm_providers)}.')
+        sys.exit(1)
+    return llm_provider_raw
 
 
-def set_global_llm_provider(provider: str) -> None:
+def init_llm_provider() -> None:
     global __LLM_PROVIDER
+    provider = parse_llm_provider_argument()
     logging.info(f"Using LLM provider {provider}")
     factory = __LLM_PROVIDER_FACTORIES[provider]
     __LLM_PROVIDER = factory()

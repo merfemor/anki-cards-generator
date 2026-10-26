@@ -14,10 +14,9 @@ from pydantic import ValidationError
 from app import english_anki_generate
 from app import german_anki_generate
 from app.api_payload import ExportDeckFilePayload, GenerateWordDataPayload
-from app.configuration import parse_arguments
 from app.english_data_extract import prepare_data_for_english_word, EnglishWordData
 from app.german_data_extract import prepare_data_for_german_word, GermanWordData
-from app.llm_interact import set_global_llm_provider
+from app.llm_interact import init_llm_provider
 from app.translate import init_translator
 from app.tts import init_tts_engine
 
@@ -132,8 +131,7 @@ def open_in_browser(*, url: str, after_seconds: int) -> None:
 def main():
     load_dotenv()
     setup_logging()
-    args = parse_arguments()
-    set_global_llm_provider(args.llm_provider)
+    init_llm_provider()
     init_tts_engine()
     init_translator()
     open_in_browser(url="http://127.0.0.1:5000/", after_seconds=1)
