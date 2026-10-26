@@ -1,11 +1,9 @@
-import asyncio
 import logging
 import os
 import sys
 from abc import ABC, abstractmethod
 
 import deepl
-import httpx
 
 
 class Translator(ABC):
@@ -60,12 +58,3 @@ def init_translator() -> None:
     global __GLOBAL_TRANSLATOR
     logging.info("Using DeepL API as a translator.")
     __GLOBAL_TRANSLATOR = DeeplTranslatorImpl()
-    check_translator_is_available()
-
-
-def check_translator_is_available() -> None:
-    try:
-        asyncio.run(__GLOBAL_TRANSLATOR.translate_text("Katze", src="de", dest="ru"))
-    except httpx.ConnectError:
-        print("Error: Failed to connect to translator. Check your internet connection.")
-        sys.exit(1)
