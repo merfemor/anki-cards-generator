@@ -89,13 +89,13 @@ When you're done, press `Ctrl+C` to stop the app.
 Install pre-commit hooks:
 
 ```bash
-pre-commit install
+uv run pre-commit install
 ```
 
 To run all pre-commit hooks on all files:
 
 ```bash
-pre-commit run -a
+uv run pre-commit run -a
 ```
 
 ### Tests
