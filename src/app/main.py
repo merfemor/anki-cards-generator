@@ -76,17 +76,29 @@ def open_in_browser(*, url: str, after_seconds: int) -> None:
     threading.Timer(after_seconds, lambda: webbrowser.open_new(url)).start()
 
 
-def main():
+def debug_entry():
+    app = create_app_with_ctx()
+    # To not open twice, as Werkzeug spawns two processes
+    if os.getenv("WERKZEUG_RUN_MAIN") != "true":
+        open_in_browser(url="http://127.0.0.1:5000/", after_seconds=1)
+    app.run(port=5000, debug=True)
+
+
+def prod_entry() -> None:
+    app = create_app_with_ctx()
+    if os.getenv("OPEN_BROWSER") == "1":
+        open_in_browser(url="http://127.0.0.1:5000/", after_seconds=1)
+    app.run(port=5000)
+
+
+def create_app_with_ctx() -> Flask:
     load_dotenv()
     setup_logging()
-    app = create_app(
+    return create_app(
         init_llm_provider(),
         init_translator(),
         init_tts_engine(),
     )
-    if os.getenv("OPEN_BROWSER") == "1":
-        open_in_browser(url="http://127.0.0.1:5000/", after_seconds=1)
-    app.run(port=5000)
 
 
 def create_app(

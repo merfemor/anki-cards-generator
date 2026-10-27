@@ -73,7 +73,13 @@ uv sync
 Run the app with the following command:
 
 ```bash
-uv run -m app
+uv run app
+```
+
+For debugging run with:
+
+```bash
+uv run app-dev
 ```
 
 or just script `run.sh`.

@@ -42,3 +42,7 @@ line-length = 120
 
 [tool.pytest.ini_options]
 timeout = 5
+
+[project.scripts]
+app = "app.main:prod_entry"
+app-dev = "app.main:debug_entry"
