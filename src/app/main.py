@@ -84,11 +84,9 @@ def debug_entry():
     app.run(port=5000, debug=True)
 
 
-def prod_entry() -> None:
+def prod_entry() -> Flask:
     app = create_app_with_ctx()
-    if os.getenv("OPEN_BROWSER") == "1":
-        open_in_browser(url="http://127.0.0.1:5000/", after_seconds=1)
-    app.run(port=5000)
+    return app
 
 
 def create_app_with_ctx() -> Flask:

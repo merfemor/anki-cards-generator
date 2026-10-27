@@ -5,6 +5,7 @@ Python 3.11 project that generates Anki flashcards for learning German/English w
 ## Tech stack
 
 - Flask (async) web app with a web UI (vanilla JS + Alpine.js, plain CSS, no bundler)
+- Gunicorn production WSGI server (`gunicorn.conf.py`)
 - `uv` for dependency management
 - Ruff (lint + format) + mypy for type checking
 - pytest for tests
@@ -13,9 +14,10 @@ Python 3.11 project that generates Anki flashcards for learning German/English w
 ## Run
 
 ```bash
-uv run -m app          # start web UI at :5000
+./run.sh                # start production server with Gunicorn (or: uv run gunicorn 'app.main:prod_entry()')
+uv run app-dev          # start web UI in debug mode at :5000
 uv run pytest           # run tests
-pre-commit run -a       # lint, format, type-check
+uv run pre-commit run -a       # lint, format, type-check
 ```
 
 ## Code conventions
@@ -25,6 +27,7 @@ pre-commit run -a       # lint, format, type-check
 - Source code lives under `src/app/`, tests under `tests/`.
 - Async I/O (LLM calls, translations, TTS) uses `async`/`await`.
 - The `main.py` module owns the Flask app and route handlers; business logic is delegated to separate modules (`*_data_extract`, `*_anki_generate`, etc.).
+- In `main.py`, `prod_entry()` returns the `Flask` app for Gunicorn; `debug_entry()` runs Werkzeug with `debug=True`.
 
 ## Git / GitHub
 

@@ -19,6 +19,7 @@ dependencies = [
     "deepl (==1.32.0)",
     "pydantic (==2.14.0)",
     "google-genai (==2.30.1)",
+    "gunicorn (==26.2.0)",
 ]
 
 [dependency-groups]
@@ -44,5 +45,4 @@ line-length = 120
 timeout = 5
 
 [project.scripts]
-app = "app.main:prod_entry"
 app-dev = "app.main:debug_entry"
