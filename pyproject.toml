@@ -11,14 +11,14 @@ dependencies = [
     "genanki (==0.13.1)",
     "german-nouns (==1.2.5)",
     "ollama (==0.6.3)",
-    "openai (==3.28.0)",
+    "openai==3.40.0",
     "python-dotenv (==1.2.4)",
     "HanTa (==1.2.1)",
-    "numpy (==2.4.4)",
+    "numpy==2.4.6",
     "pyspellchecker (==0.9.1)",
     "deepl (==1.32.0)",
-    "pydantic (==2.14.0)",
-    "google-genai (==2.30.1)",
+    "pydantic==2.14.1",
+    "google-genai==2.33.0",
     "gunicorn (==26.2.0)",
 ]
 
