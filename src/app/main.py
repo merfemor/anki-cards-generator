@@ -28,6 +28,7 @@ def setup_logging() -> None:
         handlers=[logging.StreamHandler(sys.stdout)],
     )
     logging.getLogger("httpx").setLevel(logging.CRITICAL)
+    logging.getLogger("httpx2").setLevel(logging.CRITICAL)
     logging.getLogger("deepl").setLevel(logging.WARNING)
     logging.getLogger("google_genai.models").setLevel(logging.WARNING)
 
