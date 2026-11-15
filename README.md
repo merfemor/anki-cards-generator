@@ -11,7 +11,6 @@ Also, audios are generated using text-to-speech and embedded into the cards.
 * Python 3.11
 * [uv](https://docs.astral.sh/uv/getting-started/installation/)
 * [Ollama](https://ollama.com/download), OpenAI or Gemini API key
-* macOS (text to speech relies on the default `say` command)
 * [lame](https://lame.sourceforge.io/)
 * [DeepL](https://www.deepl.com/) API key
 

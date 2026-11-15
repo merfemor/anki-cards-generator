@@ -1,12 +1,20 @@
 import logging
-import platform
 import subprocess
+import sys
 import tempfile
+import wave
 from abc import ABC, abstractmethod
+from pathlib import Path
 
 from flask import current_app
+from piper import PiperVoice
 
 from app.utils import check
+
+PIPER_VOICES = {
+    "de": "de_DE-thorsten-medium",
+    "en": "en_US-lessac-medium",
+}
 
 
 class TextToSpeechEngine(ABC):
@@ -15,39 +23,49 @@ class TextToSpeechEngine(ABC):
         pass
 
 
-def check_command_exists(command: str) -> None:
-    check(
-        subprocess.run(["which", command], capture_output=True).returncode == 0,
-        f"Command '{command}' is not found. It is required for Mac TTS engine",
-    )
-
-
-class MacTextToSpeechEngineImpl(TextToSpeechEngine):
+class PiperTextToSpeechEngine(TextToSpeechEngine):
     def __init__(self) -> None:
-        check(
-            platform.system() == "Darwin",
-            f"Mac TTS engine is only supported on macOS, but current OS is {platform.system()}",
-        )
-        check_command_exists("say")
-        check_command_exists("lame")
+        self._model_dir = Path.home() / ".cache" / "anki-cards-generator" / "piper"
+        self._model_dir.mkdir(parents=True, exist_ok=True)
+        self._voices: dict[str, PiperVoice] = {}
+
+        for lang, voice_name in PIPER_VOICES.items():
+            model_path = self._model_dir / f"{voice_name}.onnx"
+            config_path = self._model_dir / f"{voice_name}.onnx.json"
+            if any(not path.is_file() or path.stat().st_size == 0 for path in (model_path, config_path)):
+                logging.info("Downloading Piper voice: %s", voice_name)
+                subprocess.run(
+                    [
+                        sys.executable,
+                        "-m",
+                        "piper.download_voices",
+                        "--download-dir",
+                        str(self._model_dir),
+                        voice_name,
+                    ],
+                    check=True,
+                )
+
+            self._voices[lang] = PiperVoice.load(str(model_path))
+
+    def _load_voice(self, lang: str) -> PiperVoice:
+        try:
+            return self._voices[lang]
+        except KeyError as exc:
+            raise ValueError(f"Unsupported language for Piper TTS: {lang}") from exc
 
     def text_to_speech_into_file(self, text: str, save_to_path: str, lang: str) -> None:
-        if lang == "de":
-            voice = "Anna"
-        elif lang == "en":
-            voice = "Samantha"
-        else:
-            raise ValueError(f"Unsupported language for Mac TTS: {lang}")
-
-        with tempfile.NamedTemporaryFile(mode="wb", suffix=".aiff") as temp_aiff:
-            temp_aiff_path = temp_aiff.name
-            subprocess.run(["say", "-v", voice, "-o", temp_aiff_path, text], check=True)
-            subprocess.run(["lame", "--quiet", "-b", "128", temp_aiff_path, save_to_path], check=True)
+        voice = self._load_voice(lang)
+        with tempfile.TemporaryDirectory() as temp_dir:
+            wav_path = Path(temp_dir) / "speech.wav"
+            with wave.open(str(wav_path), "wb") as wav_file:
+                voice.synthesize_wav(text, wav_file)
+            subprocess.run(["lame", "--quiet", "-b", "128", str(wav_path), save_to_path], check=True)
 
 
 def init_tts_engine() -> TextToSpeechEngine:
-    logging.info("Using Mac 'say' as text-to-speech engine")
-    return MacTextToSpeechEngineImpl()
+    logging.info("Using Piper as text-to-speech engine")
+    return PiperTextToSpeechEngine()
 
 
 def text_to_speech_into_file(text: str, save_to_path: str, lang: str) -> None:
