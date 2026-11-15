@@ -1,6 +1,5 @@
 import logging
 import os
-import sys
 from abc import ABC, abstractmethod
 
 import deepl
@@ -17,8 +16,7 @@ class DeeplTranslatorImpl(Translator):
     def __init__(self) -> None:
         api_key = os.environ.get("DEEPL_API_KEY")
         if api_key is None:
-            print("Error: DEEPL_API_KEY env variable is not set.")
-            sys.exit(1)
+            raise RuntimeError("DEEPL_API_KEY environment variable is not set.")
         self.__init_(api_key)
 
     def __init_(self, api_key: str) -> None:

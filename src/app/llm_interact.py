@@ -1,6 +1,5 @@
 import logging
 import os
-import sys
 from abc import abstractmethod, ABC
 from typing import Final, Callable
 
@@ -42,20 +41,21 @@ class OllamaLlmProvider(LlmProvider):
     def early_check_ollama(self) -> None:
         try:
             available_models = ollama.list().models
-        except ConnectionError:
-            print("Error: Ollama is not accessible. Did you forget to start it?")
-            sys.exit(1)
+        except ConnectionError as e:
+            raise RuntimeError("Ollama is not accessible. Did you forget to start it?") from e
 
         available_model_names: list[str] = [m.model for m in available_models if m.model is not None]
         if self.OLLAMA_MODEL in available_model_names:
             logging.info(f"Ollama model {self.OLLAMA_MODEL} is available")
             return
 
-        print(f"Error: model '{self.OLLAMA_MODEL}' is not found in Ollama.")
-        if available_model_names:
-            print(f"Available models: {', '.join(available_model_names)}")
-        print(f"To install it execute: ollama pull '{self.OLLAMA_MODEL}'")
-        sys.exit(1)
+        available_models_message = (
+            f" Available models: {', '.join(available_model_names)}." if available_model_names else ""
+        )
+        raise RuntimeError(
+            f"Ollama model '{self.OLLAMA_MODEL}' is not found.{available_models_message} "
+            f"Install it with: ollama pull '{self.OLLAMA_MODEL}'."
+        )
 
 
 class OpenaiLlmProvider(LlmProvider):
@@ -74,8 +74,7 @@ class GeminiLlmProvider(LlmProvider):
     def __init__(self):
         api_key = os.environ.get("GEMINI_API_KEY")
         if api_key is None:
-            print("Error: GEMINI_API_KEY env variable is not set.")
-            sys.exit(1)
+            raise RuntimeError("GEMINI_API_KEY environment variable is not set.")
         self.api_key = api_key
 
     async def ask_llm(self, prompt: str) -> str:
@@ -99,8 +98,7 @@ def parse_llm_provider_argument() -> str:
     llm_providers = list(__LLM_PROVIDER_FACTORIES.keys())
     llm_provider_raw: str = os.getenv("LLM_PROVIDER", llm_providers[0])
     if llm_provider_raw not in llm_providers:
-        print(f'Usage: invalid LLM_PROVIDER variable "{llm_provider_raw}". Choose from: {", ".join(llm_providers)}.')
-        sys.exit(1)
+        raise ValueError(f'Invalid LLM_PROVIDER value "{llm_provider_raw}". Choose from: {", ".join(llm_providers)}.')
     return llm_provider_raw
 
 
