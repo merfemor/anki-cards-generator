@@ -32,3 +32,4 @@ uv run pre-commit run -a       # lint, format, type-check
 ## Git / GitHub
 
 - Use [Conventional Commits](https://www.conventionalcommits.org/) format: prefix with `feat:`, `fix:`, `refactor:`, `chore:`, etc.
+- Include a `Co-authored-by` trailer identifying the AI assistant in commit messages.
