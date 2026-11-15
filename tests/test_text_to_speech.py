@@ -1,12 +1,16 @@
 import os
 import tempfile
 
+import pytest
+
 from app import tts
 from base_app_test import AbstractAppRestTest
 
+pytestmark = pytest.mark.timeout(300)
+
 
 class TestTextToSpeech(AbstractAppRestTest):
-    def run_test(self, word: str, lang: str):
+    def run_test(self, word: str, lang: str) -> None:
         with self.get_test_context():
             with tempfile.TemporaryDirectory() as tmp_dir:
                 file_path = os.path.join(tmp_dir, "tts_test_file.mp3")
