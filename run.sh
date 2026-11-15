@@ -13,7 +13,7 @@ if [[ -f "$SCRIPT_DIR/.env" ]]; then
 fi
 
 if [[ "${OPEN_BROWSER:-0}" == "1" ]]; then
-    (sleep 2; open "http://127.0.0.1:5000") &
+    (sleep 2; open "http://127.0.0.1:5055") &
 fi
 
 exec uv run gunicorn 'app.main:prod_entry()'

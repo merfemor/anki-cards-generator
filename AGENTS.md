@@ -15,7 +15,7 @@ Python 3.11 project that generates Anki flashcards for learning German/English w
 
 ```bash
 ./run.sh                # start production server with Gunicorn (or: uv run gunicorn 'app.main:prod_entry()')
-uv run app-dev          # start web UI in debug mode at :5000
+uv run app-dev          # start web UI in debug mode at :5055
 uv run pytest           # run tests
 uv run pre-commit run -a       # lint, format, type-check
 ```

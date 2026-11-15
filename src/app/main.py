@@ -81,8 +81,8 @@ def debug_entry():
     app = create_app_with_ctx()
     # To not open twice, as Werkzeug spawns two processes
     if os.getenv("WERKZEUG_RUN_MAIN") != "true":
-        open_in_browser(url="http://127.0.0.1:5000/", after_seconds=1)
-    app.run(port=5000, debug=True)
+        open_in_browser(url="http://127.0.0.1:5055/", after_seconds=1)
+    app.run(port=5055, debug=True)
 
 
 def prod_entry() -> Flask:
