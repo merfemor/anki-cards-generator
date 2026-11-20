@@ -1,19 +1,21 @@
 import logging
 from enum import Enum
-from typing import Final, Optional, Literal, Tuple
+from typing import Optional, Tuple
 
-import german_nouns.lookup
 from HanTa.HanoverTagger import HanoverTagger
-from pydantic import BaseModel, model_validator
+from pydantic import BaseModel
 
 from app.common_data_extract import generate_sentence_example_with_llm
+from app.german_noun_properties import GermanNounProperties
+from app.german_noun_properties_extractor import GermanNounPropertiesExtractor
+from app.german_noun_properties_extractor_german_nouns import GermanNounsNounPropertiesExtractor
 from app.spelling import correct_spelling
 from app.translate import translate_text
 from app.utils import check
 from app.word_hints import WordHints
 
 _pos_tagger_de = HanoverTagger("morphmodel_ger.pgz")
-_german_nouns_obj: Final[german_nouns.lookup.Nouns] = german_nouns.lookup.Nouns()
+_noun_properties_extractor: GermanNounPropertiesExtractor = GermanNounsNounPropertiesExtractor()
 
 
 class PartOfSpeech(Enum):
@@ -30,39 +32,6 @@ def pos_tag_to_part_of_speech(pos_tag: str) -> PartOfSpeech:
     return PartOfSpeech.Other
 
 
-def get_extra_noun_info(word: str) -> Tuple[str, str, str] | None:
-    result = _german_nouns_obj[word]
-
-    if len(result) == 0:
-        logging.info(f"Word {word} detected as noun, but not found in dictionary")
-        return None
-
-    flexion = result[0]["flexion"]
-    genus = result[0].get("genus", "pl")
-
-    if "nominativ plural" in flexion:
-        plural = flexion["nominativ plural"]
-    else:
-        # The case when a word can have two possible plural forms, e.g., das Band
-        plural = flexion.get("nominativ plural 1", "")
-
-    return flexion.get("nominativ singular", ""), plural, genus
-
-
-def get_article_for_german_genus(genus: str) -> Literal["der", "die", "das"]:
-    match genus:
-        case "m":
-            return "der"
-        case "n":
-            return "das"
-        case "f":
-            return "die"
-        case "pl":
-            return "die"
-        case _:
-            raise ValueError("Unexpected genus: " + genus)
-
-
 def post_process_en_translation(translated_text: str, part_of_speech: PartOfSpeech) -> str:
     if part_of_speech == PartOfSpeech.Verb:
         if not translated_text.startswith("to "):
@@ -71,20 +40,6 @@ def post_process_en_translation(translated_text: str, part_of_speech: PartOfSpee
         if translated_text.startswith("the "):
             return translated_text[4:]
     return translated_text
-
-
-class GermanNounProperties(BaseModel):
-    singular_form: str
-    plural_form: str
-    genus: str
-    article: Literal["der", "die", "das"]
-
-    @model_validator(mode="after")
-    def check_forms(self) -> "GermanNounProperties":
-        check(
-            self.singular_form != "" or self.plural_form != "", "Either singular_form or plural_form must be not empty"
-        )
-        return self
 
 
 class GermanWordData(BaseModel):
@@ -142,15 +97,8 @@ async def prepare_data_for_german_word(original_word_or_phrase: str, hints: Word
     word_with_article = word
 
     if part_of_speech == PartOfSpeech.Noun:
-        noun_info = get_extra_noun_info(word)
-        if noun_info:
-            singular, plural, genus = get_extra_noun_info(word)
-            noun_properties = GermanNounProperties(
-                singular_form=singular,
-                plural_form=plural,
-                genus=genus,
-                article=get_article_for_german_genus(genus),
-            )
+        noun_properties = _noun_properties_extractor.extract(word)
+        if noun_properties:
             word_with_article = f"{noun_properties.article} {word}"
         else:
             word_with_article = word

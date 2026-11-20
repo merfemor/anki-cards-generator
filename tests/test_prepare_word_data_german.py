@@ -50,7 +50,7 @@ class TestGermanPrepareData(AbstractAppRestTest):
             translated_en=word_translated_stub,
             translated_ru=word_translated_stub,
             noun_properties=app.german_data_extract.GermanNounProperties(
-                singular_form="Katze", plural_form="Katzen", genus="f", article="die"
+                singular_form="Katze", plural_form="Katzen", genus="f"
             ),
             sentence_example=sentence_example_stub_text,
             sentence_example_translated_en=sentence_example_translated_en_stub_text,
@@ -66,7 +66,7 @@ class TestGermanPrepareData(AbstractAppRestTest):
             translated_en=word_translated_stub,
             translated_ru=word_translated_stub,
             noun_properties=app.german_data_extract.GermanNounProperties(
-                singular_form="Schnee", plural_form="", genus="m", article="der"
+                singular_form="Schnee", plural_form="", genus="m"
             ),
             sentence_example=sentence_example_stub_text,
             sentence_example_translated_en=sentence_example_translated_en_stub_text,
@@ -82,7 +82,7 @@ class TestGermanPrepareData(AbstractAppRestTest):
             translated_en=word_translated_stub,
             translated_ru=word_translated_stub,
             noun_properties=app.german_data_extract.GermanNounProperties(
-                singular_form="Band", plural_form="Bänder", genus="n", article="das"
+                singular_form="Band", plural_form="Bänder", genus="n"
             ),
             sentence_example=sentence_example_stub_text,
             sentence_example_translated_en=sentence_example_translated_en_stub_text,
@@ -98,7 +98,7 @@ class TestGermanPrepareData(AbstractAppRestTest):
             translated_en=word_translated_stub,
             translated_ru=word_translated_stub,
             noun_properties=app.german_data_extract.GermanNounProperties(
-                singular_form="", plural_form="Ferien", genus="pl", article="die"
+                singular_form="", plural_form="Ferien", genus="pl"
             ),
             sentence_example=sentence_example_stub_text,
             sentence_example_translated_en=sentence_example_translated_en_stub_text,
@@ -114,7 +114,7 @@ class TestGermanPrepareData(AbstractAppRestTest):
             translated_en=word_translated_stub,
             translated_ru=word_translated_stub,
             noun_properties=app.german_data_extract.GermanNounProperties(
-                singular_form="Schwimmen", plural_form="", genus="n", article="das"
+                singular_form="Schwimmen", plural_form="", genus="n"
             ),
             sentence_example=sentence_example_stub_text,
             sentence_example_translated_en=sentence_example_translated_en_stub_text,
@@ -247,7 +247,7 @@ class TestGermanPrepareData(AbstractAppRestTest):
             translated_en=word_translated_stub,
             translated_ru=word_translated_stub,
             noun_properties=app.german_data_extract.GermanNounProperties(
-                singular_form="Katze", plural_form="Katzen", genus="f", article="die"
+                singular_form="Katze", plural_form="Katzen", genus="f"
             ),
             sentence_example=sentence_example_stub_text,
             sentence_example_translated_en=sentence_example_translated_en_stub_text,
@@ -263,7 +263,7 @@ class TestGermanPrepareData(AbstractAppRestTest):
             translated_en=word_translated_stub,
             translated_ru=word_translated_stub,
             noun_properties=app.german_data_extract.GermanNounProperties(
-                singular_form="Markt", plural_form="Märkte", genus="m", article="der"
+                singular_form="Markt", plural_form="Märkte", genus="m"
             ),
             sentence_example=sentence_example_stub_text,
             sentence_example_translated_en=sentence_example_translated_en_stub_text,

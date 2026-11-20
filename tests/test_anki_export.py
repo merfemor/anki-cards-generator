@@ -19,7 +19,6 @@ class TestWordDataExportToAnki(AbstractAppRestTest):
                 singular_form="Katze",
                 plural_form="Katzen",
                 genus="f",
-                article="die",
             ),
             sentence_example="Satz Beispiel",
             sentence_example_translated_en="sentence example",
