@@ -30,7 +30,7 @@ class PartOfSpeech(Enum):
 
 
 def pos_tag_to_part_of_speech(pos_tag: str) -> PartOfSpeech:
-    if pos_tag == "NN" or pos_tag == "NNI":
+    if pos_tag in {"NN", "NNI", "NE"}:
         return PartOfSpeech.Noun
     if pos_tag.startswith("VV"):
         return PartOfSpeech.Verb

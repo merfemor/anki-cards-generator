@@ -89,6 +89,15 @@ class TestGermanPrepareData(AbstractAppRestTest):
         )
         assert expected == await self.prepare_data("Band")
 
+    async def test_noun_two_meanings_with_different_genus(self):
+        # "Kiefer" can mean both "jaw" and "pine", with masculine and feminine articles respectively.
+        actual = await self.prepare_data("Kiefer")
+
+        assert actual.raw_word == "Kiefer"
+        assert actual.word == "Kiefer"
+        assert actual.noun_properties is not None
+        assert actual.noun_properties.genus in {"m", "f"}
+
     async def test_noun_no_singular(self):
         expected = GermanWordData(
             raw_word="Ferien",
