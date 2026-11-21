@@ -97,7 +97,7 @@ async def prepare_data_for_german_word(original_word_or_phrase: str, hints: Word
     word_with_article = word
 
     if part_of_speech == PartOfSpeech.Noun:
-        noun_properties = _noun_properties_extractor.extract(word)
+        noun_properties = await _noun_properties_extractor.extract(word)
         if noun_properties:
             word_with_article = f"{noun_properties.article} {word}"
         else:

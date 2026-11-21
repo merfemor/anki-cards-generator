@@ -10,7 +10,7 @@ class GermanNounsNounPropertiesExtractor(GermanNounPropertiesExtractor):
     def __init__(self) -> None:
         self._nouns = german_nouns.lookup.Nouns()
 
-    def extract(self, word: str) -> GermanNounProperties | None:
+    async def extract(self, word: str) -> GermanNounProperties | None:
         result = self._nouns[word]
 
         if len(result) == 0:
