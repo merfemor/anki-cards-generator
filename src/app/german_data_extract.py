@@ -9,13 +9,18 @@ from app.common_data_extract import generate_sentence_example_with_llm
 from app.german_noun_properties import GermanNounProperties
 from app.german_noun_properties_extractor import GermanNounPropertiesExtractor
 from app.german_noun_properties_extractor_german_nouns import GermanNounsNounPropertiesExtractor
+from app.german_noun_properties_extractor_fallback import FallbackGermanNounPropertiesExtractor
+from app.german_noun_properties_extractor_wiktapi import WiktApiGermanNounPropertiesExtractor
 from app.spelling import correct_spelling
 from app.translate import translate_text
 from app.utils import check
 from app.word_hints import WordHints
 
 _pos_tagger_de = HanoverTagger("morphmodel_ger.pgz")
-_noun_properties_extractor: GermanNounPropertiesExtractor = GermanNounsNounPropertiesExtractor()
+_noun_properties_extractor: GermanNounPropertiesExtractor = FallbackGermanNounPropertiesExtractor(
+    WiktApiGermanNounPropertiesExtractor(),
+    GermanNounsNounPropertiesExtractor(),
+)
 
 
 class PartOfSpeech(Enum):
