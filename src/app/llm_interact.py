@@ -1,7 +1,8 @@
 import logging
 import os
 from abc import ABC, abstractmethod
-from typing import Callable, Final
+from collections.abc import Callable
+from typing import Final
 
 import ollama
 import openai

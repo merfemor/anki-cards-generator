@@ -28,10 +28,7 @@ async def prepare_data_for_english_word(word: str, hints: WordHints) -> EnglishW
 
     en_sentence_example = await generate_sentence_example_with_llm(word, language="English", is_phrase=False)
 
-    if hints.translated_ru:
-        translated_ru = hints.translated_ru
-    else:
-        translated_ru = (await translate_text(word, src="en", dest="ru")).lower()
+    translated_ru = hints.translated_ru or (await translate_text(word, src="en", dest="ru")).lower()
 
     return EnglishWordData(
         raw_word=orig_word,

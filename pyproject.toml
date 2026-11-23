@@ -43,7 +43,18 @@ build-backend = "uv_build"
 line-length = 120
 
 [tool.ruff.lint]
-extend-select = ["I"]
+select = [
+    "E",  # pycodestyle: style errors
+    "F",  # Pyflakes: undefined names, unused imports, etc.
+    "W",  # pycodestyle warnings
+    "I",  # isort: import ordering
+    "UP",  # pyupgrade: modern Python syntax
+    "B",  # flake8-bugbear: likely bugs and bad practices
+    "SIM",  # flake8-simplify: unnecessary complexity
+]
+ignore = [
+    "E501",  # Line length (handled by formatter)
+]
 
 [tool.pytest.ini_options]
 timeout = 5

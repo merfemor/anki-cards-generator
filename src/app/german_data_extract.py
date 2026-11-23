@@ -1,6 +1,5 @@
 import logging
 from enum import Enum
-from typing import Optional, Tuple
 
 from HanTa.HanoverTagger import HanoverTagger
 from pydantic import BaseModel
@@ -41,9 +40,8 @@ def post_process_en_translation(translated_text: str, part_of_speech: PartOfSpee
     if part_of_speech == PartOfSpeech.Verb:
         if not translated_text.startswith("to "):
             return "to " + translated_text
-    elif part_of_speech == PartOfSpeech.Noun:
-        if translated_text.startswith("the "):
-            return translated_text[4:]
+    elif part_of_speech == PartOfSpeech.Noun and translated_text.startswith("the "):
+        return translated_text[4:]
     return translated_text
 
 
@@ -57,7 +55,7 @@ class GermanWordData(BaseModel):
     part_of_speech: PartOfSpeech
     translated_en: str
     translated_ru: str
-    noun_properties: Optional[GermanNounProperties]
+    noun_properties: GermanNounProperties | None
     sentence_example: str
     sentence_example_translated_en: str
     # All that shouldn't be translated or said by TTS, but should be in the card. For example, grammatical case
@@ -70,7 +68,7 @@ def strip_noun_article(word: str) -> str:
     return word
 
 
-def extract_note_suffix(word_infinitive: str) -> Tuple[str, str]:
+def extract_note_suffix(word_infinitive: str) -> tuple[str, str]:
     grammatical_cases = ["Akk", "Dat", "Gen"]
     for case in grammatical_cases:
         case_note = f"(+{case})"
@@ -103,10 +101,7 @@ async def prepare_data_for_german_word(original_word_or_phrase: str, hints: Word
 
     if part_of_speech == PartOfSpeech.Noun:
         noun_properties = await _noun_properties_extractor.extract(word)
-        if noun_properties:
-            word_with_article = f"{noun_properties.article} {word}"
-        else:
-            word_with_article = word
+        word_with_article = f"{noun_properties.article} {word}" if noun_properties else word
 
     german_sentence_example = await generate_sentence_example_with_llm(
         word_with_article, language="German", is_phrase=False
@@ -127,7 +122,7 @@ async def prepare_data_for_german_word(original_word_or_phrase: str, hints: Word
     )
 
 
-def get_part_of_speech(word: str) -> Tuple[str, str]:
+def get_part_of_speech(word: str) -> tuple[str, str]:
     return _pos_tagger_de.analyze(strip_sich_from_reflexive_verb(word))
 
 

@@ -19,10 +19,7 @@ class GermanNounsNounPropertiesExtractor(GermanNounPropertiesExtractor):
 
         flexion = result[0]["flexion"]
         genus = GermanNounGenus(result[0].get("genus", "pl"))
-        if "nominativ plural" in flexion:
-            plural = flexion["nominativ plural"]
-        else:
-            plural = flexion.get("nominativ plural 1", "")
+        plural = flexion["nominativ plural"] if "nominativ plural" in flexion else flexion.get("nominativ plural 1", "")
 
         return GermanNounProperties(
             singular_form=flexion.get("nominativ singular", ""),

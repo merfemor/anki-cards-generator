@@ -1,5 +1,3 @@
-from abc import ABC
-
 from flask.ctx import RequestContext
 from stub_llm_provider import STANDARD_RESPONSE_STUB, StubLlmProvider
 from stub_translator import TRANSLATION_STUB, StubTranslator
@@ -8,7 +6,7 @@ from app.main import create_app
 from app.tts import init_tts_engine
 
 
-class AbstractAppRestTest(ABC):
+class AbstractAppRestTest:
     def setup_method(self) -> None:
         self.orig_app = create_app(
             StubLlmProvider(STANDARD_RESPONSE_STUB),

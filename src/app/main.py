@@ -5,7 +5,7 @@ import tempfile
 import threading
 import webbrowser
 from collections.abc import Callable
-from typing import Any, Tuple, TypeVar
+from typing import Any, TypeVar
 
 from dotenv import load_dotenv
 from flask import Flask, Response, jsonify, render_template, request, send_file
@@ -32,7 +32,7 @@ def setup_logging() -> None:
     logging.getLogger("google_genai.models").setLevel(logging.WARNING)
 
 
-def invalid_payload_response(exc: ValidationError) -> Tuple[Response, int]:
+def invalid_payload_response(exc: ValidationError) -> tuple[Response, int]:
     details = [
         {"field": ".".join(str(part) for part in error["loc"]), "message": error["msg"]} for error in exc.errors()
     ]
@@ -111,7 +111,7 @@ def create_app(
     app.extensions["tts_engine"] = tts_engine
 
     @app.route("/api/exportDeckFile", methods=["POST"])
-    async def export_deck_file() -> Tuple[Response, int] | Response:
+    async def export_deck_file() -> tuple[Response, int] | Response:
         try:
             payload = ExportDeckFilePayload.model_validate(request.get_json(silent=True))
         except ValidationError as e:
@@ -138,7 +138,7 @@ def create_app(
             return invalid_payload_response(e)
 
     @app.route("/api/generateWordData", methods=["POST"])
-    async def generate_word_data() -> Tuple[Response, int] | Response:
+    async def generate_word_data() -> tuple[Response, int] | Response:
         try:
             payload = GenerateWordDataPayload.model_validate(request.get_json(silent=True))
         except ValidationError as e:

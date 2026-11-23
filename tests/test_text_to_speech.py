@@ -11,12 +11,11 @@ pytestmark = pytest.mark.timeout(300)
 
 class TestTextToSpeech(AbstractAppRestTest):
     def run_test(self, word: str, lang: str) -> None:
-        with self.get_test_context():
-            with tempfile.TemporaryDirectory() as tmp_dir:
-                file_path = os.path.join(tmp_dir, "tts_test_file.mp3")
-                tts.text_to_speech_into_file(word, file_path, lang=lang)
-                assert os.path.exists(file_path)
-                assert os.path.getsize(file_path) > 0
+        with self.get_test_context(), tempfile.TemporaryDirectory() as tmp_dir:
+            file_path = os.path.join(tmp_dir, "tts_test_file.mp3")
+            tts.text_to_speech_into_file(word, file_path, lang=lang)
+            assert os.path.exists(file_path)
+            assert os.path.getsize(file_path) > 0
 
     def test_tts_works_for_german(self):
         self.run_test("die Katze", lang="de")
