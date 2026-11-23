@@ -1,5 +1,5 @@
 import textwrap
-from typing import Literal, Final
+from typing import Final, Literal
 
 from app.llm_interact import ask_llm
 from app.prompts import get_sentence_example_prompt

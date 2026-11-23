@@ -8,17 +8,16 @@ from collections.abc import Callable
 from typing import Any, Tuple, TypeVar
 
 from dotenv import load_dotenv
-from flask import Flask, jsonify, request, send_file, render_template, Response
+from flask import Flask, Response, jsonify, render_template, request, send_file
 from pydantic import ValidationError
 
-from app import english_anki_generate
-from app import german_anki_generate
+from app import english_anki_generate, german_anki_generate
 from app.api_payload import ExportDeckFilePayload, GenerateWordDataPayload
-from app.english_data_extract import prepare_data_for_english_word, EnglishWordData
-from app.german_data_extract import prepare_data_for_german_word, GermanWordData
+from app.english_data_extract import EnglishWordData, prepare_data_for_english_word
+from app.german_data_extract import GermanWordData, prepare_data_for_german_word
 from app.llm_interact import LlmProvider, init_llm_provider
-from app.translate import init_translator, Translator
-from app.tts import init_tts_engine, TextToSpeechEngine
+from app.translate import Translator, init_translator
+from app.tts import TextToSpeechEngine, init_tts_engine
 
 
 def setup_logging() -> None:

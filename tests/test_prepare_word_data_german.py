@@ -1,13 +1,13 @@
 from typing import Final
 
 import pytest
+from base_app_test import AbstractAppRestTest
+from stub_llm_provider import STANDARD_RESPONSE_STUB
 
 import app.german_data_extract
 import app.utils
 from app.german_data_extract import GermanWordData, PartOfSpeech
 from app.word_hints import WordHints
-from base_app_test import AbstractAppRestTest
-from stub_llm_provider import STANDARD_RESPONSE_STUB
 
 sentence_example_stub_text: Final[str] = STANDARD_RESPONSE_STUB
 word_translated_stub: Final[str] = "_"

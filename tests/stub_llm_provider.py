@@ -2,7 +2,6 @@ from typing import Final
 
 from app.llm_interact import LlmProvider
 
-
 STANDARD_RESPONSE_STUB: Final[str] = "This is just some stub sentence example."
 
 

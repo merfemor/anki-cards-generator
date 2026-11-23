@@ -1,11 +1,10 @@
 from abc import ABC
 from typing import Any, Final
 
-from werkzeug.test import TestResponse
-
 from base_app_test import AbstractAppRestTest
 from stub_llm_provider import STANDARD_RESPONSE_STUB
 from stub_translator import TRANSLATION_STUB
+from werkzeug.test import TestResponse
 
 SENTENCE_EXAMPLE_STUB: Final[str] = STANDARD_RESPONSE_STUB
 GENERATE_WORD_DATA_ENDPOINT: Final[str] = "/api/generateWordData"

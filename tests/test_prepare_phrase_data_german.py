@@ -1,8 +1,8 @@
 import pytest
+from base_app_test import AbstractAppRestTest
 
 from app.german_data_extract import GermanWordData, PartOfSpeech, prepare_data_for_german_word
 from app.word_hints import WordHints
-from base_app_test import AbstractAppRestTest
 
 
 @pytest.mark.asyncio(loop_scope="class")

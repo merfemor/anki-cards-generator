@@ -1,11 +1,11 @@
 from abc import ABC
 
 from flask.ctx import RequestContext
+from stub_llm_provider import STANDARD_RESPONSE_STUB, StubLlmProvider
+from stub_translator import TRANSLATION_STUB, StubTranslator
 
 from app.main import create_app
 from app.tts import init_tts_engine
-from stub_llm_provider import StubLlmProvider, STANDARD_RESPONSE_STUB
-from stub_translator import StubTranslator, TRANSLATION_STUB
 
 
 class AbstractAppRestTest(ABC):

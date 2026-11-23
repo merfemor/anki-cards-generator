@@ -1,9 +1,10 @@
 import os
 import tempfile
 
-from app import german_anki_generate
-from app.german_data_extract import GermanWordData, GermanNounProperties, PartOfSpeech
 from base_app_test import AbstractAppRestTest
+
+from app import german_anki_generate
+from app.german_data_extract import GermanNounProperties, GermanWordData, PartOfSpeech
 
 
 class TestWordDataExportToAnki(AbstractAppRestTest):

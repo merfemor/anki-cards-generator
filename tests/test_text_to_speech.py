@@ -2,9 +2,9 @@ import os
 import tempfile
 
 import pytest
+from base_app_test import AbstractAppRestTest
 
 from app import tts
-from base_app_test import AbstractAppRestTest
 
 pytestmark = pytest.mark.timeout(300)
 
