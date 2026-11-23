@@ -51,7 +51,7 @@
       @paste="handlePaste($event)"
       autocomplete="off"
       spellcheck="true"
-    />
+    >
 
     <div class="shortcuts-bar">
       <div class="shortcut-item">
@@ -75,7 +75,7 @@
     <button id="generateBtn" type="button" :disabled="!canGenerate" @click="onGenerateButtonClick()">✨ Generate</button>
 
     <div id="loader" x-show="loading" x-cloak>
-        ⏳ Generating your Anki cards...<br/>
+        ⏳ Generating your Anki cards...<br>
         <b>Note:</b> response time might be long.
     </div>
   </div>
