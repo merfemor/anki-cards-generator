@@ -8,16 +8,44 @@ import ollama
 import openai
 from flask import current_app
 from google import genai
+from google.genai import errors as genai_errors
+
+from app.retry import retry_async
+
+LLM_MAX_ATTEMPTS: Final[int] = 3
+LLM_RETRY_DELAY_SECONDS: Final[float] = 1
+LLM_MAX_RETRY_DELAY_SECONDS: Final[float] = 2
 
 
 async def ask_llm(prompt: str) -> str:
     llm_provider: LlmProvider = current_app.extensions["llm_provider"]
+
+    async def request() -> str:
+        return await llm_provider.ask_llm(prompt)
+
     try:
-        response_text = await llm_provider.ask_llm(prompt)
+        response_text = await retry_async(
+            request,
+            should_retry=_is_retryable_llm_error,
+            max_attempts=LLM_MAX_ATTEMPTS,
+            wait_multiplier=LLM_RETRY_DELAY_SECONDS,
+            max_wait=LLM_MAX_RETRY_DELAY_SECONDS,
+        )
     except Exception as e:
         raise Exception("Exception during LLM request") from e
     logging.debug(f"LLM response='{response_text}', prompt='{prompt}', provider={llm_provider.__class__.__name__}")
     return response_text
+
+
+def _is_retryable_llm_error(error: BaseException) -> bool:
+    if isinstance(error, genai_errors.APIError):
+        status_code = error.code
+    elif isinstance(error, openai.APIStatusError | ollama.ResponseError):
+        status_code = error.status_code
+    else:
+        return isinstance(error, openai.APIConnectionError | ollama.RequestError | TimeoutError | ConnectionError)
+
+    return status_code in (408, 409, 429) or 500 <= status_code < 600
 
 
 class LlmProvider(ABC):
